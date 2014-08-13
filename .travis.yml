@@ -1,0 +1,12 @@
+language: python
+before_install:
+  - sudo add-apt-repository --yes ppa:hash-3g/fontforge
+  - sudo apt-get update -qq
+  - sudo apt-get install fontforge
+install:
+  - export LD_LIBRARY_PATH=/usr/local/lib
+  - pip install coverage python-coveralls
+  - "pip install fontbakery-cli"
+script: PYTHONPATH=$PYTHONPATH:/usr/lib/python2.7/dist-packages LANG="en" coverage run -m nose.__main__ tests bakery_cli.pifont bakery_cli.bakery bakery_cli.utils bakery_cli.ttfont --with-doctest
+after_success:
+  coveralls
