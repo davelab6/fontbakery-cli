@@ -50,8 +50,8 @@ class Font(BaseFont):
         """ Returns TTFont table with key name
 
         >>> font = Font("tests/fixtures/ttf/Font-Bold.ttf")
-        >>> type(font['name'])
-        <class 'fontTools.ttLib.tables._n_a_m_e.table__n_a_m_e'>
+        >>> font['name'].tableTag
+        'name'
         """
         return self.ttfont[key]
 
@@ -120,7 +120,7 @@ class Font(BaseFont):
         """ Returns list of glyphs names in fonts
 
         >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-        >>> len(font.glyphs)
+        >>> int(len(font.glyphs))
         502
         """
         return self.ttfont.getGlyphOrder()
@@ -130,7 +130,7 @@ class Font(BaseFont):
         """ OS/2.usWeightClass property value
 
         >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-        >>> font.OS2_usWeightClass
+        >>> int(font.OS2_usWeightClass)
         400
         """
         return self['OS/2'].usWeightClass
@@ -150,7 +150,7 @@ class Font(BaseFont):
         """ OS/2.fsType property value
 
         >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-        >>> font.OS2_fsType
+        >>> int(font.OS2_fsType)
         8
         """
         return self['OS/2'].fsType
@@ -212,7 +212,7 @@ class Font(BaseFont):
         """ Returns cmap table format 4
 
         >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-        >>> font.retrieve_cmap_format_4().platEncID
+        >>> int(font.retrieve_cmap_format_4().platEncID)
         3
         """
         for cmap in self['cmap'].tables:
@@ -223,7 +223,7 @@ class Font(BaseFont):
         """ AdvanceWidth of glyph from "hmtx" table
 
         >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-        >>> font.advance_width("a")
+        >>> int(font.advance_width("a"))
         572
         """
         if not glyph_id:
@@ -244,9 +244,9 @@ class Font(BaseFont):
     def get_glyf_length(self):
         """ Length of "glyf" table
 
-            >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-            >>> font.get_glyf_length()
-            21804
+        >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
+        >>> int(font.get_glyf_length())
+        21804
         """
         return self.ttfont.reader.tables['glyf'].length
 
@@ -254,7 +254,7 @@ class Font(BaseFont):
         """ Length of "loca" table
 
         >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-        >>> font.get_loca_length()
+        >>> int(font.get_loca_length())
         1006
         """
         return self.ttfont.reader.tables['loca'].length
@@ -263,10 +263,10 @@ class Font(BaseFont):
         """ Retrieve offset of glyph in font tables
 
         >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-        >>> font.get_loca_glyph_offset(15)
-        836L
-        >>> font.get_loca_glyph_offset(16)
-        904L
+        >>> int(font.get_loca_glyph_offset(15))
+        836
+        >>> int(font.get_loca_glyph_offset(16))
+        904
         """
         return self['loca'].locations[num]
 
@@ -274,8 +274,8 @@ class Font(BaseFont):
         """ Retrieve length of glyph in font loca table
 
         >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
-        >>> font.get_loca_glyph_length(15)
-        68L
+        >>> int(font.get_loca_glyph_length(15))
+        68
         """
         return self.get_loca_glyph_offset(num + 1) - self.get_loca_glyph_offset(num)
 
