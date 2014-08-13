@@ -7,6 +7,6 @@ install:
   - export LD_LIBRARY_PATH=/usr/local/lib
   - pip install python-coveralls
   - "pip install git+https://github.com/googlefonts/fontbakery-cli.git"
-script: LANG="en" python setup.py nosetests
+script: PYTHONPATH=$PYTHONPATH:/usr/lib/python2.7/dist-packages LANG="en" python setup.py nosetests
 after_success:
   coveralls

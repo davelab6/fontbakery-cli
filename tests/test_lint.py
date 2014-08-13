@@ -16,7 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import unittest
 import mock
-import simplejson
+import json
 import StringIO
 
 from bakery_lint.tests import downstream
@@ -60,7 +60,7 @@ class Test_CheckCanonicalFilenamesTestCase(TestCase):
 
     @mock.patch.object(downstream.CheckCanonicalFilenames, 'read_metadata_contents')
     def test_one(self, metadata_contents):
-        metadata_contents.return_value = simplejson.dumps({
+        metadata_contents.return_value = json.dumps({
             'fonts': [{
                 'name': 'FamilyName',
                 'filename': 'FamilyName-Regular.ttf'
@@ -68,7 +68,7 @@ class Test_CheckCanonicalFilenamesTestCase(TestCase):
         })
         self.success_run(downstream.CheckCanonicalFilenames)
 
-        metadata_contents.return_value = simplejson.dumps({
+        metadata_contents.return_value = json.dumps({
             'fonts': [{
                 'name': 'Family',
                 'filename': 'Family-Bold.ttf'
@@ -81,7 +81,7 @@ class Test_CheckCanonicalStyles(TestCase):
 
     @mock.patch.object(downstream.CheckCanonicalStyles, 'read_metadata_contents')
     def test_two(self, metadata_contents):
-        metadata_contents.return_value = simplejson.dumps({
+        metadata_contents.return_value = json.dumps({
             'fonts': [{
                 'name': 'Family',
                 'filename': 'Family-Regular.ttf'
@@ -130,7 +130,7 @@ class Test_CheckCanonicalWeights(TestCase):
 
         with mock.patch.object(OriginFont, 'get_ttfont_from_metadata') as mocked_get_ttfont:
             # test if font weight less than 100 is invalid value
-            metadata_contents.return_value = simplejson.dumps({
+            metadata_contents.return_value = json.dumps({
                 'fonts': [{
                     'weight': 50
                 }]
@@ -139,7 +139,7 @@ class Test_CheckCanonicalWeights(TestCase):
             self.failure_run(downstream.CheckCanonicalWeights)
 
             # test if font weight larger than 900 is invalid value
-            metadata_contents.return_value = simplejson.dumps({
+            metadata_contents.return_value = json.dumps({
                 'fonts': [{
                     'weight': 901
                 }]
@@ -149,7 +149,7 @@ class Test_CheckCanonicalWeights(TestCase):
 
             # test if range 100..900 is valid values and checked for fonts
             for n in range(1, 10):
-                metadata_contents.return_value = simplejson.dumps({
+                metadata_contents.return_value = json.dumps({
                     'fonts': [{
                         'weight': n * 100
                     }]
@@ -162,7 +162,7 @@ class Test_CheckFamilyNameMatchesFontName(TestCase):
 
     @mock.patch.object(downstream.CheckFamilyNameMatchesFontNames, 'read_metadata_contents')
     def test_four(self, metadata_contents):
-        metadata_contents.return_value = simplejson.dumps({
+        metadata_contents.return_value = json.dumps({
             'name': 'Family',
             'fonts': [{
                 'name': 'Family'
@@ -170,7 +170,7 @@ class Test_CheckFamilyNameMatchesFontName(TestCase):
         })
         self.success_run(downstream.CheckFamilyNameMatchesFontNames)
 
-        metadata_contents.return_value = simplejson.dumps({
+        metadata_contents.return_value = json.dumps({
             'name': 'Family',
             'fonts': [{
                 'name': 'FontName'
@@ -183,7 +183,7 @@ class Test_CheckMenuSubsetContainsProperGlyphs(TestCase):
 
     @mock.patch.object(downstream.CheckMenuSubsetContainsProperGlyphs, 'read_metadata_contents')
     def test_five(self, metadata_contents):
-        metadata_contents.return_value = simplejson.dumps({
+        metadata_contents.return_value = json.dumps({
             'name': 'Font Family',
             'fonts': [{
                 'name': 'FontName',
@@ -215,7 +215,7 @@ class Test_CheckMetadataMatchesNameTable(TestCase):
 
     @mock.patch.object(downstream.CheckMetadataMatchesNameTable, 'read_metadata_contents')
     def test_six(self, metadata_contents):
-        metadata_contents.return_value = simplejson.dumps({
+        metadata_contents.return_value = json.dumps({
             'name': 'Family',
             'fonts': [{
                 'name': 'Family',
@@ -240,7 +240,7 @@ class Test_CheckNbspWidthMatchesSpWidth(TestCase):
 
     @mock.patch.object(downstream.CheckNbspWidthMatchesSpWidth, 'read_metadata_contents')
     def test_seven(self, metadata_contents):
-        metadata_contents.return_value = simplejson.dumps({
+        metadata_contents.return_value = json.dumps({
             'fonts': [{
                 'name': 'Font Name'
             }]
@@ -260,7 +260,7 @@ class Test_CheckSubsetsExist(TestCase):
 
     @mock.patch.object(downstream.CheckSubsetsExist, 'read_metadata_contents')
     def test_eight(self, metadata_contents):
-        metadata_contents.return_value = simplejson.dumps({
+        metadata_contents.return_value = json.dumps({
             'fonts': [{
                 'filename': 'FontName-Regular.ttf'
             }],
@@ -482,7 +482,7 @@ class Test_CheckFontNameInCamelCase(TestCase):
 
     @mock.patch.object(downstream.CheckFontNameNotInCamelCase, 'read_metadata_contents')
     def test_nineteen(self, metadata_contents):
-        metadata_contents.return_value = simplejson.dumps({
+        metadata_contents.return_value = json.dumps({
             'name': 'Font Family',
             'fonts': [{
                 'name': 'Font Family',
@@ -491,7 +491,7 @@ class Test_CheckFontNameInCamelCase(TestCase):
         })
         self.success_run(downstream.CheckFontNameNotInCamelCase)
 
-        metadata_contents.return_value = simplejson.dumps({
+        metadata_contents.return_value = json.dumps({
             'name': 'Font Family',
             'fonts': [{
                 'name': 'FontFamily',
@@ -558,7 +558,7 @@ class Test_CheckPostScriptNameMatchesWeight(TestCase):
 
     @mock.patch.object(downstream.CheckPostScriptNameMatchesWeight, 'read_metadata_contents')
     def test_twenty_three(self, metadata_contents):
-        metadata_contents.return_value = simplejson.dumps({
+        metadata_contents.return_value = json.dumps({
             'fonts': [{'weight': 400, 'postScriptName': 'Family-Regular'},
                       {'weight': 400, 'postScriptName': 'Family-Italic'},
                       {'weight': 100, 'postScriptName': 'Family-Thin'},
@@ -580,7 +580,7 @@ class Test_CheckPostScriptNameMatchesWeight(TestCase):
         })
         self.success_run(downstream.CheckPostScriptNameMatchesWeight)
 
-        metadata_contents.return_value = simplejson.dumps({
+        metadata_contents.return_value = json.dumps({
             'fonts': [{'weight': 500, 'postScriptName': 'Family-Regular'}]
         })
 
@@ -591,18 +591,18 @@ class Test_CheckMetadataContainsReservedFontName(TestCase):
 
     @mock.patch.object(downstream.CheckMetadataContainsReservedFontName, 'read_metadata_contents')
     def test_twenty_four(self, metadata_contents):
-        metadata_contents.return_value = simplejson.dumps({
+        metadata_contents.return_value = json.dumps({
             'fonts': [{'copyright': 'Copyright (c) 2014 (mail@example.com) with Reserved Font Name'}]
         })
         self.success_run(downstream.CheckMetadataContainsReservedFontName)
 
-        metadata_contents.return_value = simplejson.dumps({
+        metadata_contents.return_value = json.dumps({
             'fonts': [{'copyright': 'Copyright (c) 2014 (mail@example.com)'}]
         })
 
         self.failure_run(downstream.CheckMetadataContainsReservedFontName)
 
-        metadata_contents.return_value = simplejson.dumps({
+        metadata_contents.return_value = json.dumps({
             'fonts': [{'copyright': 'Copyright (c) 2014 with Reserved Font Name'}]
         })
 
@@ -630,7 +630,7 @@ class Test_CheckFontWeightSameAsInMetadata(TestCase):
 
     @mock.patch.object(downstream.CheckFontWeightSameAsInMetadata, 'read_metadata_contents')
     def test_twenty_six(self, metadata_contents):
-        metadata_contents.return_value = simplejson.dumps({
+        metadata_contents.return_value = json.dumps({
             'fonts': [{'filename': 'Family-Regular.ttf', 'weight': 400}]
         })
 
@@ -673,7 +673,7 @@ class Test_CheckItalicStyleMatchesMacStyle(TestCase):
     @mock.patch.object(downstream.CheckItalicStyleMatchesMacStyle, 'read_metadata_contents')
     def test_twenty_six(self, metadata_contents):
 
-        metadata_contents.return_value = simplejson.dumps({
+        metadata_contents.return_value = json.dumps({
             'fonts': [{'filename': 'Family-Regular.ttf',
                        'style': 'italic'}]
         })
@@ -702,7 +702,7 @@ class Test_CheckNormalStyleMatchesMacStyle(TestCase):
     @mock.patch.object(downstream.CheckNormalStyleMatchesMacStyle, 'read_metadata_contents')
     def test_twenty_six(self, metadata_contents):
 
-        metadata_contents.return_value = simplejson.dumps({
+        metadata_contents.return_value = json.dumps({
             'fonts': [{'filename': 'Family-Regular.ttf',
                        'style': 'normal'}]
         })
@@ -753,7 +753,7 @@ class Test_CheckMetadataFields(TestCase):
 
     @mock.patch.object(downstream.CheckMetadataFields, 'read_metadata_contents')
     def test_twenty_eight(self, metadata_contents):
-        metadata_contents.return_value = simplejson.dumps({
+        metadata_contents.return_value = json.dumps({
             'fonts': [{'name': 'Family',
                        'filename': 'Family-Regular.ttf',
                        'weight': 400,
@@ -764,7 +764,7 @@ class Test_CheckMetadataFields(TestCase):
         })
         self.success_run(downstream.CheckMetadataFields)
 
-        metadata_contents.return_value = simplejson.dumps({
+        metadata_contents.return_value = json.dumps({
             'fonts': [{'name': 'Family',
                        'filename': 'Family-Regular.ttf',
                        # 'weight': 400,
@@ -775,7 +775,7 @@ class Test_CheckMetadataFields(TestCase):
         })
         self.failure_run(downstream.CheckMetadataFields)
 
-        metadata_contents.return_value = simplejson.dumps({
+        metadata_contents.return_value = json.dumps({
             'fonts': [{'name': 'Family',
                        'filename': 'Family-Regular.ttf',
                        'weight': 400,
@@ -866,7 +866,7 @@ class Test_CheckMonospaceAgreement(TestCase):
 
     @mock.patch.object(downstream.CheckMonospaceAgreement, 'read_metadata_contents')
     def test_thirty_two(self, metadata_contents):
-        metadata_contents.return_value = simplejson.dumps({
+        metadata_contents.return_value = json.dumps({
             'category': 'Monospace',
             'fonts': [{'name': 'Family',
                        'filename': 'Family-Regular.ttf'}]
