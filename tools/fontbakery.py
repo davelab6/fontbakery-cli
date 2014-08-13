@@ -43,7 +43,7 @@ def run_bakery(sourcedir, config=None):
         l.write(yaml.safe_dump(config))
         l.close()
 
-        b = Bakery('', sourcedir, 'builds', sourcedir)
+        b = Bakery('', sourcedir, 'builds', 'build')
 
         b.init_logging('%s.process.log' % sourcedir.replace('/', '-'))
 
