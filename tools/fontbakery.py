@@ -72,6 +72,7 @@ def run_bakery(sourcedir, config=None):
     except Exception, ex:
         print >> sys.stderr, 'FAILED: %s' % sourcedir
         print >> sys.stderr, ex
+        sys.exit(1)
 
 
 if __name__ == '__main__':
