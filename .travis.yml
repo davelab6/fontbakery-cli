@@ -3,7 +3,7 @@ before_install:
   - sudo add-apt-repository --yes ppa:hash-3g/fontforge
   - sudo apt-get update -qq
   - sudo apt-get install fontforge
-  - cp /usr/lib/python2.7/dist-packages/fontforge.* "$HOME/virtualenv/$TRAVIS_PYTHON_VERSION/lib/python2.7/site-packages"
+  - cp /usr/lib/python2.7/dist-packages/fontforge.* "$HOME/virtualenv/python2.7.8/lib/python2.7/site-packages"
 install:
   - export LD_LIBRARY_PATH=/usr/local/lib
   - pip install python-coveralls
