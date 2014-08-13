@@ -72,12 +72,11 @@ def run_bakery(sourcedir, config=None):
     except Exception, ex:
         print >> sys.stderr, 'FAILED: %s' % sourcedir
         print >> sys.stderr, ex
+        raise
         sys.exit(1)
 
 
 if __name__ == '__main__':
-    sys.path.append(os.path.abspath(os.path.dirname(__file__)))
-
     parser = argparse.ArgumentParser()
     parser.add_argument('projectpath', nargs='+',
                         help=("Path to directory with UFO, SFD, TTX, TTF or OTF files"))
