@@ -45,8 +45,6 @@ def run_bakery(sourcedir, config=None):
 
         b = Bakery('', sourcedir, 'builds', 'build')
 
-        b.init_logging('%s.process.log' % sourcedir.replace('/', '-'))
-
         b.pipes = [
             pipe.Copy,
             pipe.Build,
