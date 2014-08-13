@@ -65,6 +65,7 @@ setup(
     install_requires=[
         'lxml',
         'requests',
+        'fonttools',
         'pyyaml',
         'robofab',
         'fontaine',
@@ -72,6 +73,6 @@ setup(
         'python-magic'
     ],
     setup_requires=['nose', 'mock', 'coverage'],
-    dependency_links=['https://github.com/behdad/fontTools/tarball/master4'],
+    dependency_links=['https://github.com/behdad/fontTools/tarball/master#egg=fontTools-2.4'],
     test_suite='nose.collector'
 )
