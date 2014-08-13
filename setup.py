@@ -70,5 +70,7 @@ setup(
         'robofab',
         'fontaine'
     ],
+    setup_requires=['nose', 'mock', 'python-magic', 'coverage'],
     dependency_links=['https://github.com/behdad/fontTools/tarball/master#egg=fontTools-2.4'],
+    test_suite='nose.collector'
 )

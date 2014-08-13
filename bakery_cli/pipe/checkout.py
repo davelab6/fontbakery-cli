@@ -14,7 +14,6 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-from git import Repo
 
 
 class Checkout(object):
@@ -24,6 +23,7 @@ class Checkout(object):
         self.bakery = bakery
 
     def execute(self, pipedata, prefix=''):
+        from git import Repo
         revision = pipedata.get('commit') or 'master'
 
         repo = Repo(self.project_root)
