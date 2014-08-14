@@ -51,7 +51,9 @@ if __name__ == '__main__':
     shell("git config user.email '%s'" % os.environ['GIT_EMAIL'])
     shell('git config credential.helper "store --file=.git/credentials"')
 
-    with open('.git/credentials', 'w') as filep:
+    with open(os.path.join(os.environ['TRAVIS_BUILD_DIR'],
+                           'builds/build',
+                           '.git/credentials'), 'w') as filep:
         print("https://%s:@github.com" % os.environ['GH_TOKEN'],
               file=filep)
 
