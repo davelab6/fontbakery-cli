@@ -49,10 +49,10 @@ if __name__ == '__main__':
 
     print("https://%s:@github.com" % os.environ['GH_TOKEN'],
           file=open('.git/credentials', 'w'))
-    shell("git branch {0} origin/{0}" % deploy_branch)
+    shell("git branch {0} origin/{0}".format(deploy_branch))
 
     shell('git add .')
-    shell('git commit -a ""')
+    shell('git commit -a "Travis deploy"')
     shell('git push --force --quiet origin master:gh-pages > /dev/null 2>&1')
 
     os.delete('.git/credentials')
