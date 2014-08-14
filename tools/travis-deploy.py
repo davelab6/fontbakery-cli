@@ -48,7 +48,6 @@ if __name__ == '__main__':
 
     print("https://%s:@github.com" % os.environ['GH_TOKEN'],
           file=open('.git/credentials', 'w'))
-    shell("git branch {0} origin/{0}".format(deploy_branch))
 
     shell('git add .')
     shell('git commit -a -m "Travis deploy"')
