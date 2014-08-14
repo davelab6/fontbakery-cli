@@ -49,7 +49,10 @@ class PyFtSubset(object):
             override_argv = pipedata['pyftsubset.%s' % subsetname].split()
 
         argv = argv + override_argv
-        subset.main(argv)
+        try:
+            subset.main(argv)
+        except subset.MissingGlyphsSubsettingError:
+            return
 
         self.bakery.logging_cmd('pyftsubset %s' % ' '.join(argv))
 
