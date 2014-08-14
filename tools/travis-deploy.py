@@ -52,6 +52,6 @@ if __name__ == '__main__':
 
     shell('git add .')
     shell('git commit -a -m "Travis deploy"')
-    shell('git push --force --quiet origin master:gh-pages > /dev/null 2>&1')
+    shell('git push --force origin master:gh-pages')
 
     os.remove('.git/credentials')
