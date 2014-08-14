@@ -22,6 +22,7 @@ from subprocess import Popen
 
 
 def shell(cmd):
+    print(cmd)
     p = Popen(cmd, shell=True, cwd=os.path.join(os.environ['TRAVIS_BUILD_DIR'],
                                                 'builds/build'))
     p.communicate()
@@ -40,8 +41,6 @@ if __name__ == '__main__':
 
     shell('git init')
     shell('git remote add origin %s' % repo)
-    shell('git remote set-branches --add origin %s' % deploy_branch)
-    shell('git fetch -q')
 
     shell("git config user.name '%s'" % os.environ['GIT_NAME'])
     shell("git config user.email '%s'" % os.environ['GIT_EMAIL'])
@@ -52,7 +51,7 @@ if __name__ == '__main__':
     shell("git branch {0} origin/{0}".format(deploy_branch))
 
     shell('git add .')
-    shell('git commit -a "Travis deploy"')
+    shell('git commit -a -m "Travis deploy"')
     shell('git push --force --quiet origin master:gh-pages > /dev/null 2>&1')
 
     os.remove('.git/credentials')
