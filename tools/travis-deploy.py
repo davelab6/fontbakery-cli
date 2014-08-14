@@ -40,7 +40,7 @@ if __name__ == '__main__':
     if 'GH_TOKEN' not in os.environ:
         sys.exit(1)
 
-    repo = 'git://github.com/%s.git' % os.environ['TRAVIS_REPO_SLUG']
+    repo = 'https://github.com/%s.git' % os.environ['TRAVIS_REPO_SLUG']
     print(repo)
     deploy_branch = 'gh-pages'
 
@@ -51,9 +51,9 @@ if __name__ == '__main__':
     shell("git config user.email '%s'" % os.environ['GIT_EMAIL'])
     shell('git config credential.helper "store --file=.git/credentials"')
 
-    with open(os.path.join(os.environ['TRAVIS_BUILD_DIR'],
-                           'builds/build',
-                           '.git/credentials'), 'w') as filep:
+    credentials_path = os.path.join(os.environ['TRAVIS_BUILD_DIR'],
+                                    'builds/build/.git/credentials')
+    with open(credentials_path, 'w') as filep:
         print("https://%s:@github.com" % os.environ['GH_TOKEN'],
               file=filep)
 
@@ -62,4 +62,4 @@ if __name__ == '__main__':
     shell('rm -f .git/index.lock')
     shell('git push --force origin gh-pages')
 
-    os.remove('.git/credentials')
+    os.remove(credentials_path)
