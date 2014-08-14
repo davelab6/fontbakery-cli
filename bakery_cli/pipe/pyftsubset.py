@@ -51,7 +51,7 @@ class PyFtSubset(object):
         argv = argv + override_argv
         try:
             subset.main(argv)
-        except subset.MissingGlyphsSubsettingError:
+        except:
             return
 
         self.bakery.logging_cmd('pyftsubset %s' % ' '.join(argv))
