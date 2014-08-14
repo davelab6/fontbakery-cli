@@ -29,10 +29,12 @@ if __name__ == '__main__':
     if 'GH_TOKEN' not in os.environ:
         sys.exit(1)
 
+    os.chdir(os.environ['TRAVIS_BUILD_DIR'])
+
     repo = Popen('git config remote.origin.url').stdout
     deploy_branch = 'gh-pages'
 
-    os.chdir('builds/build')
+    os.chdir(os.path.join(os.environ['TRAVIS_BUILD_DIR'], 'builds/build'))
 
     Popen('git init')
     Popen('git remote set-url --push origin %s' % repo)
