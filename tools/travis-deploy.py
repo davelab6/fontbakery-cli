@@ -39,7 +39,7 @@ if __name__ == '__main__':
     deploy_branch = 'gh-pages'
 
     shell('git init')
-    shell('git remote set-url --push origin %s' % repo)
+    shell('git remote add origin %s' % repo)
     shell('git remote set-branches --add origin %s' % deploy_branch)
     shell('git fetch -q')
 
