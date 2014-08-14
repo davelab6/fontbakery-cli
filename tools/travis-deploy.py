@@ -30,12 +30,15 @@ if __name__ == '__main__':
         sys.exit(1)
 
     repo = Popen('git config remote.origin.url').stdout
-
     deploy_branch = 'gh-pages'
 
-    Popen("git remote set-url --push origin %s" % repo)
-    Popen("git remote set-branches --add origin %s" % deploy_branch)
+    os.chdir('builds/build')
+
+    Popen('git init')
+    Popen('git remote set-url --push origin %s' % repo)
+    Popen('git remote set-branches --add origin %s' % deploy_branch)
     Popen('git fetch -q')
+
     Popen("git config user.name '%s'" % os.environ['GIT_NAME'])
     Popen("git config user.email '%s'" % os.environ['GIT_EMAIL'])
     Popen('git config credential.helper "store --file=.git/credentials"')
@@ -44,5 +47,8 @@ if __name__ == '__main__':
           file=open('.git/credentials', 'w'))
     Popen("git branch {0} origin/{0}" % deploy_branch)
 
-    Popen('ls | grep -v "builds" | xargs rm')
+    Popen('git add .')
+    Popen('git commit -a ""')
+    Popen('git push --force --quiet origin master:gh-pages > /dev/null 2>&1')
+
     os.delete('.git/credentials')
