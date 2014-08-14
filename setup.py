@@ -43,7 +43,8 @@ setup(
              'tools/bakery-nbsp-fix.py',
              'tools/bakery-stylenames-fix.py',
              'tools/bakery-vmet-fix.py',
-             'tools/bakery-lint.py'
+             'tools/bakery-lint.py',
+             'tools/travis-deploy.py'
              ],
     zip_safe=False,
     classifiers=[
