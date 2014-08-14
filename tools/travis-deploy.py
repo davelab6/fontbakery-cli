@@ -21,6 +21,12 @@ import sys
 from subprocess import Popen
 
 
+def shell(cmd):
+    p = Popen(cmd, shell=True, cwd=os.path.join(os.environ['TRAVIS_BUILD_DIR'],
+                                                'builds/build'))
+    p.communicate()
+
+
 if __name__ == '__main__':
 
     if os.environ['TRAVIS_PULL_REQUEST'].lower() == 'true':
@@ -29,28 +35,24 @@ if __name__ == '__main__':
     if 'GH_TOKEN' not in os.environ:
         sys.exit(1)
 
-    os.chdir(os.environ['TRAVIS_BUILD_DIR'])
-
     repo = 'https://github.com/%s.git' % os.environ['TRAVIS_REPO_SLUG']
     deploy_branch = 'gh-pages'
 
-    os.chdir(os.path.join(os.environ['TRAVIS_BUILD_DIR'], 'builds/build'))
+    shell('git init')
+    shell('git remote set-url --push origin %s' % repo)
+    shell('git remote set-branches --add origin %s' % deploy_branch)
+    shell('git fetch -q')
 
-    Popen('git init')
-    Popen('git remote set-url --push origin %s' % repo)
-    Popen('git remote set-branches --add origin %s' % deploy_branch)
-    Popen('git fetch -q')
-
-    Popen("git config user.name '%s'" % os.environ['GIT_NAME'])
-    Popen("git config user.email '%s'" % os.environ['GIT_EMAIL'])
-    Popen('git config credential.helper "store --file=.git/credentials"')
+    shell("git config user.name '%s'" % os.environ['GIT_NAME'])
+    shell("git config user.email '%s'" % os.environ['GIT_EMAIL'])
+    shell('git config credential.helper "store --file=.git/credentials"')
 
     print("https://%s:@github.com" % os.environ['GH_TOKEN'],
           file=open('.git/credentials', 'w'))
-    Popen("git branch {0} origin/{0}" % deploy_branch)
+    shell("git branch {0} origin/{0}" % deploy_branch)
 
-    Popen('git add .')
-    Popen('git commit -a ""')
-    Popen('git push --force --quiet origin master:gh-pages > /dev/null 2>&1')
+    shell('git add .')
+    shell('git commit -a ""')
+    shell('git push --force --quiet origin master:gh-pages > /dev/null 2>&1')
 
     os.delete('.git/credentials')
