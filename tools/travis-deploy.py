@@ -29,10 +29,9 @@ if __name__ == '__main__':
     if 'GH_TOKEN' not in os.environ:
         sys.exit(1)
 
-    print(os.environ['TRAVIS_BUILD_DIR'])
     os.chdir(os.environ['TRAVIS_BUILD_DIR'])
 
-    repo = Popen('git config remote.origin.url').stdout
+    repo = 'https://github.com/%s.git' % os.environ['TRAVIS_REPO_SLUG']
     deploy_branch = 'gh-pages'
 
     os.chdir(os.path.join(os.environ['TRAVIS_BUILD_DIR'], 'builds/build'))
