@@ -25,7 +25,8 @@ def shell(cmd):
     print(cmd)
     p = Popen(cmd, shell=True, cwd=os.path.join(os.environ['TRAVIS_BUILD_DIR'],
                                                 'builds/build'))
-    p.communicate()
+    print(p.stdout)
+    print(p.stderr)
 
 
 if __name__ == '__main__':
