@@ -60,7 +60,7 @@ if __name__ == '__main__':
     shell('git add .')
     shell('git commit -a -m "Travis deploy"')
 
-    os.remove('.git/index.lock')
+    shell('rm -rf %s' % os.path.join(os.environ['TRAVIS_BUILD_DIR'], '.git'))
 
     shell('rm -f .git/index.lock')
     shell('git push --force origin gh-pages')
