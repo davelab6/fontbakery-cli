@@ -22,11 +22,14 @@ from subprocess import Popen
 
 
 def shell(cmd):
-    print(cmd)
+    print('$ %s' % cmd)
     p = Popen(cmd, shell=True, cwd=os.path.join(os.environ['TRAVIS_BUILD_DIR'],
                                                 'builds/build'))
-
-    print(p.communicate(), end="\n")
+    stdout, stderr = p.communicate()
+    if stdout:
+        print(stdout, end="\n")
+    if stderr:
+        print(stderr, end="\n")
 
 
 if __name__ == '__main__':
@@ -38,11 +41,12 @@ if __name__ == '__main__':
         sys.exit(1)
 
     repo = 'https://github.com/%s.git' % os.environ['TRAVIS_REPO_SLUG']
-    print(repo)
+
     deploy_branch = 'gh-pages'
 
     shell('git init')
     shell('git remote add origin %s' % repo)
+    shell('git remote set-branches --add origin %s' % deploy_branch)
 
     shell("git config user.name '%s'" % os.environ['GIT_NAME'])
     shell("git config user.email '%s'" % os.environ['GIT_EMAIL'])
