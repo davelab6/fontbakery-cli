@@ -64,6 +64,6 @@ if __name__ == '__main__':
     shell('rm -rf %s' % os.path.join(os.environ['TRAVIS_BUILD_DIR'], '.git'))
 
     shell('rm -f .git/index.lock')
-    shell('git push --force origin gh-pages')
+    shell('git push --force origin master:gh-pages')
 
     os.remove(credentials_path)
