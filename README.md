@@ -17,14 +17,4 @@ $ travis login --github-token <token>
 $ travis encrypt 'GIT_NAME="Your Name" \
     GIT_EMAIL=you@example.com GH_TOKEN=<token>' --add
 
-$ git checkout --orphan gh-pages
-$ rm -rf *
-$ rm -rf .travis.yml .gitignore
-$ git rm --cached *
-
-$ git add .
-$ git commit -m "Initial commit"
-
-$ git push -u origin gh-pages
-
 ```
