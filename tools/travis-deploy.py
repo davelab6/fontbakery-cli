@@ -20,6 +20,8 @@ import os
 import sys
 from subprocess import Popen
 
+from bakery_cli.utils import UpstreamDirectory
+
 
 def shell(cmd):
     print('$ %s' % cmd)
@@ -30,6 +32,36 @@ def shell(cmd):
         print(stdout, end="\n")
     if stderr:
         print(stderr, end="\n")
+
+
+def create_index_html():
+    directory = os.path.join(os.environ['TRAVIS_BUILD_DIR'], 'builds/build')
+    p = os.path.join(directory, 'index.html')
+
+    upstream = UpstreamDirectory(directory)
+    faces = []
+    indexf = open(p, 'w')
+
+    for k, font in enumerate(upstream.BIN):
+        basename = os.path.basename(font)[:-4]
+        face = ('<style>@font-face {font-family: {0}; src: url({1});}'
+                '.face-{2} {font-family: {0};}</style>'
+                '<div class="face-{2}">'
+                'Grumpy wizards make toxic brew for the evil Queen and Jack'
+                '</div>').format(basename, font, k)
+        faces.append(face)
+
+    print("""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    %s
+</body>
+</html>
+""" % '\n'.join(faces), file=indexf)
 
 
 if __name__ == '__main__':

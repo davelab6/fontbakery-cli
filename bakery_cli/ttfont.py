@@ -177,6 +177,20 @@ class Font(BaseFont):
                 return value
 
     @property
+    def ot_style_name(self):
+        """ Returns OpenType specific style name
+
+        >>> font = Font("tests/fixtures/ttf/Font-Bold.ttf")
+        >>> font.ot_style_name
+        """
+        for entry in self.names:
+            if entry.nameID != 17:
+                continue
+            value = self.platform_entry(entry)
+            if value:
+                return value
+
+    @property
     def familyname(self):
         """ Returns fullname of fonts
 

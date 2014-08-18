@@ -14,20 +14,14 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-import os
-import importlib
-import inspect
+from bakery_lint.base import BakeryTestCase as TestCase, tags
+from bakery_lint.metadata import Metadata
+from bakery_cli.ttfont import Font
 
 
-for testfile in os.listdir(os.path.dirname(__file__)):
-    if testfile.startswith('test_'):
-        try:
-            module_name, _ = os.path.splitext(testfile)
-            module = 'bakery_lint.tests.upstream.%s' % module_name
-            module = importlib.import_module(module)
+class CheckWindowsGDINameTable(TestCase):
 
-            for name, obj in inspect.getmembers(module):
-                if obj.__bases__[0].__name__ == 'BakeryTestCase':
-                    exec 'from bakery_lint.tests.upstream.%s import %s' % (module_name, name)
-        except (ImportError, AttributeError, IndexError), ex:
-            pass
+    targets = ['result']
+    tool = 'lint'
+    name = __name__
+    path = '.'

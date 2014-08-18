@@ -19,7 +19,7 @@ import mock
 import json
 import StringIO
 
-from bakery_lint.tests import downstream
+from bakery_lint.tests import downstream, upstream
 from bakery_lint.tests.downstream.test_check_subsets_exists import File
 from bakery_cli.ttfont import Font as OriginFont
 
@@ -949,3 +949,61 @@ class Test_CheckGlyphExistence(TestCase):
                 8364: 'Euro'
             }
             self.failure_run(downstream.CheckGlyphExistence)
+
+
+class Test_UfoFontFamilyRecommendation(TestCase):
+
+    def test_fullfontname_less_than_64_chars(self):
+        klass = upstream.TestUFOFontFamilyNamingTest
+        klass.path = '1.ufo'
+
+        sfnt_names = [
+            (),
+            ('', '', 'Font'),  # familyname
+            ('', '', 'Bold'),  # stylename
+            (),
+            ('', '', 'Font Bold'),  # fullname
+            (),
+            ('', '', 'Font-Bold')  # postscriptname
+        ]
+
+        failure_sfntnames = [
+            (),
+            ('', '', 'Font'),  # familyname
+            ('', '', 'Bold'),  # stylename
+            (),
+            ('', '', 'Font Bold'),  # fullname
+            (),
+            ('', '', 'Font-Bold-Gold')  # postscriptname
+        ]
+
+        with mock.patch('fontforge.open') as ff:
+            ff.return_value = type('sfnt_names', (object, ),
+                                   {'sfnt_names': sfnt_names,
+                                    'os2_weight': 250})
+            self.success_run(klass)
+
+            ff.return_value = type('sfnt_names', (object, ),
+                                   {'sfnt_names': sfnt_names,
+                                    'os2_weight': 900})
+            self.success_run(klass)
+
+            ff.return_value = type('sfnt_names', (object, ),
+                                   {'sfnt_names': failure_sfntnames,
+                                    'os2_weight': 900})
+            self.failure_run(klass)
+
+            ff.return_value = type('sfnt_names', (object, ),
+                                   {'sfnt_names': sfnt_names,
+                                    'os2_weight': 1000})
+            self.failure_run(klass)
+
+            ff.return_value = type('sfnt_names', (object, ),
+                                   {'sfnt_names': sfnt_names,
+                                    'os2_weight': 200})
+            self.failure_run(klass)
+
+            ff.return_value = type('sfnt_names', (object, ),
+                                   {'sfnt_names': sfnt_names,
+                                    'os2_weight': 355})
+            self.failure_run(klass)

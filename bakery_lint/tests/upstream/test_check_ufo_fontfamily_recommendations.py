@@ -14,61 +14,85 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+from __future__ import print_function
 import fontforge
 
 from bakery_lint.base import BakeryTestCase as TestCase
 
 
-class UFO_FontFamilyNamingTest(TestCase):
+def ufo_required(f):
+
+    def func(self, *args, **kwargs):
+        if (not self.path.lower().endswith('.ufo')
+                and not self.path.lower().endswith('.sfd')):
+            # This test checks only UFO source font.
+            return
+
+        return f(self, *args, **kwargs)
+
+    return func
+
+
+class TestUFOFontFamilyNamingTest(TestCase):
+    """ The font corresponds the font family naming recommendation
+
+    See: http://forum.fontlab.com/index.php?topic=313.0 """
 
     targets = ['upstream']
     tool = 'FontForge'
     name = __name__
     path = '.'
 
-    def test_ufo_family_naming_recommendation(self):
-        """ The font corresponds the font family naming recommendation.
-        See http://forum.fontlab.com/index.php?topic=313.0 """
-        if (not self.path.lower().endswith('.ufo')
-                or not self.path.lower().endswith('.sfd')):
-            # This test checks only UFO source font.
-            return
+    @ufo_required
+    def test_fullfontname_less_than_64_chars(self):
+        """ <Full name> limitation is < 64 chars """
         font = fontforge.open(self.path)
-        # <Full name> limitation is < 64 chars
         length = len(font.sfnt_names[4][2])
         self.assertLess(length, 64,
                         msg=('`Full Font Name` limitation is less'
                              ' than 64 chars. Now: %s') % length)
 
-        # <Postscript name> limitation is < 30 chars
+    @ufo_required
+    def test_postscriptname_less_than_30_chars(self):
+        """ <Postscript name> limitation is < 30 chars """
+        font = fontforge.open(self.path)
         length = len(font.sfnt_names[6][2])
         self.assertLess(length, 30,
                         msg=('`PostScript Name` limitation is less'
                              ' than 30 chars. Now: %s') % length)
 
-        # <Postscript name> may contain only a-zA-Z0-9
-        # and one hyphen
-        self.assertRegexpMatches(font.sfnt_names[6][2], r'[a-zA-Z0-9-]+',
+    @ufo_required
+    def test_postscriptname_consistof_allowed_chars(self):
+        """ <Postscript name> may contain only a-zA-Z0-9 and one hyphen """
+        font = fontforge.open(self.path)
+        self.assertRegexpMatches(font.sfnt_names[6][2],
+                                 r'^[a-zA-Z0-9]+\-?[a-zA-Z0-9]+$',
                                  msg=('`PostScript Name` may contain'
                                       ' only a-zA-Z0-9 characters and'
                                       ' one hyphen'))
-        self.assertLessEqual(font.sfnt_names[6][2].count('-'), 1,
-                             msg=('`PostScript Name` may contain only'
-                                  ' one hyphen'))
 
-        # <Family Name> limitation is 32 chars
+    @ufo_required
+    def test_familyname_less_than_32_chars(self):
+        """ <Family Name> limitation is 32 chars """
+        font = fontforge.open(self.path)
         length = len(font.sfnt_names[1][2])
         self.assertLess(length, 32,
                         msg=('`Family Name` limitation is < 32 chars.'
                              ' Now: %s') % length)
 
-        # <Style Name> limitation is 32 chars
+    @ufo_required
+    def test_stylename_less_than_32_chars(self):
+        """ <Style Name> limitation is 32 chars """
+        font = fontforge.open(self.path)
         length = len(font.sfnt_names[2][2])
         self.assertLess(length, 32,
                         msg=('`Style Name` limitation is < 32 chars.'
                              ' Now: %s') % length)
 
-        # <Weight> value >= 250 and <= 900 in steps of 50
+    @ufo_required
+    def test_weight_value_range_between_250_and_900(self):
+        """ <Weight> value >= 250 and <= 900 in steps of 50 """
+        font = fontforge.open(self.path)
         self.assertTrue(bool(font.os2_weight % 50 == 0),
                         msg=('Weight has to be in steps of 50.'
                              ' Now: %s') % font.os2_weight)
