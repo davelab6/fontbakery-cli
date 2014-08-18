@@ -44,8 +44,8 @@ def create_index_html():
 
     for k, font in enumerate(upstream.BIN):
         basename = os.path.basename(font)[:-4]
-        face = ('<style>@font-face {font-family: {0}; src: url({1});}'
-                '.face-{2} {font-family: {0};}</style>'
+        face = ('<style>@font-face {{font-family: {0}; src: url({1});}}'
+                '.face-{2} {{font-family: {0};}}</style>'
                 '<div class="face-{2}">'
                 'Grumpy wizards make toxic brew for the evil Queen and Jack'
                 '</div>').format(basename, font, k)
