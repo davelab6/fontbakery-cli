@@ -177,14 +177,15 @@ class Font(BaseFont):
                 return value
 
     @property
-    def ot_style_name(self):
+    def stylename(self):
         """ Returns OpenType specific style name
 
         >>> font = Font("tests/fixtures/ttf/Font-Bold.ttf")
-        >>> font.ot_style_name
+        >>> font.stylename
+        'Bold'
         """
         for entry in self.names:
-            if entry.nameID != 17:
+            if entry.nameID != 2:
                 continue
             value = self.platform_entry(entry)
             if value:
@@ -206,6 +207,32 @@ class Font(BaseFont):
                 return value
 
     @property
+    def ot_family_name(self):
+        """ Returns Windows-only Opentype-specific FamilyName """
+        for entry in self.names:
+            # This value must be only for windows platform as in
+            # mac it addresses some problems with installing fonts with
+            # that ids
+            if entry.nameID != 16 or entry.platformID != 3:
+                continue
+            value = self.platform_entry(entry)
+            if value:
+                return value
+
+    @property
+    def ot_style_name(self):
+        """ Returns Windows-only Opentype-specific StyleName """
+        for entry in self.names:
+            # This value must be only for windows platform as in
+            # mac it addresses some problems with installing fonts with
+            # that ids
+            if entry.nameID != 17 or entry.platformID != 3:
+                continue
+            value = self.platform_entry(entry)
+            if value:
+                return value
+
+    @property
     def post_script_name(self):
         """ Returns fullname of fonts
 
@@ -216,11 +243,9 @@ class Font(BaseFont):
         for entry in self.names:
             if entry.nameID != 6:
                 continue
-            # macintosh platform
-            if entry.platformID == 1 and entry.langID == 0:
-                return Font.bin2unistring(entry)
-            if entry.platformID == 3 and entry.langID == 0x409:
-                return Font.bin2unistring(entry)
+            value = self.platform_entry(entry)
+            if value:
+                return value
 
     def retrieve_cmap_format_4(self):
         """ Returns cmap table format 4

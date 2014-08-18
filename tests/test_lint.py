@@ -1007,3 +1007,79 @@ class Test_UfoFontFamilyRecommendation(TestCase):
                                    {'sfnt_names': sfnt_names,
                                     'os2_weight': 355})
             self.failure_run(klass)
+
+
+class Test_NameTableRecommendation(TestCase):
+
+    def test_thirty_five(self):
+
+        class Font:
+            stylename = 'Regular'
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
+            get_ttfont.return_value = Font
+            for stylename in ['Regular', 'Italic', 'Bold', 'Bold Italic']:
+                get_ttfont.return_value.stylename = stylename
+                self.success_run(downstream.CheckStyleNameRecommendation)
+
+            get_ttfont.return_value.stylename = 'Black Italic'
+
+            self.failure_run(downstream.CheckStyleNameRecommendation)
+
+
+class Test_CheckOTFamilyNameRecommendation(TestCase):
+
+    def test_thirty_six(self):
+
+        class Font(OriginFont):
+
+            names = [
+                type('name', (object, ),
+                     {'nameID': 1, 'string': 'Hello', 'platformID': 1,
+                      'langID': 0}),
+                type('name', (object, ),
+                     {'nameID': 16, 'string': 'Hello', 'platformID': 3,
+                      'langID': 1033})]
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
+            get_ttfont.return_value = Font('')
+            self.success_run(downstream.CheckOTFamilyNameRecommendation)
+
+            get_ttfont.return_value.names = [
+                type('name', (object, ),
+                     {'nameID': 1, 'string': 'Hello', 'platformID': 1,
+                      'langID': 0}),
+                type('name', (object, ),
+                     {'nameID': 16, 'string': 'Hello', 'platformID': 1,
+                      'langID': 0})
+            ]
+            self.failure_run(downstream.CheckOTFamilyNameRecommendation)
+
+
+class Test_CheckOTStyleNameRecommendation(TestCase):
+
+    def test_thirty_seven(self):
+
+        class Font(OriginFont):
+
+            names = [
+                type('name', (object, ),
+                     {'nameID': 2, 'string': 'Regular', 'platformID': 1,
+                      'langID': 0}),
+                type('name', (object, ),
+                     {'nameID': 17, 'string': 'Black', 'platformID': 3,
+                      'langID': 1033})]
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
+            get_ttfont.return_value = Font('')
+            self.success_run(downstream.CheckOTStyleNameRecommendation)
+
+            get_ttfont.return_value.names = [
+                type('name', (object, ),
+                     {'nameID': 2, 'string': 'Regular', 'platformID': 1,
+                      'langID': 0}),
+                type('name', (object, ),
+                     {'nameID': 17, 'string': 'Black Italic', 'platformID': 3,
+                      'langID': 1033})]
+
+            self.failure_run(downstream.CheckOTStyleNameRecommendation)
