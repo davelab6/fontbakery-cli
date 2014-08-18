@@ -90,6 +90,8 @@ if __name__ == '__main__':
         print("https://%s:@github.com" % os.environ['GH_TOKEN'],
               file=filep)
 
+    create_index_html()
+
     shell('git add .')
     shell('git commit -a -m "Travis deploy"')
 
