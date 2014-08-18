@@ -42,6 +42,7 @@ setup(
              'tools/bakery-fstype-fix.py',
              'tools/bakery-nbsp-fix.py',
              'tools/bakery-stylenames-fix.py',
+             'tools/bakery-opentype-fix.py',
              'tools/bakery-vmet-fix.py',
              'tools/bakery-lint.py',
              'tools/travis-deploy.py'

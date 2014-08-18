@@ -26,6 +26,7 @@ from bakery_cli.scripts.ascii import fix_name_table
 from bakery_cli.scripts.fstype import reset_fstype
 from bakery_cli.scripts.stylenames import fix_style_names
 from bakery_cli.scripts.nbsp import checkAndFix
+from bakery_cli.scripts import opentype
 
 
 class AutoFix(object):
@@ -57,6 +58,20 @@ def logging(log, command):
     if not log:
         return
     log.write(u'$ %s' % command)
+
+
+def fix_opentype_specific_fields(font_path, log=None):
+    """ Fix Opentype-specific fields in "name" table """
+    SCRIPTPATH = 'bakery-opentype-fix.py'
+
+    command = "{0} {1} {2}".format(PYPATH, SCRIPTPATH, font_path)
+    logging(log, command)
+
+    opentype.fix(font_path)
+
+    command = "mv {0}.fix {0}".format(font_path)
+    logging(log, command)
+    shutil.move(font_path + '.fix', font_path, log=log)
 
 
 def fix_nbsp(font_path, log=None):
@@ -134,7 +149,11 @@ available_fixes = {
     'test_metrics_descents_equal_bbox': fix_metrics,
     'test_non_ascii_chars_in_names': fix_name_ascii,
     'test_is_fsType_not_set': fix_fstype_to_zero,
-    'test_font_weight_is_canonical': fix_ttf_stylenames
+    'test_font_weight_is_canonical': fix_ttf_stylenames,
+    'test_check_stylename_is_under_recommendations': fix_opentype_specific_fields,
+    'test_check_opentype_familyname': fix_opentype_specific_fields,
+    'test_check_opentype_stylename': fix_opentype_specific_fields,
+    'test_check_opentype_fullname': fix_opentype_specific_fields
 }
 
 
