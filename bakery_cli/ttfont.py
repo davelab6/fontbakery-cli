@@ -233,6 +233,19 @@ class Font(BaseFont):
                 return value
 
     @property
+    def ot_full_name(self):
+        """ Returns Windows-only Opentype-specific FullName """
+        for entry in self.names:
+            # This value must be only for windows platform as in
+            # mac it addresses some problems with installing fonts with
+            # that ids
+            if entry.nameID != 18 or entry.platformID != 3:
+                continue
+            value = self.platform_entry(entry)
+            if value:
+                return value
+
+    @property
     def post_script_name(self):
         """ Returns fullname of fonts
 

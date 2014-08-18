@@ -68,3 +68,16 @@ class CheckOTStyleNameRecommendation(TestCase):
         font = Font.get_ttfont(self.path)
         self.assertIn(font.stylename, stylename_mapping)
         self.assertIn(font.ot_style_name, stylename_mapping[font.stylename])
+
+
+class CheckOTFullNameRecommendation(TestCase):
+
+    targets = ['result']
+    tool = 'lint'
+    name = __name__
+    path = '.'
+
+    def test_check_opentype_fullname(self):
+        """ Full name matches Windows-only Opentype-specific FullName """
+        font = Font.get_ttfont(self.path)
+        self.assertEqual(font.ot_full_name, font.fullname)

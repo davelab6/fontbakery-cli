@@ -1083,3 +1083,32 @@ class Test_CheckOTStyleNameRecommendation(TestCase):
                       'langID': 1033})]
 
             self.failure_run(downstream.CheckOTStyleNameRecommendation)
+
+
+class Test_CheckOTFullNameRecommendation(TestCase):
+
+    def test_thirty_eight(self):
+
+        class Font(OriginFont):
+
+            names = [
+                type('name', (object, ),
+                     {'nameID': 4, 'string': 'Hello Bold', 'platformID': 1,
+                      'langID': 0}),
+                type('name', (object, ),
+                     {'nameID': 18, 'string': 'Hello Bold', 'platformID': 3,
+                      'langID': 1033})]
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
+            get_ttfont.return_value = Font('')
+            self.success_run(downstream.CheckOTFullNameRecommendation)
+
+            get_ttfont.return_value.names = [
+                type('name', (object, ),
+                     {'nameID': 4, 'string': 'Hello', 'platformID': 1,
+                      'langID': 0}),
+                type('name', (object, ),
+                     {'nameID': 18, 'string': 'Hello', 'platformID': 1,
+                      'langID': 0})
+            ]
+            self.failure_run(downstream.CheckOTFullNameRecommendation)
