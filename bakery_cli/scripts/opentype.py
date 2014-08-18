@@ -18,25 +18,26 @@ from bakery_cli.ttfont import Font
 from fontTools.ttLib.tables._n_a_m_e import NameRecord
 
 
-def findOTFamilyName(ttfont):
-    for namerec in ttfont['name'].names:
-        if (namerec.nameID == 16 and namerec.platformID == 3
-                and namerec.langID == 0x409):
-            return namerec
+def findOrCreateName(names, nameId, platformId=3, langId=0x409, platEncId=1):
+    result_namerec = None
+    for namerec in names:
+        if (namerec.nameID == nameId and namerec.platformID == platformId
+                and namerec.langID == langId):
+            result_namerec = namerec
+            break
+    if result_namerec:
+        return result_namerec
+        
+    ot_namerecord = NameRecord()
+    ot_namerecord.nameID = nameId
+    ot_namerecord.platformID = platformId
+    ot_namerecord.langID = langId
 
+    # When building a Unicode font for Windows, the platform ID
+    # should be 3 and the encoding ID should be 1
+    ot_namerecord.platEncID = platEncId
 
-def findOTStyleName(ttfont):
-    for namerec in ttfont['name'].names:
-        if (namerec.nameID == 17 and namerec.platformID == 3
-                and namerec.langID == 0x409):
-            return namerec
-
-
-def findOTFullName(ttfont):
-    for namerec in ttfont['name'].names:
-        if (namerec.nameID == 18 and namerec.platformID == 3
-                and namerec.langID == 0x409):
-            return namerec
+    ttfont['name'].names.append(ot_namerecord)
 
 
 mapping = {
@@ -66,47 +67,13 @@ mapping = {
 def fix(fontpath):
     ttfont = Font.get_ttfont(fontpath)
 
-    ot_namerecord = findOTFamilyName(ttfont)
-    if not ot_namerecord:
-        ot_namerecord = NameRecord()
-        ot_namerecord.nameID = 16
-        ot_namerecord.platformID = 3
-        ot_namerecord.langID = 0x409
-
-        # When building a Unicode font for Windows, the platform ID
-        # should be 3 and the encoding ID should be 1
-        ot_namerecord.platEncID = 1
-
-        ttfont['name'].names.append(ot_namerecord)
-
+    ot_namerecord = findOrCreateNameRecord(ttfont['name'].names, 16)
     ot_namerecord.string = ttfont.familyname.encode("utf_16_be")
 
-    ot_namerecord = findOTStyleName(ttfont)
-    if not ot_namerecord:
-        ot_namerecord = NameRecord()
-        ot_namerecord.nameID = 17
-        ot_namerecord.platformID = 3
-        ot_namerecord.langID = 0x409
-        # When building a Unicode font for Windows, the platform ID
-        # should be 3 and the encoding ID should be 1
-        ot_namerecord.platEncID = 1
-
-        ttfont['name'].names.append(ot_namerecord)
-
+    ot_namerecord = findOrCreateNameRecord(ttfont['name'].names, 17)
     ot_namerecord.string = mapping.get(ttfont.stylename, 'Regular').encode("utf_16_be")
 
-    ot_namerecord = findOTFullName(ttfont)
-    if not ot_namerecord:
-        ot_namerecord = NameRecord()
-        ot_namerecord.nameID = 18
-        ot_namerecord.platformID = 3
-        ot_namerecord.langID = 0x409
-        # When building a Unicode font for Windows, the platform ID
-        # should be 3 and the encoding ID should be 1
-        ot_namerecord.platEncID = 1
-
-        ttfont['name'].names.append(ot_namerecord)
-
+    ot_namerecord = findOrCreateNameRecord(ttfont['name'].names, 18)
     ot_namerecord.string = ttfont.fullname.encode("utf_16_be")
 
     ttfont.save(fontpath + '.fix')
