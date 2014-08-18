@@ -25,7 +25,7 @@ ttfautohint: -l 7 -r 28 -G 50 -x 13 -w "G"
 # newfamily: ''
 
 ### Use FontCrunch by default
-fontcrunch: True
+fontcrunch: False
 
 ### Pyftsubset defaults parameters
 pyftsubset: --notdef-outline --name-IDs="*" --hinting
