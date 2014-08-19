@@ -27,7 +27,7 @@ def findOrCreateNameRecord(names, nameId, platformId=3, langId=0x409, platEncId=
             break
     if result_namerec:
         return result_namerec
-        
+
     ot_namerecord = NameRecord()
     ot_namerecord.nameID = nameId
     ot_namerecord.platformID = platformId
@@ -37,7 +37,7 @@ def findOrCreateNameRecord(names, nameId, platformId=3, langId=0x409, platEncId=
     # should be 3 and the encoding ID should be 1
     ot_namerecord.platEncID = platEncId
 
-    ttfont['name'].names.append(ot_namerecord)
+    names.append(ot_namerecord)
 
 
 mapping = {
