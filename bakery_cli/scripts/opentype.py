@@ -38,6 +38,7 @@ def findOrCreateNameRecord(names, nameId, platformId=3, langId=0x409, platEncId=
     ot_namerecord.platEncID = platEncId
 
     names.append(ot_namerecord)
+    return ot_namerecord
 
 
 mapping = {
