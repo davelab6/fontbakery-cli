@@ -18,7 +18,7 @@ from bakery_cli.ttfont import Font
 from fontTools.ttLib.tables._n_a_m_e import NameRecord
 
 
-def findOrCreateName(names, nameId, platformId=3, langId=0x409, platEncId=1):
+def findOrCreateNameRecord(names, nameId, platformId=3, langId=0x409, platEncId=1):
     result_namerec = None
     for namerec in names:
         if (namerec.nameID == nameId and namerec.platformID == platformId
