@@ -27,7 +27,7 @@ from bakery_cli.utils import UpstreamDirectory
 
 
 def run_bakery(sourcedir, config=None):
-
+    sourcedir = os.path.realpath(sourcedir)
     try:
         if config:
             config = yaml.safe_load(open(config, 'r'))

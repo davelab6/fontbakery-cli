@@ -1,0 +1,42 @@
+# coding: utf-8
+# Copyright 2013 The Font Bakery Authors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+from __future__ import print_function
+
+import shutil
+import os.path as op
+import yaml
+
+from jinja2 import Template
+
+TAB = 'Tests'
+TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
+
+t = lambda templatefile: op.join(TEMPLATE_DIR, templatefile)
+
+
+def generate(config):
+    shutil.rmtree(op.join(config['path'], 'static'))
+
+    shutil.copytree(op.join(op.dirname(__file__), 'static'),
+                    op.join(config['path'], 'static'))
+
+    data = yaml.load(open(op.join(config['path'], '.tests.yaml')))
+
+    template = Template(open(t('tests.html')).read())
+
+    destfile = open(op.join(config['path'], 'tests.html'), 'w')
+    print(template.render(tests=data).encode('utf8'), file=destfile)

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ ("Summary") }}</title>
+    <link rel="stylesheet" href="static/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="static/css/font-awesome.min.css" />
+</head>
+<body>
+    <div class="container">
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="index.html">Summary</a></li>
+          <li><a href="tests.html">Downstream Tests</a></li>
+        </ul>
+
+        {% for font in fonts %}
+        <style>
+            @font-face {font-family: {{ font.basename }}; src: url({{ font.path }});}
+            .face{{ loop.index }} {font-family: {{ font.basename }}; font-size: 24pt;}
+        </style>
+
+        <div class="face{{ loop.index }}">
+            Grumpy wizards make toxic brew for the evil Queen and Jack
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

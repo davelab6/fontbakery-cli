@@ -175,6 +175,7 @@ class Font(BaseFont):
             value = self.platform_entry(entry)
             if value:
                 return value
+        return ''
 
     @property
     def stylename(self):
@@ -190,6 +191,7 @@ class Font(BaseFont):
             value = self.platform_entry(entry)
             if value:
                 return value
+        return ''
 
     @property
     def familyname(self):
@@ -205,6 +207,7 @@ class Font(BaseFont):
             value = self.platform_entry(entry)
             if value:
                 return value
+        return ''
 
     @property
     def ot_family_name(self):
@@ -218,6 +221,7 @@ class Font(BaseFont):
             value = self.platform_entry(entry)
             if value:
                 return value
+        return ''
 
     @property
     def ot_style_name(self):
@@ -231,6 +235,7 @@ class Font(BaseFont):
             value = self.platform_entry(entry)
             if value:
                 return value
+        return ''
 
     @property
     def ot_full_name(self):
@@ -244,6 +249,7 @@ class Font(BaseFont):
             value = self.platform_entry(entry)
             if value:
                 return value
+        return ''
 
     @property
     def post_script_name(self):
@@ -259,6 +265,7 @@ class Font(BaseFont):
             value = self.platform_entry(entry)
             if value:
                 return value
+        return ''
 
     def retrieve_cmap_format_4(self):
         """ Returns cmap table format 4

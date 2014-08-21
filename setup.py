@@ -31,6 +31,7 @@ setup(
               "bakery_lint.tests",
               "bakery_lint.tests.downstream",
               "bakery_lint.tests.upstream",
+              "bakery_cli.report",
               "bakery_cli.scrapes",
               "bakery_cli.scrapes.familynames",
               "bakery_cli.scrapes.familynames.familynames",
@@ -45,7 +46,8 @@ setup(
              'tools/bakery-opentype-fix.py',
              'tools/bakery-vmet-fix.py',
              'tools/bakery-lint.py',
-             'tools/travis-deploy.py'
+             'tools/travis-deploy.py',
+             'tools/bakery-report.py'
              ],
     zip_safe=False,
     classifiers=[
@@ -61,7 +63,11 @@ setup(
             'scrapes/familynames/scrapy.cfg',
             'tests/upstream/diacritics.txt',
             'tests/*.txt',
-            'tests/*.mkd'
+            'tests/*.mkd',
+            'report/templates/*.html',
+            'report/static/css/*.*',
+            'report/static/js/*.*',
+            'report/static/fonts/*.*'
         ]
     },
     install_requires=[
