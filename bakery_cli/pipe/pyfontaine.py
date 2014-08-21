@@ -42,10 +42,10 @@ class PyFontaine(object):
                 fonts.append(op.join(self.builddir, font))
 
             _ = ('fontaine --collections subsets --text %s'
-                 ' > sources/fontaine.txt\n') % ' '.join(fonts)
+                 ' > fontaine.txt\n') % ' '.join(fonts)
             self.bakery.logging_cmd(_)
 
-            fontaine_log = op.join(self.builddir, 'sources', 'fontaine.txt')
+            fontaine_log = op.join(self.builddir, 'fontaine.txt')
             fp = codecs.open(fontaine_log, 'w', 'utf-8')
 
             result = Builder.text_(director.construct_tree(fonts))

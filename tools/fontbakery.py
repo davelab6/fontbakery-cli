@@ -15,6 +15,7 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+from __future__ import print_function
 import argparse
 from multiprocessing import Pool
 import os
@@ -24,6 +25,18 @@ import yaml
 from bakery_cli import pipe
 from bakery_cli.bakery import Bakery, BAKERY_CONFIGURATION_DEFAULTS
 from bakery_cli.utils import UpstreamDirectory
+
+
+class DualLog(object):
+
+    def __init__(self, filep):
+        self.filep = filep
+
+    def write(self, msg, prefix=u''):
+        if prefix:
+            msg = prefix + msg
+        print(msg.encode('utf8'), file=self.filep)
+        print(msg.encode('utf8'))
 
 
 def run_bakery(sourcedir, config=None):
@@ -63,15 +76,20 @@ def run_bakery(sourcedir, config=None):
             pipe.PyFontaine
         ]
 
+        buildlog_path = os.path.join(sourcedir, 'builds', 'build', 'build.log')
+        if not os.path.exists(os.path.join(sourcedir, 'builds', 'build')):
+            os.makedirs(os.path.join(sourcedir, 'builds', 'build'))
+
+        b.log = DualLog(open(os.path.abspath(buildlog_path), 'w'))
+
         config = os.path.join(sourcedir, '.bakery.yaml')
         b.load_config(config)
 
         b.run()
     except Exception, ex:
-        print >> sys.stderr, 'FAILED: %s' % sourcedir
-        print >> sys.stderr, ex
+        print('FAILED: %s' % sourcedir, file=sys.stderr)
+        print(ex, file=sys.stderr)
         raise
-        sys.exit(1)
 
 
 if __name__ == '__main__':

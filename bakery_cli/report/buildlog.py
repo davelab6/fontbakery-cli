@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # coding: utf-8
 # Copyright 2013 The Font Bakery Authors. All Rights Reserved.
 #
@@ -16,24 +15,21 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
-import argparse
-import os
-
-from bakery_cli.report import tests, index, buildlog
+import os.path as op
 
 
-if __name__ == '__main__':
-    try:
-        import jinja2
-    except IndexError:
-        print(('Bakery report script uses jinja2 template engine.'
-               ' Please install jinja2 before using'))
+TAB = 'BuildLog'
+TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('path')
+t = lambda templatefile: op.join(TEMPLATE_DIR, templatefile)
 
-    args = parser.parse_args()
 
-    tests.generate({'path': os.path.realpath(args.path)})
-    index.generate({'path': os.path.realpath(args.path)})
-    buildlog.generate({'path': os.path.realpath(args.path)})
+def generate(config):
+    from jinja2 import Template
+
+    template = Template(open(t('buildlog.html')).read())
+
+    destfile = open(op.join(config['path'], 'buildlog.html'), 'w')
+
+    log = open(op.join(config['path'], 'build.log')).read()
+    print(template.render(log=log).encode('utf8'), file=destfile)
