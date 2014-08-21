@@ -20,7 +20,6 @@ import shutil
 import os.path as op
 import yaml
 
-from jinja2 import Template
 
 TAB = 'Tests'
 TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
@@ -29,6 +28,7 @@ t = lambda templatefile: op.join(TEMPLATE_DIR, templatefile)
 
 
 def generate(config):
+    from jinja2 import Template
     shutil.rmtree(op.join(config['path'], 'static'))
 
     shutil.copytree(op.join(op.dirname(__file__), 'static'),

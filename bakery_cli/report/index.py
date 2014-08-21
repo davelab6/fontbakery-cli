@@ -17,7 +17,6 @@
 from __future__ import print_function
 import os.path as op
 
-from jinja2 import Template
 
 from bakery_cli.utils import UpstreamDirectory
 
@@ -29,6 +28,7 @@ t = lambda templatefile: op.join(TEMPLATE_DIR, templatefile)
 
 
 def generate(config):
+    from jinja2 import Template
     upstream = UpstreamDirectory(config['path'])
 
     faces = []

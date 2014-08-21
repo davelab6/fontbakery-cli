@@ -24,6 +24,12 @@ from bakery_cli.report import tests, index
 
 
 if __name__ == '__main__':
+    try:
+        import jinja2
+    except IndexError:
+        print(('Bakery report script uses jinja2 template engine.'
+               ' Please install jinja2 before using'))
+
     parser = argparse.ArgumentParser()
     parser.add_argument('path')
 
