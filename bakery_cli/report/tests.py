@@ -16,7 +16,9 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
 
+import os
 import os.path as op
+import shutil
 import yaml
 
 
@@ -28,6 +30,15 @@ t = lambda templatefile: op.join(TEMPLATE_DIR, templatefile)
 
 def generate(config):
     from jinja2 import Template
+
+    try:
+        shutil.rmtree(os.path.join(config['path'], 'static'))
+    except OSError:
+        pass
+
+    shutil.copytree(os.path.join(os.path.dirname(__file__), 'static'),
+                    os.path.join(config['path'], 'static'))
+
     data = yaml.load(open(op.join(config['path'], '.tests.yaml')))
 
     template = Template(open(t('tests.html')).read())

@@ -18,8 +18,6 @@
 from __future__ import print_function
 import argparse
 import os
-import shutil
-
 
 from bakery_cli.report import tests, index
 
@@ -35,16 +33,6 @@ if __name__ == '__main__':
     parser.add_argument('path')
 
     args = parser.parse_args()
-
-    path = os.path.realpath(args.path)
-
-    try:
-        shutil.rmtree(os.path.join(path, 'static'))
-    except OSError:
-        pass
-
-    shutil.copytree(os.path.join(os.path.dirname(__file__), 'static'),
-                    os.path.join(path, 'static'))
 
     tests.generate({'path': os.path.realpath(args.path)})
     index.generate({'path': os.path.realpath(args.path)})
