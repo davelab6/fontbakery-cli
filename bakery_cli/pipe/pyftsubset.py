@@ -49,10 +49,7 @@ class PyFtSubset(object):
             override_argv = pipedata['pyftsubset.%s' % subsetname].split()
 
         argv = argv + override_argv
-        try:
-            subset.main(argv)
-        except:
-            return
+        subset.main(argv)
 
         self.bakery.logging_cmd('pyftsubset %s' % ' '.join(argv))
 
