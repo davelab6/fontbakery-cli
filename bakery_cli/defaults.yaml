@@ -14,7 +14,7 @@ license_file: ''
 ### Source file type if there is more than one format is found in upstream repository
 ### Subsets list
 ###   Possible values: latin, latin-ext+latin, cyrillic+latin, cyrillic-ext+latin, greek+latin, greek-ext+latin, vietnamese+latin
-# subset: []
+subset: [latin]
 
 ### ttfautohint default command line parameter
 ###   If ttfautohint is not defined, it is not used.
