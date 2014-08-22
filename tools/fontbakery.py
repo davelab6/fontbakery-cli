@@ -43,7 +43,8 @@ def run_bakery(sourcedir, config=None):
     sourcedir = os.path.realpath(sourcedir)
     try:
         if config:
-            config = yaml.safe_load(open(config, 'r'))
+            bakeryyaml = open(os.path.join(sourcedir, "bakery.yaml"), 'r')
+            config = yaml.safe_load(bakeryyaml)
         else:
             config = yaml.safe_load(open(BAKERY_CONFIGURATION_DEFAULTS))
 
@@ -96,7 +97,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('projectpath', nargs='+',
                         help=("Path to directory with UFO, SFD, TTX, TTF or OTF files"))
-    parser.add_argument('--config', type=str, default='')
     args = parser.parse_args()
 
     # for p in args.projectpath:
