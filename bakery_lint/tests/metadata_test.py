@@ -286,14 +286,6 @@ class MetadataTest(TestCase):
         else:
             self.assertTrue(False)
 
-    def test_metadata_fonts_exists(self):
-        """ METADATA.json font propery should exists """
-        self.assertTrue(self.metadata.get('fonts', False))
-
-    def test_metadata_fonts_list(self):
-        """ METADATA.json font propery should be list """
-        self.assertEqual(type(self.metadata.get('fonts', False)), type([]))
-
     def test_metadata_fonts_no_dupes(self):
         """ METADATA.json fonts propery only should have uniq values """
         fonts = {}
@@ -303,21 +295,6 @@ class MetadataTest(TestCase):
 
         self.assertEqual(len(set(fonts.keys())),
                          len(self.metadata.get('fonts', None)))
-
-    def test_metadata_have_subset(self):
-        """ METADATA.json shoyld have 'subsets' property """
-        self.assertTrue(self.metadata.get('subsets', None))
-
-    # VV TODO: Subset list must be selected from pyFontaine
-    subset_list = ['menu', 'latin', 'latin_ext', 'vietnamese', 'greek',
-                   'cyrillic', 'cyrillic_ext', 'arabic']
-
-    def test_metadata_subsets_names_are_correct(self):
-        """ METADATA.json 'subset' property can have only allowed values
-            from list: ['menu', 'latin','latin_ext', 'vietnamese', 'greek',
-            'cyrillic', 'cyrillic_ext', 'arabic'] """
-        self.assertTrue(all([x in self.subset_list
-                             for x in self.metadata.get('subsets', None)]))
 
     @tags('required')
     def test_metadata_keys(self):
@@ -360,12 +337,6 @@ class MetadataTest(TestCase):
         """ METADATA.json fonts key items are dicts """
         for x in self.metadata.get('fonts', None):
             self.assertEqual(type(x), type({}), msg="type(%s) is not dict" % x)
-
-    @tags('required')
-    def test_metadata_subsets_items_string(self):
-        """ METADATA.json subsets key items are strings """
-        for x in self.metadata.get('subsets', None):
-            self.assertEqual(type(x), type(""), msg="type(%s) is not dict" % x)
 
     @tags('required')
     def test_metadata_top_keys_types(self):
