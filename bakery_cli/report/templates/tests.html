@@ -53,7 +53,7 @@
         </thead>
         {% set testTypes = { 'error': 'danger', 'failure': 'warning', 'success': 'success', 'fixed': 'info'} %}
         {%- for testType, icon in testTypes.iteritems() | sort %}
-          {%- for item in tests[font][testType] %}
+          {%- for item in sort(tests[font][testType]) %}
             <tr>
                 <td style="text-align:center"><i class="fa fa-circle text-{{ icon }}"></i> <span class="hidden">{{ icon }}</span></td>
                 <td class="{{ icon }}">{% if item.tags %}<span class="pull-right text-info"><small>{{ item.tags|join(', ') }}</small></span>{% endif %} {% if item.methodDoc == None %}{{item.methodName}}() <span class="text-muted">({{ ("add docstring") }})</span>{% else %}{{item.methodDoc|safe}}{% endif %} <br />

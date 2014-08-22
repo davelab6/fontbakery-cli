@@ -16,9 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
 
-import os
 import os.path as op
-import shutil
 import yaml
 
 
@@ -28,20 +26,32 @@ TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
 t = lambda templatefile: op.join(TEMPLATE_DIR, templatefile)
 
 
+def tests_sort(data):
+    a = []
+    for d in data:
+        if 'required' in d['tags']:
+            a.append(d)
+
+    for d in data:
+        if 'note' in d['tags'] and 'required' not in d['tags']:
+            a.append(d)
+
+    for d in data:
+        if 'note' not in d['tags'] and 'required' not in d['tags']:
+            a.append(d)
+
+    print(a)
+    return a
+
+
 def generate(config):
     from jinja2 import Template
-
-    try:
-        shutil.rmtree(os.path.join(config['path'], 'static'))
-    except OSError:
-        pass
-
-    shutil.copytree(os.path.join(os.path.dirname(__file__), 'static'),
-                    os.path.join(config['path'], 'static'))
 
     data = yaml.load(open(op.join(config['path'], '.tests.yaml')))
 
     template = Template(open(t('tests.html')).read())
 
     destfile = open(op.join(config['path'], 'tests.html'), 'w')
-    print(template.render(tests=data).encode('utf8'), file=destfile)
+
+    print(template.render(tests=data, sort=tests_sort).encode('utf8'),
+          file=destfile)
