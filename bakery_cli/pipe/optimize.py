@@ -46,6 +46,7 @@ class Optimize(object):
                 from fontTools import subset
                 args = [op.join(self.builddir, filename), '--unicodes=%s' % ','.join(glyphs)]
                 args += ['--layout-features="*"', '--ignore-missing-glyphs']
+                argv += ['--notdef-outline', '--name-IDs="*"', '--hinting']
                 subset.main(args)
 
                 self.bakery.logging_cmd('pyftsubset %s' % ' '.join(args))
