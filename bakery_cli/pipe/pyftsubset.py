@@ -40,7 +40,7 @@ class PyFtSubset(object):
         from fontTools import subset
         argv = [op.join(self.builddir, name), '--unicodes=%s' % ','.join(map(lambda x: x.replace('U+', ''), glyphs.split()))]
         argv += ['--ignore-missing-glyphs']
-        # argv += ['--notdef-outline', '--name-IDs="*"', '--hinting']
+        argv += ['--notdef-outline', '--name-IDs="*"', '--hinting']
 
         override_argv = []
         if pipedata.get('pyftsubset'):
