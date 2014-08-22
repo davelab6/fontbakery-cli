@@ -39,6 +39,7 @@ class PyFtSubset(object):
     def execute_pyftsubset(self, pipedata, subsetname, name, glyphs="", args=""):
         from fontTools import subset
         argv = [op.join(self.builddir, name)] + glyphs.split()
+        argv += ['--ignore_missing_glyphs']
         # argv += ['--notdef-outline', '--name-IDs="*"', '--hinting']
 
         override_argv = []
@@ -64,6 +65,7 @@ class PyFtSubset(object):
         if self.bakery.forcerun:
             return
 
+        print(pipedata['bin_files'])
         for name in pipedata['bin_files']:
             # create menu subset with glyph for text of family name
             ttfont = ttLib.TTFont(op.join(self.builddir, name))
@@ -72,6 +74,8 @@ class PyFtSubset(object):
 
             string = bin2unistring(D.get(16) or D.get(1))
             menu_glyphs = ['U+%04x' % ord(c) for c in string]
+
+            print(menu_glyphs)
 
             for subset in pipedata.get('subset', []):
                 glyphs = SubsetExtension.get_glyphs(subset)
