@@ -26,7 +26,7 @@ TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
 t = lambda templatefile: op.join(TEMPLATE_DIR, templatefile)
 
 
-def tests_sort(data):
+def sort(data):
     a = []
     for d in data:
         if 'required' in d['tags']:
@@ -40,7 +40,6 @@ def tests_sort(data):
         if 'note' not in d['tags'] and 'required' not in d['tags']:
             a.append(d)
 
-    print(a)
     return a
 
 
@@ -53,5 +52,5 @@ def generate(config):
 
     destfile = open(op.join(config['path'], 'tests.html'), 'w')
 
-    print(template.render(tests=data, sort=tests_sort).encode('utf8'),
+    print(template.render(tests=data, sort=sort).encode('utf8'),
           file=destfile)

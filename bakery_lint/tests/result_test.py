@@ -119,11 +119,15 @@ class MetadataJSONTest(TestCase):
     def test_subsets_files_is_font(self):
         """ Subset file is a TrueType format """
         for font in self.metadata.get('fonts', []):
-            for subset in self.metadata.get('subsets', []):
+            for subset in self.metadata.get('subsets', []) + ['menu']:
                 path = os.path.join(os.path.dirname(self.path),
                                     font.get('filename')[:-3] + subset)
-                self.assertTrue(magic.from_file(path),
-                                'TrueType font data')
+                if not os.path.exists(path):
+                    self.fail('%s subset file does not exist' % subset)
+
+                if magic.from_file(path) != 'TrueType font data':
+                    _ = '%s does not seem to be truetype font data'
+                    self.fail(_ % subset)
 
     @tags('required')
     def test_metadata_fonts_items_dicts(self):
