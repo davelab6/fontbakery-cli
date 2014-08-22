@@ -21,6 +21,7 @@ from bakery_cli.system import run, shutil
 
 
 class Optimize(object):
+    """ Run optimization process for font """
 
     def __init__(self, bakery):
         self.project_root = bakery.project_root
@@ -40,11 +41,11 @@ class Optimize(object):
                 for g in font.glyphs():
                     if not g.codepoint:
                         continue
-                    glyphs.append(g.codepoint)
+                    glyphs.append(str(g.unicode))
 
                 from fontTools import subset
-                args = [op.join(self.builddir, filename)] + glyphs
-                args += ['--layout-features="*"', '--ignore_missing_glyphs']
+                args = [op.join(self.builddir, filename), '--unicodes=%s' % ','.join(glyphs)]
+                args += ['--layout-features="*"', '--ignore-missing-glyphs']
                 subset.main(args)
 
                 self.bakery.logging_cmd('pyftsubset %s' % ' '.join(args))

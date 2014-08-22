@@ -29,11 +29,10 @@ class CheckFontNameEqualToMacStyleFlags(TestCase):
         """ Check that fontname is equal to macstyle flags """
         font = Font.get_ttfont(self.path)
 
-        fontname = font.fullname
         macStyle = font.macStyle
 
         try:
-            fontname_style = fontname.split('-')[1]
+            fontname_style = font.fullname.split('-')[1]
         except IndexError:
             self.fail(('Fontname is not canonical. Expected it contains '
                        'style. eg.: Italic, BoldItalic, Regular'))
