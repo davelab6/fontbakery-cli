@@ -26,6 +26,7 @@ class CheckUnusedGlyphData(TestCase):
     name = __name__
 
     def test_check_unused_glyph_data(self):
+        """ Check that "glyf" table does not contain unused glyphs """
         f = Font.get_ttfont(self.path)
         glyf_length = f.get_glyf_length()
 
