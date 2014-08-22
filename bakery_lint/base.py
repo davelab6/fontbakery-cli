@@ -142,6 +142,20 @@ class tags(object):
         return f
 
 
+class autofix(object):
+
+    def __init__(self, methodname, always_run=False):
+        self.call_method_name = methodname
+        self.always_run = always_run
+
+    def __call__(self, f):
+
+        def wrap(*args, **kwargs):
+            f(*args, **kwargs)
+
+        return f
+
+
 def logging(func, log):
 
     def f(*args, **kwargs):

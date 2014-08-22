@@ -17,7 +17,7 @@
 import magic
 import os
 
-from bakery_lint.base import BakeryTestCase as TestCase, tags
+from bakery_lint.base import BakeryTestCase as TestCase, tags, autofix
 from bakery_cli.ttfont import Font
 
 
@@ -37,8 +37,9 @@ class CheckFontAgreements(TestCase):
         self.assertEqual(self.font.get_upm_height(), 1000)
 
     @tags('required')
+    @autofix('bakery_cli.pipe.autofix.fix_fstype_to_zero', always_run=True)
     def test_is_fsType_not_set(self):
-        """Is the OS/2 table fsType set to 0?"""
+        """ Is the OS/2 table fsType set to 0? """
         self.assertEqual(self.font.OS2_fsType, 0)
 
     @tags('required')

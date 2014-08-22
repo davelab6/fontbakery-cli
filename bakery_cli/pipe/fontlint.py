@@ -41,9 +41,9 @@ class FontLint(object):
         l.write(yaml.safe_dump(testsresult))
         l.close()
 
-    def run_metadata_tests(self):
-        path = op.join(self.builddir, 'METADATA.json')
-        return run_set(path, 'metadata', log=self.bakery.log)
+    # def run_metadata_tests(self):
+    #     path = op.join(self.builddir, 'METADATA.json')
+    #     return run_set(path, 'metadata', log=self.bakery.log)
 
     def execute(self, pipedata, prefix=""):
         _out_yaml = op.join(self.builddir, '.tests.yaml')
@@ -62,8 +62,8 @@ class FontLint(object):
                 result[font] = run_set(op.join(self.builddir, font), 'result',
                                        log=self.bakery.log)
 
-            self.bakery.logging_raw('### Test METADATA.json\n')
-            result['METADATA.json'] = self.run_metadata_tests()
+            # self.bakery.logging_raw('### Test METADATA.json\n')
+            # result['METADATA.json'] = self.run_metadata_tests()
             self.bakery.logging_task_done(task)
         except:
             self.bakery.logging_task_done(task, failed=True)
@@ -92,14 +92,16 @@ def repr_testcase(dumper, data):
     except Exception, ex:
         err_msg = '%s' % ex
 
+    testMethod = getattr(data, data._testMethodName)
     _ = {
         'methodDoc': method_doc(data._testMethodDoc),
         'tool': data.tool,
         'name': data.name,
         'methodName': data._testMethodName,
         'targets': data.targets,
-        'tags': getattr(data, data._testMethodName).tags,
-        'err_msg': err_msg
+        'tags': getattr(testMethod, 'tags', ['note']),
+        'err_msg': err_msg,
+        'autofix': getattr(testMethod, 'autofix', False)
     }
     return dumper.represent_mapping(u'tag:yaml.org,2002:map', _)
 
