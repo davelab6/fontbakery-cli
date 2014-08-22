@@ -74,8 +74,6 @@ class PyFtSubset(object):
             string = bin2unistring(D.get(16) or D.get(1))
             menu_glyphs = ['U+%04x' % ord(c) for c in string]
 
-            print(menu_glyphs)
-
             for subset in pipedata.get('subset', []):
                 glyphs = SubsetExtension.get_glyphs(subset)
 
