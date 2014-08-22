@@ -34,10 +34,11 @@ class CheckNoProblematicFormats(TestCase):
     tool = 'lint'
 
     def test_check_no_problematic_formats(self):
+        """ Check that font contain required tables """
         tables = set(FontTool.get_tables(self.path))
         desc = []
-        if REQUIRED_TABLES ^ tables:
-            desc += ["Font is missing required tables: [%s]" % (REQUIRED_TABLES ^ tables)]
+        if REQUIRED_TABLES - tables:
+            desc += ["Font is missing required tables: [%s]" % (REQUIRED_TABLES - tables)]
             if OPTIONAL_TABLES & tables:
                 desc += ["includes optional tables %s" % (OPTIONAL_TABLES & tables)]
         if desc:
