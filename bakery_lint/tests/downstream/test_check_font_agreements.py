@@ -21,6 +21,21 @@ from bakery_lint.base import BakeryTestCase as TestCase, tags, autofix
 from bakery_cli.ttfont import Font
 
 
+class CheckFsTypeIsNotSet(TestCase):
+
+    path = '.'
+    name = __name__
+    targets = ['result']
+    tool = 'lint'
+
+    @autofix('bakery_cli.pipe.autofix.fix_fstype_to_zero', always_run=True)
+    @tags('required')
+    def test_is_fstype_not_set(self):
+        """ Is the OS/2 table fsType set to 0? """
+        font = Font.get_ttfont(self.path)
+        self.assertEqual(font.OS2_fsType, 0)
+
+
 class CheckFontAgreements(TestCase):
 
     path = '.'
@@ -35,12 +50,6 @@ class CheckFontAgreements(TestCase):
     def test_em_is_1000(self):
         """ Font em should be equal 1000 """
         self.assertEqual(self.font.get_upm_height(), 1000)
-
-    @tags('required')
-    @autofix('bakery_cli.pipe.autofix.fix_fstype_to_zero', always_run=True)
-    def test_is_fsType_not_set(self):
-        """ Is the OS/2 table fsType set to 0? """
-        self.assertEqual(self.font.OS2_fsType, 0)
 
     @tags('required')
     def test_latin_file_exists(self):

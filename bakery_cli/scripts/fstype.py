@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-
+from __future__ import print_function
 import sys
 
 from fontTools.ttLib import TTLibError
@@ -25,7 +25,7 @@ def reset_fstype(fontpath):
     try:
         font = Font(fontpath)
     except TTLibError, ex:
-        print >> sys.stderr, "ERROR: %s" % ex
+        print("ERROR: %s" % ex, file=sys.stderr)
         return
-    font.fstype = 0
+    font['OS/2'].fsType = 0
     font.save(fontpath + '.fix')

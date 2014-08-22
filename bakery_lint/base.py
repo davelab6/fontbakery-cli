@@ -14,8 +14,9 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-
+import importlib
 import unittest
+
 from itertools import chain
 
 
@@ -143,17 +144,32 @@ class tags(object):
 
 
 class autofix(object):
+    """ Decorator that allows to call method after test has been
+    failed or executed """
 
     def __init__(self, methodname, always_run=False):
         self.call_method_name = methodname
         self.always_run = always_run
 
+    def exec_method(self, *args, **kwargs):
+        pkg = '.'.join(self.call_method_name.split('.')[:-1])
+        mod = importlib.import_module(pkg)
+        getattr(mod, self.call_method_name.split('.')[-1])(*args, **kwargs)
+
     def __call__(self, f):
 
         def wrap(*args, **kwargs):
-            f(*args, **kwargs)
+            try:
+                f(*args, **kwargs)
+                if self.always_run:
+                    self.exec_method(*args, **kwargs)
+            except AssertionError:
+                self.exec_method(*args, **kwargs)
+                raise
+            finally:
+                wrap.autofix = True
 
-        return f
+        return wrap
 
 
 def logging(func, log):
@@ -179,6 +195,7 @@ def make_suite(path, definedTarget, test_method=None, log=None):
     for TestCase in TestRegistry.list():
         if definedTarget in TestCase.targets:
             TestCase.path = path
+            TestCase.logging = log
             if getattr(TestCase, '__generateTests__', None):
                 TestCase.__generateTests__()
 

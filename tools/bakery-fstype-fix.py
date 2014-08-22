@@ -15,6 +15,7 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+from __future__ import print_function
 import argparse
 import os
 import sys
@@ -39,6 +40,6 @@ else:
     try:
         font = Font(args.filename)
     except TTLibError, ex:
-        print >> sys.stderr, "ERROR: %s" % ex
+        print("ERROR: %s" % ex, file=sys.stderr)
         exit(1)
-    print(font.fstype)
+    print(font.OS2_fsType)

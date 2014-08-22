@@ -122,13 +122,13 @@ def fix_name_ascii(font_path, log=None):
     shutil.move(font_path + '.fix', font_path, log=log)
 
 
-def fix_fstype_to_zero(font_path, log=None):
+def fix_fstype_to_zero(testcase):
     """ Fix fsType to zero """
     SCRIPTPATH = 'bakery-fstype-fix.py'
-    command = "{0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, font_path)
-    logging(log, command)
-    reset_fstype(font_path)
-    shutil.move(font_path + '.fix', font_path, log=log)
+    command = "$ {0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, testcase.path)
+    testcase.logging.write(command)
+    reset_fstype(testcase.path)
+    shutil.move(testcase.path + '.fix', testcase.path, log=testcase.logging)
 
 
 def fix_ttf_stylenames(font_path, log=None):
@@ -148,7 +148,6 @@ available_fixes = {
     'test_metrics_ascents_equal_bbox': fix_metrics,
     'test_metrics_descents_equal_bbox': fix_metrics,
     'test_non_ascii_chars_in_names': fix_name_ascii,
-    'test_is_fsType_not_set': fix_fstype_to_zero,
     'test_font_weight_is_canonical': fix_ttf_stylenames,
     'test_check_stylename_is_under_recommendations': fix_opentype_specific_fields,
     'test_check_opentype_familyname': fix_opentype_specific_fields,

@@ -1112,3 +1112,24 @@ class Test_CheckOTFullNameRecommendation(TestCase):
                       'langID': 0})
             ]
             self.failure_run(downstream.CheckOTFullNameRecommendation)
+
+
+class Test_CheckFSTypeTest(TestCase):
+
+    def test_thirty_nine(self):
+
+        class Font(OriginFont):
+
+            OS2_fsType = 12
+
+        with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
+            with mock.patch('bakery_cli.pipe.autofix.fix_fstype_to_zero') as fix:
+                get_ttfont.return_value = Font('')
+                self.failure_run(downstream.CheckFsTypeIsNotSet)
+                assert fix.called
+
+                get_ttfont.return_value.OS2_fsType = 0
+                self.success_run(downstream.CheckFsTypeIsNotSet)
+                assert fix.called
+
+                self.assertTrue(getattr(downstream.CheckFsTypeIsNotSet.test_is_fstype_not_set, 'autofix'))
