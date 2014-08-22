@@ -64,6 +64,13 @@ class MetadataTest(TestCase):
     def setUp(self):
         self.metadata = json.load(open(self.path))
 
+    def test_family_is_listed_in_gwf(self):
+        """ Fontfamily is listed in Google Font Directory """
+        url = 'http://fonts.googleapis.com/css?family=%s' % self.metadata['name'].replace(' ', '+')
+        fp = requests.get(url)
+        self.assertTrue(fp.status_code == 200, 'No family found in GWF in %s' % url)
+        self.assertEqual(self.metadata.get('visibility'), 'External')
+
     def test_does_not_familyName_exist_in_myfonts_catalogue(self):
         """ MYFONTS.com """
         test_catalogue = self.rules['myfonts.com']

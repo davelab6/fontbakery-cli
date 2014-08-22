@@ -23,7 +23,7 @@ from bakery_lint.base import BakeryTestCase as TestCase, tags
 
 class MetadataJSONTest(TestCase):
     targets = ['result']
-    tool = 'FontForge'
+    tool = 'lint'
     name = __name__
     path = '.'
     longMessage = True
@@ -32,14 +32,6 @@ class MetadataJSONTest(TestCase):
         medatata_path = os.path.join(os.path.dirname(self.path),
                                      'METADATA.json')
         self.metadata = yaml.load(open(medatata_path, 'r').read())
-
-    def test_family_is_listed_in_gwf(self):
-        """ Fontfamily is listed in Google Font Directory """
-        import requests
-        url = 'http://fonts.googleapis.com/css?family=%s' % self.metadata['name'].replace(' ', '+')
-        fp = requests.get(url)
-        self.assertTrue(fp.status_code == 200, 'No family found in GWF in %s' % url)
-        self.assertEqual(self.metadata.get('visibility'), 'External')
 
     def test_metadata_fonts_exists(self):
         """ METADATA.json font propery should exists """
