@@ -14,8 +14,6 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-from .result_test import *
-
 # 1. collection of upstream tests
 from .upstream import *
 
