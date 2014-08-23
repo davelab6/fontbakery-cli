@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-from bakery_lint.base import BakeryTestCase as TestCase
+from bakery_lint.base import BakeryTestCase as TestCase, autofix
 from bakery_cli.ttfont import Font
 
 
@@ -25,6 +25,7 @@ class CheckStyleNameRecommendation(TestCase):
     name = __name__
     path = '.'
 
+    @autofix('bakery_cli.pipe.autofix.fix_opentype_specific_fields')
     def test_check_stylename_is_under_recommendations(self):
         """ Style name must be equal to one of the following four
             values: “Regular”, “Italic”, “Bold” or “Bold Italic” """
@@ -40,6 +41,7 @@ class CheckOTFamilyNameRecommendation(TestCase):
     name = __name__
     path = '.'
 
+    @autofix('bakery_cli.pipe.autofix.fix_opentype_specific_fields')
     def test_check_opentype_familyname(self):
         """ OT Family Name for Windows should be equal to Family Name """
         font = Font.get_ttfont(self.path)
@@ -53,6 +55,7 @@ class CheckOTStyleNameRecommendation(TestCase):
     name = __name__
     path = '.'
 
+    @autofix('bakery_cli.pipe.autofix.fix_opentype_specific_fields')
     def test_check_opentype_stylename(self):
         """ Style name matches Windows-only Opentype-specific StyleName """
         stylename_mapping = {
@@ -77,6 +80,7 @@ class CheckOTFullNameRecommendation(TestCase):
     name = __name__
     path = '.'
 
+    @autofix('bakery_cli.pipe.autofix.fix_opentype_specific_fields')
     def test_check_opentype_fullname(self):
         """ Full name matches Windows-only Opentype-specific FullName """
         font = Font.get_ttfont(self.path)

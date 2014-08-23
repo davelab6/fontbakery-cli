@@ -1017,14 +1017,17 @@ class Test_NameTableRecommendation(TestCase):
             stylename = 'Regular'
 
         with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
-            get_ttfont.return_value = Font
-            for stylename in ['Regular', 'Italic', 'Bold', 'Bold Italic']:
-                get_ttfont.return_value.stylename = stylename
-                self.success_run(downstream.CheckStyleNameRecommendation)
+            with mock.patch('bakery_cli.pipe.autofix.fix_opentype_specific_fields') as fix:
+                get_ttfont.return_value = Font
+                for stylename in ['Regular', 'Italic', 'Bold', 'Bold Italic']:
+                    get_ttfont.return_value.stylename = stylename
+                    self.success_run(downstream.CheckStyleNameRecommendation)
+                    assert not fix.called
 
-            get_ttfont.return_value.stylename = 'Black Italic'
+                get_ttfont.return_value.stylename = 'Black Italic'
 
-            self.failure_run(downstream.CheckStyleNameRecommendation)
+                self.failure_run(downstream.CheckStyleNameRecommendation)
+                assert fix.called
 
 
 class Test_CheckOTFamilyNameRecommendation(TestCase):
@@ -1042,18 +1045,20 @@ class Test_CheckOTFamilyNameRecommendation(TestCase):
                       'langID': 1033})]
 
         with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
-            get_ttfont.return_value = Font('')
-            self.success_run(downstream.CheckOTFamilyNameRecommendation)
-
-            get_ttfont.return_value.names = [
-                type('name', (object, ),
-                     {'nameID': 1, 'string': 'Hello', 'platformID': 1,
-                      'langID': 0}),
-                type('name', (object, ),
-                     {'nameID': 16, 'string': 'Hello', 'platformID': 1,
-                      'langID': 0})
-            ]
-            self.failure_run(downstream.CheckOTFamilyNameRecommendation)
+            with mock.patch('bakery_cli.pipe.autofix.fix_opentype_specific_fields') as fix:
+                get_ttfont.return_value = Font('')
+                self.success_run(downstream.CheckOTFamilyNameRecommendation)
+                assert not fix.called
+                get_ttfont.return_value.names = [
+                    type('name', (object, ),
+                         {'nameID': 1, 'string': 'Hello', 'platformID': 1,
+                          'langID': 0}),
+                    type('name', (object, ),
+                         {'nameID': 16, 'string': 'Hello', 'platformID': 1,
+                          'langID': 0})
+                ]
+                self.failure_run(downstream.CheckOTFamilyNameRecommendation)
+                assert fix.called
 
 
 class Test_CheckOTStyleNameRecommendation(TestCase):
@@ -1071,18 +1076,21 @@ class Test_CheckOTStyleNameRecommendation(TestCase):
                       'langID': 1033})]
 
         with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
-            get_ttfont.return_value = Font('')
-            self.success_run(downstream.CheckOTStyleNameRecommendation)
+            with mock.patch('bakery_cli.pipe.autofix.fix_opentype_specific_fields') as fix:
+                get_ttfont.return_value = Font('')
+                self.success_run(downstream.CheckOTStyleNameRecommendation)
+                assert not fix.called
 
-            get_ttfont.return_value.names = [
-                type('name', (object, ),
-                     {'nameID': 2, 'string': 'Regular', 'platformID': 1,
-                      'langID': 0}),
-                type('name', (object, ),
-                     {'nameID': 17, 'string': 'Black Italic', 'platformID': 3,
-                      'langID': 1033})]
+                get_ttfont.return_value.names = [
+                    type('name', (object, ),
+                         {'nameID': 2, 'string': 'Regular', 'platformID': 1,
+                          'langID': 0}),
+                    type('name', (object, ),
+                         {'nameID': 17, 'string': 'Black Italic', 'platformID': 3,
+                          'langID': 1033})]
 
-            self.failure_run(downstream.CheckOTStyleNameRecommendation)
+                self.failure_run(downstream.CheckOTStyleNameRecommendation)
+                assert fix.called
 
 
 class Test_CheckOTFullNameRecommendation(TestCase):
@@ -1100,18 +1108,21 @@ class Test_CheckOTFullNameRecommendation(TestCase):
                       'langID': 1033})]
 
         with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
-            get_ttfont.return_value = Font('')
-            self.success_run(downstream.CheckOTFullNameRecommendation)
+            with mock.patch('bakery_cli.pipe.autofix.fix_opentype_specific_fields') as fix:
+                get_ttfont.return_value = Font('')
+                self.success_run(downstream.CheckOTFullNameRecommendation)
+                assert not fix.called
 
-            get_ttfont.return_value.names = [
-                type('name', (object, ),
-                     {'nameID': 4, 'string': 'Hello', 'platformID': 1,
-                      'langID': 0}),
-                type('name', (object, ),
-                     {'nameID': 18, 'string': 'Hello', 'platformID': 1,
-                      'langID': 0})
-            ]
-            self.failure_run(downstream.CheckOTFullNameRecommendation)
+                get_ttfont.return_value.names = [
+                    type('name', (object, ),
+                         {'nameID': 4, 'string': 'Hello', 'platformID': 1,
+                          'langID': 0}),
+                    type('name', (object, ),
+                         {'nameID': 18, 'string': 'Hello', 'platformID': 1,
+                          'langID': 0})
+                ]
+                self.failure_run(downstream.CheckOTFullNameRecommendation)
+                assert fix.called
 
 
 class Test_CheckFSTypeTest(TestCase):

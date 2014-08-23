@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-from bakery_lint.base import BakeryTestCase as TestCase, tags
+from bakery_lint.base import BakeryTestCase as TestCase, tags, autofix
 from bakery_lint.metadata import Metadata
 from bakery_cli.ttfont import Font
 
@@ -30,6 +30,7 @@ class CheckNbspWidthMatchesSpWidth(TestCase):
         return open(self.path).read()
 
     @tags('required')
+    @autofix('bakery_cli.pipe.autofix.fix_nbsp')
     def test_check_nbsp_width_matches_sp_width(self):
         """ Check NO-BREAK SPACE advanceWidth is the same as SPACE """
         contents = self.read_metadata_contents()

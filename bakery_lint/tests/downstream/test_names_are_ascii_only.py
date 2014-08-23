@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-from bakery_lint.base import BakeryTestCase as TestCase
+from bakery_lint.base import BakeryTestCase as TestCase, autofix
 from bakery_cli.ttfont import Font
 
 
@@ -25,6 +25,7 @@ class CheckNamesAreASCIIOnly(TestCase):
     targets = ['result']
     tool = 'lint'
 
+    @autofix('bakery_cli.pipe.autofix.fix_name_ascii')
     def test_check_names_are_ascii_only(self):
         """ NAME and CFF tables must not contain non-ascii characters """
         font = Font.get_ttfont(self.path)

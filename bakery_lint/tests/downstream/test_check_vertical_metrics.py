@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-from bakery_lint.base import BakeryTestCase as TestCase
+from bakery_lint.base import BakeryTestCase as TestCase, autofix
 from bakery_cli.ttfont import Font
 from bakery_lint.metadata import Metadata
 
@@ -29,6 +29,7 @@ class CheckVerticalMetrics(TestCase):
     def read_metadata_contents(self):
         return open(self.path).read()
 
+    @autofix('bakery_cli.pipe.autofix.fix_metrics')
     def test_metrics_linegaps_are_zero(self):
         """ Check that linegaps in tables are zero """
         contents = self.read_metadata_contents()
@@ -44,6 +45,7 @@ class CheckVerticalMetrics(TestCase):
             _ = '[%s] have not zero linegaps'
             self.fail(_ % ', '.join(fonts_gaps_are_not_zero))
 
+    @autofix('bakery_cli.pipe.autofix.fix_metrics')
     def test_metrics_ascents_equal_bbox(self):
         """ Check that ascents values are same as max glyph point """
         contents = self.read_metadata_contents()
@@ -73,6 +75,7 @@ class CheckVerticalMetrics(TestCase):
             _ = '[%s] ascents differ to maximum value: %s'
             self.fail(_ % (', '.join(fonts_ascents_not_bbox), ymax))
 
+    @autofix('bakery_cli.pipe.autofix.fix_metrics')
     def test_metrics_descents_equal_bbox(self):
         """ Check that descents values are same as min glyph point """
         contents = self.read_metadata_contents()
