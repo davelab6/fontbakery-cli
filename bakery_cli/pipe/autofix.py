@@ -82,12 +82,12 @@ def fix_opentype_specific_fields(testcase):
     """ Fix Opentype-specific fields in "name" table """
     SCRIPTPATH = 'bakery-opentype-fix.py'
 
-    command = "{0} {1} {2}".format(PYPATH, SCRIPTPATH, testcase.path)
+    command = "$ {0} {1} {2}".format(PYPATH, SCRIPTPATH, testcase.path)
     testcase.logging.write(command)
 
     opentype.fix(testcase.path)
 
-    command = "mv {0}.fix {0}".format(testcase.path)
+    command = "$ mv {0}.fix {0}".format(testcase.path)
     testcase.logging.write(command)
     shutil.move(testcase.path + '.fix', testcase.path, log=testcase.logging)
 
@@ -96,11 +96,11 @@ def fix_nbsp(testcase):
     """ Fix width for space and nbsp """
     SCRIPTPATH = 'bakery-nbsp-fix.py'
 
-    command = "{0} {1} {2}".format(PYPATH, SCRIPTPATH, testcase.path)
+    command = "$ {0} {1} {2}".format(PYPATH, SCRIPTPATH, testcase.path)
     testcase.logging.write(command)
     checkAndFix(testcase.path)
 
-    command = "mv {0}.fix {0}".format(testcase.path)
+    command = "$ mv {0}.fix {0}".format(testcase.path)
     testcase.logging.write(command)
     shutil.move(testcase.path + '.fix', testcase.path, log=testcase.logging)
 
@@ -117,7 +117,7 @@ def fix_metrics(testcase):
         path = op.join(op.dirname(testcase.path), f.filename)
         paths.append(path)
 
-    command = "{0} {1} --autofix {2}"
+    command = "$ {0} {1} --autofix {2}"
     command = command.format(PYPATH, SCRIPTPATH, ' '.join(paths))
     testcase.logging.write(command)
 
@@ -126,7 +126,7 @@ def fix_metrics(testcase):
     for path in paths:
         shutil.move(path + '.fix', path, log=testcase.logging)
 
-    command = "{0} {1} {2}".format(PYPATH, SCRIPTPATH, ' '.join(paths))
+    command = "$ {0} {1} {2}".format(PYPATH, SCRIPTPATH, ' '.join(paths))
     testcase.logging.write(command)
     testcase.logging.write(metricview(paths))
 
@@ -134,7 +134,7 @@ def fix_metrics(testcase):
 def fix_name_ascii(testcase):
     """ Replacing non ascii names in copyright """
     SCRIPTPATH = 'bakery-ascii-fix.py'
-    command = "{0} {1} {2}".format(PYPATH, SCRIPTPATH, testcase.path)
+    command = "$ {0} {1} {2}".format(PYPATH, SCRIPTPATH, testcase.path)
     testcase.logging.write(command)
     fix_name_table(testcase.path)
     shutil.move(testcase.path + '.fix', testcase.path, log=testcase.logging)
