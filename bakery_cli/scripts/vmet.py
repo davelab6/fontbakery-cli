@@ -130,7 +130,7 @@ class TextMetricsView(object):
         self._its_metrics['ymax'].append(ymax)
         self._its_metrics['ymin'].append(ymin)
 
-        value = vmet.ascents.get_max() + abs(vmet.descents.get_min())
+        value = abs(ymin) + ymax
         upm = '%s:%s' % (vmet.get_upm_height(), value)
         self._its_metrics['UPM:Heights'].append(upm)
 
