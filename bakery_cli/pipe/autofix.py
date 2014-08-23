@@ -35,7 +35,7 @@ class AutoFix(object):
         self.bakery = bakery
 
     def execute(self, pipedata):
-        task = self.bakery.logging_task('Applying autofixes')
+        task = self.bakery.logging_task('Applied autofixes')
 
         if self.bakery.forcerun:
             return
@@ -50,6 +50,7 @@ class AutoFix(object):
                 success_list = []
                 for test in result[font]['failure']:
                     if test['autofix']:
+                        # self.bakery.logging_cmd('some fix')
                         fixed_list.append(test)
                         continue
                     failure_list.append(test)
@@ -57,6 +58,7 @@ class AutoFix(object):
                 for test in result[font]['success']:
                     if test['autofix']:
                         fixed_list.append(test)
+                        # self.bakery.logging_cmd('some fix')
                         continue
                     success_list.append(test)
 
