@@ -120,8 +120,8 @@ class CheckFontWeightSameAsInMetadata(TestCase):
     def read_metadata_contents(self):
         return open(self.path).read()
 
-    def test_postscriptname_contains_correct_weight(self):
-        """ Metadata weight matches postScriptName """
+    def test_font_weight_same_as_in_metadata(self):
+        """ Font weight matches metadata.json value of key "weight" """
         contents = self.read_metadata_contents()
         fm = Metadata.get_family_metadata(contents)
 

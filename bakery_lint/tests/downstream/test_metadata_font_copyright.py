@@ -29,8 +29,8 @@ class CheckMetadataContainsReservedFontName(TestCase):
         return open(self.path).read()
 
     @tags(['required', 'info'])
-    def test_postscriptname_contains_correct_weight(self):
-        """ Metadata weight matches postScriptName """
+    def test_copyright_contains_correct_rfn(self):
+        """ Copyright string contains "Reserved File Name" """
         contents = self.read_metadata_contents()
         fm = Metadata.get_family_metadata(contents)
 

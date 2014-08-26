@@ -15,6 +15,7 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import importlib
+import nose
 import unittest
 
 from itertools import chain
@@ -171,6 +172,24 @@ class autofix(object):
 
         return wrap
 
+from functools import wraps
+import os
+
+
+def dontRunIfNotExists(filepath):
+    """ Decorator that allows to miss test cases if file does not exist """
+
+    def decorator(func):
+
+        @wraps(func)
+        def wrap(*args, **kwargs):
+            func(*args, **kwargs)
+
+        func.__test__ = bool(os.path.exists(filepath))
+        return wrap
+
+    return decorator
+
 
 def logging(func, log):
 
@@ -199,7 +218,7 @@ def make_suite(path, definedTarget, test_method=None, log=None):
             if getattr(TestCase, '__generateTests__', None):
                 TestCase.__generateTests__()
 
-            for test in unittest.defaultTestLoader.loadTestsFromTestCase(TestCase):
+            for test in nose.loader.TestLoader.loadTestsFromTestCase(TestCase):
                 if test_method and test_method != test._testMethodName:
                     continue
 
