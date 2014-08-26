@@ -846,20 +846,25 @@ class Test_CheckGaspTableType(TestCase):
 
         with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
 
-            gasp = type('GASP', (object, ), {'gaspRange': {65535: 15}})
-            get_ttfont.return_value = {'gasp': gasp}
-            self.success_run(downstream.CheckGaspTableType)
+            with mock.patch('bakery_cli.pipe.autofix.gaspfix') as fix:
 
-            gasp = type('GASP', (object, ), {'gaspRange': []})
-            get_ttfont.return_value = {'gasp': gasp}
-            self.failure_run(downstream.CheckGaspTableType)
+                gasp = type('GASP', (object, ), {'gaspRange': {65535: 15}})
+                get_ttfont.return_value = {'gasp': gasp}
+                self.success_run(downstream.CheckGaspTableType)
+                assert fix.called
 
-            gasp = type('GASP', (object, ), {'gaspRange': {65535: 14}})
-            get_ttfont.return_value = {'gasp': gasp}
-            self.failure_run(downstream.CheckGaspTableType)
+                gasp = type('GASP', (object, ), {'gaspRange': []})
+                get_ttfont.return_value = {'gasp': gasp}
+                self.failure_run(downstream.CheckGaspTableType)
 
-            get_ttfont.return_value = {}
-            self.failure_run(downstream.CheckGaspTableType)
+                assert fix.called
+
+                gasp = type('GASP', (object, ), {'gaspRange': {65535: 14}})
+                get_ttfont.return_value = {'gasp': gasp}
+                self.failure_run(downstream.CheckGaspTableType)
+
+                get_ttfont.return_value = {}
+                self.failure_run(downstream.CheckGaspTableType)
 
 
 class Test_CheckMonospaceAgreement(TestCase):

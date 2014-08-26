@@ -34,19 +34,21 @@ class CheckFontNameEqualToMacStyleFlags(TestCase):
         try:
             fontname_style = font.fullname.split('-')[1]
         except IndexError:
-            self.fail(('Fontname is not canonical. Expected it contains '
-                       'style. eg.: Italic, BoldItalic, Regular'))
+            fontname_style = ''
 
-        style = ''
+        expected_style = ''
         if macStyle & 0b01:
-            style += 'Bold'
+            expected_style += 'Bold'
 
         if macStyle & 0b10:
-            style += 'Italic'
+            expected_style += 'Italic'
 
         if not bool(macStyle & 0b11):
-            style = 'Regular'
+            expected_style = 'Regular'
 
-        if not fontname_style.endswith(style):
-            _ = 'macStyle (%s) supposed style ended with "%s" but ends with "%s"'
-            self.fail(_ % (bin(macStyle)[-2:], style, fontname_style))
+        if fontname_style != expected_style:
+            _ = 'macStyle ({0}) supposed style ended with "{1}"'
+
+            if fontname_style:
+                _ += ' but ends with "{2}"'
+            self.fail(_.format(bin(macStyle)[-2:], expected_style, fontname_style))
