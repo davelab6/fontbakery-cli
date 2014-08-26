@@ -16,14 +16,14 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
 import html5lib
+from unittest import skip
 import json
 import magic
 import os
 import re
 import requests
 
-from bakery_lint.base import (BakeryTestCase as TestCase,
-                              tags, dontRunIfNotExists)
+from bakery_lint.base import BakeryTestCase as TestCase, tags
 
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
@@ -118,7 +118,7 @@ class MetadataTest(TestCase):
         test_catalogue = self.rules['houseind.com']
         self.check(test_catalogue)
 
-    @dontRunIfNotExists(os.path.join(SCRAPE_DATAROOT, 'terminaldesign.json'))
+    @skip(not os.path.exists(os.path.join(SCRAPE_DATAROOT, 'terminaldesign.json')))
     def test_does_not_familyName_exist_in_terminaldesign_catalogue(self):
         """ TERMINALDESIGN.com """
         try:
@@ -128,7 +128,7 @@ class MetadataTest(TestCase):
         except (OSError, IOError):
             assert False, 'Run `make crawl` to get latest data'
 
-    @dontRunIfNotExists(os.path.join(SCRAPE_DATAROOT, 'typography.json'))
+    @skip(not os.path.exists(os.path.join(SCRAPE_DATAROOT, 'typography.json')))
     def test_does_not_familyName_exist_in_typography_catalogue(self):
         """ TYPOGRAPHY.com """
         try:
@@ -138,7 +138,7 @@ class MetadataTest(TestCase):
         except (OSError, IOError):
             assert False, 'Run `make crawl` to get latest data'
 
-    @dontRunIfNotExists(os.path.join(SCRAPE_DATAROOT, 'europatype.json'))
+    @skip(not os.path.exists(os.path.join(SCRAPE_DATAROOT, 'europatype.json')))
     def test_does_not_familyName_exist_in_europatype_catalogue(self):
         """ EUROPATYPE.com """
         try:
@@ -148,7 +148,7 @@ class MetadataTest(TestCase):
         except (OSError, IOError):
             assert False, 'Run `make crawl` to get latest data'
 
-    @dontRunIfNotExists(os.path.join(SCRAPE_DATAROOT, 'boldmonday.json'))
+    @skip(not os.path.exists(os.path.join(SCRAPE_DATAROOT, 'boldmonday.json')))
     def test_does_not_familyName_exist_in_boldmonday_catalogue(self):
         """ BOLDMONDAY.com """
         try:
@@ -158,7 +158,7 @@ class MetadataTest(TestCase):
         except (OSError, IOError):
             assert False, 'Run `make crawl` to get latest data'
 
-    @dontRunIfNotExists(os.path.join(SCRAPE_DATAROOT, 'commercialtype.json'))
+    @skip(not os.path.exists(os.path.join(SCRAPE_DATAROOT, 'commercialtype.json')))
     def test_does_not_familyName_exist_in_commercialtype_catalogue(self):
         """ COMMERCIALTYPE.com """
         try:
@@ -168,7 +168,7 @@ class MetadataTest(TestCase):
         except (OSError, IOError):
             assert False, 'Run `make crawl` to get latest data'
 
-    @dontRunIfNotExists(os.path.join(SCRAPE_DATAROOT, 'swisstypefaces.json'))
+    @skip(not os.path.exists(os.path.join(SCRAPE_DATAROOT, 'swisstypefaces.json')))
     def test_does_not_familyName_exist_in_swisstypefaces_catalogue(self):
         """ SWISSTYPEFACES.com """
         try:
@@ -178,7 +178,7 @@ class MetadataTest(TestCase):
         except (OSError, IOError):
             assert False, 'Run `make crawl` to get latest data'
 
-    @dontRunIfNotExists(os.path.join(SCRAPE_DATAROOT, 'grillitype.json'))
+    @skip(not os.path.exists(os.path.join(SCRAPE_DATAROOT, 'grillitype.json')))
     def test_does_not_familyName_exist_in_grillitype_catalogue(self):
         """ GRILLITYPE.com """
         try:
@@ -188,7 +188,7 @@ class MetadataTest(TestCase):
         except (OSError, IOError):
             assert False, 'Run `make crawl` to get latest data'
 
-    @dontRunIfNotExists(os.path.join(SCRAPE_DATAROOT, 'letterror.json'))
+    @skip(not os.path.exists(os.path.join(SCRAPE_DATAROOT, 'letterror.json')))
     def test_does_not_familyName_exist_in_letterror_catalogue(self):
         """ LETTERROR.com """
         try:
@@ -198,7 +198,7 @@ class MetadataTest(TestCase):
         except (OSError, IOError):
             assert False, 'Run `make crawl` to get latest data'
 
-    @dontRunIfNotExists(os.path.join(SCRAPE_DATAROOT, 'teff.json'))
+    @skip(not os.path.exists(os.path.join(SCRAPE_DATAROOT, 'teff.json')))
     def test_does_not_familyName_exist_in_teff_catalogue(self):
         """ TEFF.nl """
         try:
@@ -208,7 +208,7 @@ class MetadataTest(TestCase):
         except (OSError, IOError):
             assert False, 'Run `make crawl` to get latest data'
 
-    @dontRunIfNotExists(os.path.join(SCRAPE_DATAROOT, 'nouvellenoire.json'))
+    @skip(not os.path.exists(os.path.join(SCRAPE_DATAROOT, 'nouvellenoire.json')))
     def test_does_not_familyName_exist_in_nouvellenoire_catalogue(self):
         """ NOUVELLENOIRE.ch """
         try:
@@ -218,7 +218,7 @@ class MetadataTest(TestCase):
         except (OSError, IOError):
             assert False, 'Run `make crawl` to get latest data'
 
-    @dontRunIfNotExists(os.path.join(SCRAPE_DATAROOT, 'typedifferent.json'))
+    @skip(not os.path.exists(os.path.join(SCRAPE_DATAROOT, 'typedifferent.json')))
     def test_does_not_familyName_exist_in_typedifferent_catalogue(self):
         """ TYPEDIFFERENT.com """
         try:
@@ -228,7 +228,7 @@ class MetadataTest(TestCase):
         except (OSError, IOError):
             assert False, 'Run `make crawl` to get latest data'
 
-    @dontRunIfNotExists(os.path.join(SCRAPE_DATAROOT, 'optimo.json'))
+    @skip(not os.path.exists(os.path.join(SCRAPE_DATAROOT, 'optimo.json')))
     def test_does_not_familyName_exist_in_optimo_catalogue(self):
         """ OPTIMO.ch """
         try:
