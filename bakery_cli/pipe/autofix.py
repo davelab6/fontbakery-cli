@@ -25,6 +25,7 @@ from bakery_cli.scripts.ascii import fix_name_table
 from bakery_cli.scripts.fstype import reset_fstype
 from bakery_cli.scripts.nbsp import checkAndFix
 from bakery_cli.scripts import opentype
+from bakery_cli.scripts import gasp
 
 
 class AutoFix(object):
@@ -78,6 +79,20 @@ class AutoFix(object):
 
 
 PYPATH = ''
+
+
+def gaspfix(testcase):
+    """ Set in "gasp" table value of key "65535" to "15" """
+    SCRIPTPATH = 'bakery-gasp.py'
+
+    command = "$ {0} --set={1} {2}".format(SCRIPTPATH, 15, testcase.path)
+    testcase.logging.write(command)
+
+    gasp.set(testcase.path, 15)
+
+    command = "$ mv {0}.fix {0}".format(testcase.path)
+    testcase.logging.write(command)
+    shutil.move(testcase.path + '.fix', testcase.path, log=testcase.logging)
 
 
 def fix_opentype_specific_fields(testcase):

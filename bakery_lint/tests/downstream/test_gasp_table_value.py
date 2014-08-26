@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-from bakery_lint.base import BakeryTestCase as TestCase
+from bakery_lint.base import BakeryTestCase as TestCase, autofix
 from bakery_cli.ttfont import Font
 
 
@@ -25,6 +25,7 @@ class CheckGaspTableType(TestCase):
     targets = ['result']
     tool = 'lint'
 
+    @autofix('bakery_cli.pipe.autofix.gaspfix', always_run=True)
     def test_check_gasp_table_type(self):
         """ Font table gasp should be 15 """
         font = Font.get_ttfont(self.path)
@@ -42,4 +43,3 @@ class CheckGaspTableType(TestCase):
         # XXX: Needs review
         if font['gasp'].gaspRange[65535] != 15:
             self.fail('gaspRange[65535] value is not 15')
-

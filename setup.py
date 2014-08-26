@@ -47,7 +47,8 @@ setup(
              'tools/bakery-vmet-fix.py',
              'tools/bakery-lint.py',
              'tools/travis-deploy.py',
-             'tools/bakery-report.py'
+             'tools/bakery-report.py',
+             'tools/bakery-gasp.py'
              ],
     zip_safe=False,
     classifiers=[
