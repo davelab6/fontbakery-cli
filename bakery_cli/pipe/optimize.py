@@ -44,12 +44,13 @@ class Optimize(object):
                     glyphs.append(str(g.unicode))
 
                 from fontTools import subset
-                args = [op.join(self.builddir, filename), '--unicodes=%s' % ','.join(glyphs)]
-                args += ['--layout-features="*"', '--ignore-missing-glyphs']
-                args += ['--notdef-outline', '--name-IDs="*"', '--hinting']
-                subset.main(args)
 
+                args = [op.join(self.builddir, filename)] + map(lambda x: 'U+%s' % x, glyphs)
+                args += ['--layout-features="*"']
+                args += ['--notdef-outline', '--name-IDs="*"', '--hinting']
                 self.bakery.logging_cmd('pyftsubset %s' % ' '.join(args))
+
+                subset.main(args)
 
                 # compare filesizes TODO print analysis of this :)
                 comment = "# look at the size savings of that subset process"
