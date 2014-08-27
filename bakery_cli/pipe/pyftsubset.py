@@ -50,9 +50,9 @@ class PyFtSubset(object):
             override_argv = pipedata['pyftsubset.%s' % subsetname].split()
 
         argv = argv + override_argv
-        subset.main(argv)
 
         self.bakery.logging_cmd('pyftsubset %s' % ' '.join(argv))
+        subset.main(argv)
 
         # need to move result .subset file to avoid overwrite with
         # next subset
