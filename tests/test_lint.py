@@ -251,7 +251,7 @@ class Test_CheckNbspWidthMatchesSpWidth(TestCase):
             def advance_width(self, glyphId):
                 return 1680
 
-        with mock.patch.object(OriginFont, 'get_ttfont_from_metadata') as mocked_get_ttfont:
+        with mock.patch.object(OriginFont, 'get_ttfont') as mocked_get_ttfont:
             mocked_get_ttfont.return_value = Font()
             self.success_run(downstream.CheckNbspWidthMatchesSpWidth)
 
