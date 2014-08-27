@@ -15,13 +15,12 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from bakery_lint.base import BakeryTestCase as TestCase, tags, autofix
-from bakery_lint.metadata import Metadata
 from bakery_cli.ttfont import Font
 
 
 class CheckNbspWidthMatchesSpWidth(TestCase):
 
-    targets = ['metadata']
+    targets = ['result']
     path = '.'
     tool = 'lint'
     name = __name__
@@ -33,18 +32,15 @@ class CheckNbspWidthMatchesSpWidth(TestCase):
     @autofix('bakery_cli.pipe.autofix.fix_nbsp')
     def test_check_nbsp_width_matches_sp_width(self):
         """ Check NO-BREAK SPACE advanceWidth is the same as SPACE """
-        contents = self.read_metadata_contents()
-        fm = Metadata.get_family_metadata(contents)
-        for font_metadata in fm.fonts:
-            tf = Font.get_ttfont_from_metadata(self.path, font_metadata)
-            space_advance_width = tf.advance_width('space')
-            nbsp_advance_width = tf.advance_width('uni00A0')
+        tf = Font.get_ttfont(self.path)
+        space_advance_width = tf.advance_width('space')
+        nbsp_advance_width = tf.advance_width('uni00A0')
 
-            _ = "%s: The font does not contain a sp glyph"
-            self.assertTrue(space_advance_width, _ % font_metadata.filename)
-            _ = "%s: The font does not contain a nbsp glyph"
-            self.assertTrue(nbsp_advance_width, _ % font_metadata.filename)
+        _ = "Font does not contain a sp glyph"
+        self.assertTrue(space_advance_width, _)
+        _ = "Font does not contain a nbsp glyph"
+        self.assertTrue(nbsp_advance_width, _)
 
-            _ = ("%s: The nbsp advance width does not match "
-                 "the sp advance width") % font_metadata.filename
-            self.assertEqual(space_advance_width, nbsp_advance_width, _)
+        _ = ("The nbsp advance width does not match "
+             "the sp advance width")
+        self.assertEqual(space_advance_width, nbsp_advance_width, _)
