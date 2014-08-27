@@ -23,7 +23,7 @@
 # $ font2ttf.py font.ufo font.ttf font.otf
 # $ font2ttf.py font.otf font.ttf
 import sys
-from bakery_cli import font2ttf
+from bakery_cli.scripts import font2ttf
 
 
 if __name__ == '__main__':

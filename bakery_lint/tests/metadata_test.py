@@ -28,7 +28,6 @@ from bakery_lint.base import BakeryTestCase as TestCase, tags
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 SCRAPE_DATAROOT = os.path.join(ROOT, 'bakery_cli', 'scrapes', 'json')
-print SCRAPE_DATAROOT
 
 
 class MetadataTest(TestCase):
