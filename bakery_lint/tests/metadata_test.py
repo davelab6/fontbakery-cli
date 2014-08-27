@@ -66,6 +66,20 @@ class MetadataTest(TestCase):
     def setUp(self):
         self.metadata = json.load(open(self.path))
 
+    def test_description_is_valid_html(self):
+        """ DESCRIPTION.en_us.html is not real html file """
+        p = os.path.join(os.path.dirname(self.path), 'DESCRIPTION.en_us.html')
+        msg = 'DESCRIPTION.en_us.html is not real html file'
+        self.assertEqual(magic.from_file(p, mime=True), 'text/html', msg)
+
+    def test_description_is_more_than_500b(self):
+        """ DESCRIPTION.en_us.html is more than 500 bytes """
+        p = os.path.join(os.path.dirname(self.path), 'DESCRIPTION.en_us.html')
+        msg = 'DESCRIPTION.en_us.html is not real html file'
+        statinfo = os.stat(p)
+        msg = 'DESCRIPTION.en_us.html must have size larger than 500 bytes'
+        self.assertGreater(statinfo.st_size, 500, msg)
+
     def test_family_is_listed_in_gwf(self):
         """ Fontfamily is listed in Google Font Directory """
         url = 'http://fonts.googleapis.com/css?family=%s' % self.metadata['name'].replace(' ', '+')
