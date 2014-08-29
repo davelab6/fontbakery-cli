@@ -168,6 +168,7 @@ class autofix(object):
                 raise
             finally:
                 wrap.autofix = True
+                wrap.__doc__ == f.__doc__
 
         return wrap
 

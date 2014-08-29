@@ -1,3 +1,4 @@
+""" Contains TestCase for METADATA.json  """
 # coding: utf-8
 # Copyright 2013 The Font Bakery Authors. All Rights Reserved.
 #
@@ -20,14 +21,15 @@ from unittest import skip
 import json
 import magic
 import os
+import os.path as op
 import re
 import requests
 
 from bakery_lint.base import BakeryTestCase as TestCase, tags
 
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-SCRAPE_DATAROOT = os.path.join(ROOT, 'bakery_cli', 'scrapes', 'json')
+ROOT = op.abspath(op.join(op.dirname(__file__), '..', '..'))
+SCRAPE_DATAROOT = op.join(ROOT, 'bakery_cli', 'scrapes', 'json')
 
 
 class MetadataTest(TestCase):
@@ -68,13 +70,13 @@ class MetadataTest(TestCase):
 
     def test_description_is_valid_html(self):
         """ DESCRIPTION.en_us.html is not real html file """
-        p = os.path.join(os.path.dirname(self.path), 'DESCRIPTION.en_us.html')
+        p = op.join(op.dirname(self.path), 'DESCRIPTION.en_us.html')
         msg = 'DESCRIPTION.en_us.html is not real html file'
         self.assertEqual(magic.from_file(p, mime=True), 'text/html', msg)
 
     def test_description_is_more_than_500b(self):
         """ DESCRIPTION.en_us.html is more than 500 bytes """
-        p = os.path.join(os.path.dirname(self.path), 'DESCRIPTION.en_us.html')
+        p = op.join(op.dirname(self.path), 'DESCRIPTION.en_us.html')
         msg = 'DESCRIPTION.en_us.html is not real html file'
         statinfo = os.stat(p)
         msg = 'DESCRIPTION.en_us.html must have size larger than 500 bytes'
@@ -131,121 +133,121 @@ class MetadataTest(TestCase):
         test_catalogue = self.rules['houseind.com']
         self.check(test_catalogue)
 
-    @skip(not os.path.exists(os.path.join(SCRAPE_DATAROOT, 'terminaldesign.json')))
+    @skip(not op.exists(op.join(SCRAPE_DATAROOT, 'terminaldesign.json')))
     def test_does_not_familyName_exist_in_terminaldesign_catalogue(self):
         """ TERMINALDESIGN.com """
         try:
-            datafile = open(os.path.join(SCRAPE_DATAROOT, 'terminaldesign.json'))
+            datafile = open(op.join(SCRAPE_DATAROOT, 'terminaldesign.json'))
             catalogue = json.load(datafile)
             self.assertFalse(self.metadata['name'].lower() in map(lambda x: x['title'].lower(), catalogue))
         except (OSError, IOError):
             assert False, 'Run `make crawl` to get latest data'
 
-    @skip(not os.path.exists(os.path.join(SCRAPE_DATAROOT, 'typography.json')))
+    @skip(not op.exists(op.join(SCRAPE_DATAROOT, 'typography.json')))
     def test_does_not_familyName_exist_in_typography_catalogue(self):
         """ TYPOGRAPHY.com """
         try:
-            datafile = open(os.path.join(SCRAPE_DATAROOT, 'typography.json'))
+            datafile = open(op.join(SCRAPE_DATAROOT, 'typography.json'))
             catalogue = json.load(datafile)
             self.assertFalse(self.metadata['name'].lower() in map(lambda x: x['title'].lower(), catalogue))
         except (OSError, IOError):
             assert False, 'Run `make crawl` to get latest data'
 
-    @skip(not os.path.exists(os.path.join(SCRAPE_DATAROOT, 'europatype.json')))
+    @skip(not op.exists(op.join(SCRAPE_DATAROOT, 'europatype.json')))
     def test_does_not_familyName_exist_in_europatype_catalogue(self):
         """ EUROPATYPE.com """
         try:
-            datafile = open(os.path.join(SCRAPE_DATAROOT, 'europatype.json'))
+            datafile = open(op.join(SCRAPE_DATAROOT, 'europatype.json'))
             catalogue = json.load(datafile)
             self.assertFalse(self.metadata['name'].lower() in map(lambda x: x['title'].lower(), catalogue))
         except (OSError, IOError):
             assert False, 'Run `make crawl` to get latest data'
 
-    @skip(not os.path.exists(os.path.join(SCRAPE_DATAROOT, 'boldmonday.json')))
+    @skip(not op.exists(op.join(SCRAPE_DATAROOT, 'boldmonday.json')))
     def test_does_not_familyName_exist_in_boldmonday_catalogue(self):
         """ BOLDMONDAY.com """
         try:
-            datafile = open(os.path.join(SCRAPE_DATAROOT, 'boldmonday.json'))
+            datafile = open(op.join(SCRAPE_DATAROOT, 'boldmonday.json'))
             catalogue = json.load(datafile)
             self.assertFalse(self.metadata['name'].lower() in map(lambda x: x['title'].lower(), catalogue))
         except (OSError, IOError):
             assert False, 'Run `make crawl` to get latest data'
 
-    @skip(not os.path.exists(os.path.join(SCRAPE_DATAROOT, 'commercialtype.json')))
+    @skip(not op.exists(op.join(SCRAPE_DATAROOT, 'commercialtype.json')))
     def test_does_not_familyName_exist_in_commercialtype_catalogue(self):
         """ COMMERCIALTYPE.com """
         try:
-            datafile = open(os.path.join(SCRAPE_DATAROOT, 'commercialtype.json'))
+            datafile = open(op.join(SCRAPE_DATAROOT, 'commercialtype.json'))
             catalogue = json.load(datafile)
             self.assertFalse(self.metadata['name'].lower() in map(lambda x: x['title'].lower(), catalogue))
         except (OSError, IOError):
             assert False, 'Run `make crawl` to get latest data'
 
-    @skip(not os.path.exists(os.path.join(SCRAPE_DATAROOT, 'swisstypefaces.json')))
+    @skip(not op.exists(op.join(SCRAPE_DATAROOT, 'swisstypefaces.json')))
     def test_does_not_familyName_exist_in_swisstypefaces_catalogue(self):
         """ SWISSTYPEFACES.com """
         try:
-            datafile = open(os.path.join(SCRAPE_DATAROOT, 'swisstypefaces.json'))
+            datafile = open(op.join(SCRAPE_DATAROOT, 'swisstypefaces.json'))
             catalogue = json.load(datafile)
             self.assertFalse(self.metadata['name'].lower() in map(lambda x: x['title'].lower(), catalogue))
         except (OSError, IOError):
             assert False, 'Run `make crawl` to get latest data'
 
-    @skip(not os.path.exists(os.path.join(SCRAPE_DATAROOT, 'grillitype.json')))
+    @skip(not op.exists(op.join(SCRAPE_DATAROOT, 'grillitype.json')))
     def test_does_not_familyName_exist_in_grillitype_catalogue(self):
         """ GRILLITYPE.com """
         try:
-            datafile = open(os.path.join(SCRAPE_DATAROOT, 'grillitype.json'))
+            datafile = open(op.join(SCRAPE_DATAROOT, 'grillitype.json'))
             catalogue = json.load(datafile)
             self.assertFalse(self.metadata['name'].lower() in map(lambda x: x['title'].lower(), catalogue))
         except (OSError, IOError):
             assert False, 'Run `make crawl` to get latest data'
 
-    @skip(not os.path.exists(os.path.join(SCRAPE_DATAROOT, 'letterror.json')))
+    @skip(not op.exists(op.join(SCRAPE_DATAROOT, 'letterror.json')))
     def test_does_not_familyName_exist_in_letterror_catalogue(self):
         """ LETTERROR.com """
         try:
-            datafile = open(os.path.join(SCRAPE_DATAROOT, 'letterror.json'))
+            datafile = open(op.join(SCRAPE_DATAROOT, 'letterror.json'))
             catalogue = json.load(datafile)
             self.assertFalse(self.metadata['name'].lower() in map(lambda x: x['title'].lower(), catalogue))
         except (OSError, IOError):
             assert False, 'Run `make crawl` to get latest data'
 
-    @skip(not os.path.exists(os.path.join(SCRAPE_DATAROOT, 'teff.json')))
+    @skip(not op.exists(op.join(SCRAPE_DATAROOT, 'teff.json')))
     def test_does_not_familyName_exist_in_teff_catalogue(self):
         """ TEFF.nl """
         try:
-            datafile = open(os.path.join(SCRAPE_DATAROOT, 'teff.json'))
+            datafile = open(op.join(SCRAPE_DATAROOT, 'teff.json'))
             catalogue = json.load(datafile)
             self.assertFalse(self.metadata['name'].lower() in map(lambda x: x['title'].lower(), catalogue))
         except (OSError, IOError):
             assert False, 'Run `make crawl` to get latest data'
 
-    @skip(not os.path.exists(os.path.join(SCRAPE_DATAROOT, 'nouvellenoire.json')))
+    @skip(not op.exists(op.join(SCRAPE_DATAROOT, 'nouvellenoire.json')))
     def test_does_not_familyName_exist_in_nouvellenoire_catalogue(self):
         """ NOUVELLENOIRE.ch """
         try:
-            datafile = open(os.path.join(SCRAPE_DATAROOT, 'nouvellenoire.json'))
+            datafile = open(op.join(SCRAPE_DATAROOT, 'nouvellenoire.json'))
             catalogue = json.load(datafile)
             self.assertFalse(self.metadata['name'].lower() in map(lambda x: x['title'].lower(), catalogue))
         except (OSError, IOError):
             assert False, 'Run `make crawl` to get latest data'
 
-    @skip(not os.path.exists(os.path.join(SCRAPE_DATAROOT, 'typedifferent.json')))
+    @skip(not op.exists(op.join(SCRAPE_DATAROOT, 'typedifferent.json')))
     def test_does_not_familyName_exist_in_typedifferent_catalogue(self):
         """ TYPEDIFFERENT.com """
         try:
-            datafile = open(os.path.join(SCRAPE_DATAROOT, 'typedifferent.json'))
+            datafile = open(op.join(SCRAPE_DATAROOT, 'typedifferent.json'))
             catalogue = json.load(datafile)
             self.assertFalse(self.metadata['name'].lower() in map(lambda x: x['title'].lower(), catalogue))
         except (OSError, IOError):
             assert False, 'Run `make crawl` to get latest data'
 
-    @skip(not os.path.exists(os.path.join(SCRAPE_DATAROOT, 'optimo.json')))
+    @skip(not op.exists(op.join(SCRAPE_DATAROOT, 'optimo.json')))
     def test_does_not_familyName_exist_in_optimo_catalogue(self):
         """ OPTIMO.ch """
         try:
-            datafile = open(os.path.join(SCRAPE_DATAROOT, 'optimo.json'))
+            datafile = open(op.join(SCRAPE_DATAROOT, 'optimo.json'))
             catalogue = json.load(datafile)
             self.assertFalse(self.metadata['name'].lower() in map(lambda x: x['title'].lower(), catalogue))
         except (OSError, IOError):
@@ -332,8 +334,8 @@ class MetadataTest(TestCase):
         top_keys = ["name", "designer", "license", "visibility", "category",
                     "size", "dateAdded", "fonts", "subsets"]
 
-        for x in top_keys:
-            self.assertIn(x, self.metadata, msg="Missing %s key" % x)
+        for key in top_keys:
+            self.assertIn(key, self.metadata, msg="Missing %s key" % key)
 
     @tags('required')
     def test_metadata_fonts_key_list(self):
@@ -350,9 +352,9 @@ class MetadataTest(TestCase):
         """ Subset file is a TrueType format """
         for font in self.metadata.get('fonts', []):
             for subset in self.metadata.get('subsets', []) + ['menu']:
-                path = os.path.join(os.path.dirname(self.path),
-                                    font.get('filename')[:-3] + subset)
-                if not os.path.exists(path):
+                path = op.join(op.dirname(self.path),
+                               font.get('filename')[:-3] + subset)
+                if not op.exists(path):
                     self.fail('%s subset file does not exist' % subset)
 
                 if magic.from_file(path) != 'TrueType font data':
