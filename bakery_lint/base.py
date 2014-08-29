@@ -65,6 +65,14 @@ class BakeryTestResult(unittest.TestResult):
         self.fl = failure_list
         super(BakeryTestResult, self).__init__(self)
 
+    def callmethod(self, fixer_method, test):
+        try:
+            pkg = '.'.join(fixer_method.split('.')[:-1])
+            mod = importlib.import_module(pkg)
+            getattr(mod, fixer_method.split('.')[-1])(test)
+        except ImportError:
+            raise
+
     def startTest(self, test):
         super(BakeryTestResult, self).startTest(test)
 
@@ -75,6 +83,11 @@ class BakeryTestResult(unittest.TestResult):
 
         if hasattr(test, 'logging'):
             test.logging.write('... {} .. OK'.format(test.id()))
+
+        test_method = getattr(test, test._testMethodName)
+        if hasattr(test_method, 'autofix'):
+            if getattr(test_method, 'autofix_always_run', False):
+                self.callmethod(test_method.autofix_method, test)
 
     def addError(self, test, err):
         super(BakeryTestResult, self).addError(test, err)
@@ -97,6 +110,10 @@ class BakeryTestResult(unittest.TestResult):
 
         if hasattr(test, 'logging'):
             test.logging.write('... {} .. FAIL'.format(test.id()))
+
+        test_method = getattr(test, test._testMethodName)
+        if hasattr(test_method, 'autofix'):
+            self.callmethod(test_method.autofix_method, test)
 
 
 class BakeryTestRunner(unittest.TextTestRunner):
@@ -158,18 +175,12 @@ def autofix(methodname, always_run=False):
 
     def wrap(f):
         f.autofix = True
+        f.autofix_method = methodname
         f.autofix_always_run = always_run
 
         @wraps(f)
         def w(*args, **kwargs):
-
-            try:
-                f(*args, **kwargs)
-                if always_run:
-                    callmethod(*args, **kwargs)
-            except AssertionError:
-                callmethod(*args, **kwargs)
-                raise
+            f(*args, **kwargs)
         return w
 
     return wrap
