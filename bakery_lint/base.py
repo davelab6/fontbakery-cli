@@ -175,12 +175,12 @@ def logging(func, log):
     def f(*args, **kwargs):
         try:
             func(*args, **kwargs)
-            if hasattr(func, '_err_msg'):
-                log.write('... %s .. FAIL\n' % func._testMethodName)
-            else:
-                log.write('... %s .. OK\n' % func._testMethodName)
-        except:
+            log.write('... {0} .. {1} OK\n'.format(func._testMethodName, type(func)))
+        except AssertionError:
             log.write('... %s .. FAIL\n' % func._testMethodName)
+            raise
+        except:
+            log.write('... %s .. ERROR\n' % func._testMethodName)
             raise
     return f
 
