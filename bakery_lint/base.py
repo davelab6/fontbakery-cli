@@ -65,13 +65,10 @@ class BakeryTestResult(unittest.TestResult):
         self.fl = failure_list
         super(BakeryTestResult, self).__init__(self)
 
-    def callmethod(self, fixer_method, test):
-        try:
-            pkg = '.'.join(fixer_method.split('.')[:-1])
-            mod = importlib.import_module(pkg)
-            getattr(mod, fixer_method.split('.')[-1])(test)
-        except ImportError:
-            raise
+    def callmethod(self, methodname, test):
+        pkg = '.'.join(methodname.split('.')[:-1])
+        mod = importlib.import_module(pkg)
+        getattr(mod, methodname.split('.')[-1])(test)
 
     def startTest(self, test):
         super(BakeryTestResult, self).startTest(test)
@@ -91,7 +88,7 @@ class BakeryTestResult(unittest.TestResult):
 
     def addError(self, test, err):
         super(BakeryTestResult, self).addError(test, err)
-        _err_type, _err_exception, _err_tb = err
+        _, _err_exception, _ = err
         test._err = err
         test._err_msg = _err_exception.message
         if hasattr(self.el, 'append'):
@@ -102,7 +99,7 @@ class BakeryTestResult(unittest.TestResult):
 
     def addFailure(self, test, err):
         super(BakeryTestResult, self).addFailure(test, err)
-        _err_type, _err_exception, _err_tb = err
+        _, _err_exception, _ = err
         test._err = err
         test._err_msg = _err_exception.message
         if hasattr(self.fl, 'append'):
@@ -163,25 +160,16 @@ class tags(object):
 
     def __call__(self, f):
         f.tags = self.tags
-
-        def wrap(*args, **kwargs):
-            f(*args, **kwargs)
         return f
 
 
 def autofix(methodname, always_run=False):
-    from functools import wraps
-
 
     def wrap(f):
         f.autofix = True
         f.autofix_method = methodname
         f.autofix_always_run = always_run
-
-        @wraps(f)
-        def w(*args, **kwargs):
-            f(*args, **kwargs)
-        return w
+        return f
 
     return wrap
 
@@ -217,7 +205,7 @@ def run_suite(suite):
                               error_list=result['error'],
                               failure_list=result['failure'])
     runner.run(suite)
-    result['sum'] = sum(map(len, [result[x] for x in result.keys()]))
+    result['sum'] = sum([len(result[x]) for x in result.keys()])
 
     check = lambda x: 'required' in getattr(x, x._testMethodName).tags
     # assume that `error` test are important even if they are broken
