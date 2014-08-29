@@ -41,12 +41,13 @@ class Optimize(object):
                 for g in font.glyphs():
                     if not g.codepoint:
                         continue
-                    glyphs.append(str(g.unicode))
+
+                    glyphs.append(g.unicode)
 
                 from fontTools import subset
 
-                args = [op.join(self.builddir, filename), '--unicodes=%s' % ','.join([hex(g) for g in glyphs])]
-                args += ['--layout-features="*"']
+                args = [op.join(self.builddir, filename), '--unicodes={}'.format(','.join(['U+{:x}'.format(g) for g in glyphs]))]
+                args += ['--layout-features="*"', '--ignore-missing-unicodes']
                 args += ['--notdef-outline', '--name-IDs="*"', '--hinting']
                 self.bakery.logging_cmd('pyftsubset %s' % ' '.join(args))
 

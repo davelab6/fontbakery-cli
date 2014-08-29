@@ -38,7 +38,7 @@ class PyFtSubset(object):
 
     def execute_pyftsubset(self, pipedata, subsetname, name, glyphs="", args=""):
         from fontTools import subset
-        argv = [op.join(self.builddir, name), '--unicodes=%s' % ','.join(map(lambda x: x.replace('U+', ''), glyphs.split()))]
+        argv = [op.join(self.builddir, name), '--unicodes=%s' % ','.join(['U+{}'.format(g) for g in glyphs.split()])]
         argv += ['--notdef-outline', '--name-IDs="*"', '--hinting']
 
         override_argv = []
