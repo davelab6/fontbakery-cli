@@ -27,7 +27,6 @@ import requests
 
 from bakery_lint.base import BakeryTestCase as TestCase, tags
 
-
 ROOT = op.abspath(op.join(op.dirname(__file__), '..', '..'))
 SCRAPE_DATAROOT = op.join(ROOT, 'bakery_cli', 'scrapes', 'json')
 

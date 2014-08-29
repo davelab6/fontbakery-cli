@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-from bakery_lint.base import BakeryTestCase as TestCase
+from bakery_lint.base import BakeryTestCase as TestCase, autofix
 from bakery_cli.ttfont import Font
 
 
@@ -25,6 +25,7 @@ class CheckFontHasDsigTable(TestCase):
     targets = ['result']
     tool = 'lint'
 
+    @autofix('bakery_cli.pipe.autofix.dsig_signature')
     def test_check_font_has_dsig_table(self):
         """ Check that font has DSIG table """
         font = Font.get_ttfont(self.path)
@@ -46,6 +47,5 @@ class CheckFontHasNotKernTable(TestCase):
         font = Font.get_ttfont(self.path)
         try:
             font['KERN']
-            self.fail('Font does not have "DSIG" table')
         except KeyError:
-            pass
+            self.fail('Font does not have "DSIG" table')

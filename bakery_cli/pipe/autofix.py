@@ -26,6 +26,7 @@ from bakery_cli.scripts.fstype import reset_fstype
 from bakery_cli.scripts.nbsp import checkAndFix
 from bakery_cli.scripts import opentype
 from bakery_cli.scripts import gasp
+from bakery_cli.scripts import dsig
 
 
 class AutoFix(object):
@@ -81,6 +82,25 @@ class AutoFix(object):
 PYPATH = ''
 
 
+def replace_origfont(testcase):
+    command = "$ mv {0}.fix {0}".format(testcase.path)
+    testcase.logging.write(command)
+    shutil.move(testcase.path + '.fix', testcase.path, log=testcase.logging)
+
+
+def dsig_signature(testcase):
+    """ Create "DSIG" table with default signaturerecord """
+    SCRIPTPATH = 'bakery-dsig.py'
+
+    command = "$ {0} {1}".format(SCRIPTPATH, testcase.path)
+    testcase.logging.write(command)
+
+    dsig.create(testcase.path)
+
+    replace_origfont(testcase)
+
+
+
 def gaspfix(testcase):
     """ Set in "gasp" table value of key "65535" to "15" """
     SCRIPTPATH = 'bakery-gasp.py'
@@ -90,9 +110,7 @@ def gaspfix(testcase):
 
     gasp.set(testcase.path, 15)
 
-    command = "$ mv {0}.fix {0}".format(testcase.path)
-    testcase.logging.write(command)
-    shutil.move(testcase.path + '.fix', testcase.path, log=testcase.logging)
+    replace_origfont(testcase)
 
 
 def fix_opentype_specific_fields(testcase):
@@ -104,9 +122,7 @@ def fix_opentype_specific_fields(testcase):
 
     opentype.fix(testcase.path)
 
-    command = "$ mv {0}.fix {0}".format(testcase.path)
-    testcase.logging.write(command)
-    shutil.move(testcase.path + '.fix', testcase.path, log=testcase.logging)
+    replace_origfont(testcase)
 
 
 def fix_nbsp(testcase):
@@ -117,9 +133,7 @@ def fix_nbsp(testcase):
     testcase.logging.write(command)
     checkAndFix(testcase.path)
 
-    command = "$ mv {0}.fix {0}".format(testcase.path)
-    testcase.logging.write(command)
-    shutil.move(testcase.path + '.fix', testcase.path, log=testcase.logging)
+    replace_origfont(testcase)
 
 
 def fix_metrics(testcase):

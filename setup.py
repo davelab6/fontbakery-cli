@@ -48,7 +48,8 @@ setup(
              'tools/bakery-lint.py',
              'tools/travis-deploy.py',
              'tools/bakery-report.py',
-             'tools/bakery-gasp.py'
+             'tools/bakery-gasp.py',
+             'tools/bakery-dsig.py'
              ],
     zip_safe=False,
     classifiers=[
