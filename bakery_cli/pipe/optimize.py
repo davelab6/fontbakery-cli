@@ -14,7 +14,6 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-import fontforge
 import os.path as op
 
 from bakery_cli.system import run, shutil
@@ -36,18 +35,11 @@ class Optimize(object):
         try:
             for filename in pipedata['bin_files']:
                 # convert the ttf to a ttx file - this may fail
-                font = fontforge.open(op.join(self.builddir, filename))
-                glyphs = []
-                for g in font.glyphs():
-                    if not g.codepoint:
-                        continue
-
-                    glyphs.append(g.unicode)
 
                 from fontTools import subset
 
-                args = [op.join(self.builddir, filename), '--unicodes={}'.format(','.join(['U+{:x}'.format(g) for g in glyphs]))]
-                args += ['--layout-features="*"', '--ignore-missing-unicodes']
+                args = [op.join(self.builddir, filename), '*']
+                args += ['--layout-features="*"']
                 args += ['--notdef-outline', '--name-IDs="*"', '--hinting']
                 self.bakery.logging_cmd('pyftsubset %s' % ' '.join(args))
 

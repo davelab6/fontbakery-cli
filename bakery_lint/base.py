@@ -158,14 +158,10 @@ def autofix(methodname, always_run=False):
 
     def wrap(f):
         f.autofix = True
+        f.autofix_always_run = always_run
 
         @wraps(f)
         def w(*args, **kwargs):
-
-            def callmethod(*args, **kwargs):
-                pkg = '.'.join(methodname.split('.')[:-1])
-                mod = importlib.import_module(pkg)
-                getattr(mod, methodname.split('.')[-1])(*args, **kwargs)
 
             try:
                 f(*args, **kwargs)
@@ -177,21 +173,6 @@ def autofix(methodname, always_run=False):
         return w
 
     return wrap
-
-
-def logging(func, log):
-
-    def f(*args, **kwargs):
-        try:
-            func(*args, **kwargs)
-            log.write('... {0} .. {1} OK\n'.format(func._testMethodName, type(func)))
-        except AssertionError:
-            log.write('... %s .. FAIL\n' % func._testMethodName)
-            raise
-        except:
-            log.write('... %s .. ERROR\n' % func._testMethodName)
-            raise
-    return f
 
 
 def make_suite(path, definedTarget, test_method=None, log=None):
