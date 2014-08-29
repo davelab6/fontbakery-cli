@@ -73,6 +73,9 @@ class BakeryTestResult(unittest.TestResult):
         if hasattr(self.sl, 'append'):
             self.sl.append(test)
 
+        if hasattr(test, 'logging'):
+            test.logging.write('... {} .. OK'.format(test.id()))
+
     def addError(self, test, err):
         super(BakeryTestResult, self).addError(test, err)
         _err_type, _err_exception, _err_tb = err
@@ -81,6 +84,9 @@ class BakeryTestResult(unittest.TestResult):
         if hasattr(self.el, 'append'):
             self.el.append(test)
 
+        if hasattr(test, 'logging'):
+            test.logging.write('... {} .. ERROR'.format(test.id()))
+
     def addFailure(self, test, err):
         super(BakeryTestResult, self).addFailure(test, err)
         _err_type, _err_exception, _err_tb = err
@@ -88,6 +94,9 @@ class BakeryTestResult(unittest.TestResult):
         test._err_msg = _err_exception.message
         if hasattr(self.fl, 'append'):
             self.fl.append(test)
+
+        if hasattr(test, 'logging'):
+            test.logging.write('... {} .. FAIL'.format(test.id()))
 
 
 class BakeryTestRunner(unittest.TextTestRunner):
@@ -200,10 +209,6 @@ def make_suite(path, definedTarget, test_method=None, log=None):
             for test in unittest.defaultTestLoader.loadTestsFromTestCase(TestCase):
                 if test_method and test_method != test._testMethodName:
                     continue
-
-                if log:
-                    # decorate function to write messages to build log
-                    test = logging(test, log)
                 suite.addTest(test)
 
     return suite
