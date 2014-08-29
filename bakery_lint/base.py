@@ -143,34 +143,32 @@ class tags(object):
         return f
 
 
-class autofix(object):
-    """ Decorator that allows to call method after test has been
-    failed or executed """
+def autofix(methodname, always_run=False):
+    from functools import wraps
 
-    def __init__(self, methodname, always_run=False):
-        self.call_method_name = methodname
-        self.always_run = always_run
 
-    def exec_method(self, *args, **kwargs):
-        pkg = '.'.join(self.call_method_name.split('.')[:-1])
-        mod = importlib.import_module(pkg)
-        getattr(mod, self.call_method_name.split('.')[-1])(*args, **kwargs)
+    def wrap(f):
+        f.autofix = True
 
-    def __call__(self, f):
+        @wraps(f)
+        def w(*args, **kwargs):
 
-        def wrap(*args, **kwargs):
+            def callmethod(*args, **kwargs):
+                pkg = '.'.join(methodname.split('.')[:-1])
+                mod = importlib.import_module(pkg)
+                getattr(mod, methodname.split('.')[-1])(*args, **kwargs)
+
             try:
                 f(*args, **kwargs)
-                if self.always_run:
-                    self.exec_method(*args, **kwargs)
+                if always_run:
+                    callmethod(*args, **kwargs)
             except AssertionError:
-                self.exec_method(*args, **kwargs)
                 raise
             finally:
-                wrap.autofix = True
-                wrap.__doc__ == f.__doc__
+                callmethod(*args, **kwargs)
+        return w
 
-        return wrap
+    return wrap
 
 
 def logging(func, log):
