@@ -163,9 +163,8 @@ def autofix(methodname, always_run=False):
                 if always_run:
                     callmethod(*args, **kwargs)
             except AssertionError:
-                raise
-            finally:
                 callmethod(*args, **kwargs)
+                raise
         return w
 
     return wrap
