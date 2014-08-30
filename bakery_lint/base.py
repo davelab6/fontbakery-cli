@@ -207,7 +207,6 @@ def run_suite(suite):
                               error_list=result['error'],
                               failure_list=result['failure'])
     runner.run(suite)
-    result['sum'] = sum([len(result[x]) for x in result.keys()])
 
     check = lambda x: 'required' in getattr(x, x._testMethodName).tags
     # assume that `error` test are important even if they are broken

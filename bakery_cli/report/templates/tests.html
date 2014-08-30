@@ -30,11 +30,12 @@
     <div class="row">
         <div class="col-md-9"><h4 class="accordion-toggle" data-toggle="collapse" data-target="#fview{{loop.index}}">{{ font }} <i class="fa fa-angle-double-down"></i></h4></div>
         <div class="col-md-3">
-        {% set  t = tests[font]['sum'] %}
         {% set sl = tests[font]['success']|length|int %}
         {% set el = tests[font]['error']|length|int %}
         {% set fl = tests[font]['failure']|length|int %}
         {% set ff = tests[font]['fixed']|length|int %}
+
+        {% set  t = sl + el + fl + ff %}
 
         <!-- <i class="fa fa-circle text-warning"></i> {{fl}} <i class="fa fa-circle text-danger"></i> {{el}} <i class="fa fa-circle text-success"></i> {{sl}} -->
         <div class="progress" style="height:10px; margin-top:15px;">
