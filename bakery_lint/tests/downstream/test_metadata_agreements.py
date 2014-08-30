@@ -57,7 +57,7 @@ class CheckMetadataAgreements(TestCase):
         # this tests will appear in each font
         have = False
         for i in self.metadata.fonts:
-            if i.full_name.endswith('Regular'):
+            if i.weight == 400 and i.style == 'normal':
                 have = True
 
         self.assertTrue(have)
