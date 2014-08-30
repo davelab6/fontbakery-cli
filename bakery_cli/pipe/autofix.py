@@ -85,7 +85,7 @@ PYPATH = ''
 def replace_origfont(testcase):
     command = "$ mv {0}.fix {0}".format(testcase.path)
     testcase.logging.write(command)
-    shutil.move(testcase.path + '.fix', testcase.path, log=testcase.logging)
+    shutil.move(testcase.path + '.fix', testcase.path)
 
 
 def dsig_signature(testcase):
@@ -98,7 +98,6 @@ def dsig_signature(testcase):
     dsig.create(testcase.path)
 
     replace_origfont(testcase)
-
 
 
 def gaspfix(testcase):

@@ -47,5 +47,6 @@ class CheckFontHasNotKernTable(TestCase):
         font = Font.get_ttfont(self.path)
         try:
             font['KERN']
+            self.fail('Font does have "KERN" table')
         except KeyError:
-            self.fail('Font does not have "DSIG" table')
+            pass

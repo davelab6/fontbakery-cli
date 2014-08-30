@@ -163,15 +163,17 @@ class tags(object):
         return f
 
 
-def autofix(methodname, always_run=False):
+class autofix(object):
 
-    def wrap(f):
+    def __init__(self, methodname, always_run=False):
+        self.methodname = methodname
+        self.always_run = always_run
+
+    def __call__(self, f):
         f.autofix = True
-        f.autofix_method = methodname
-        f.autofix_always_run = always_run
+        f.autofix_method = self.methodname
+        f.autofix_always_run = self.always_run
         return f
-
-    return wrap
 
 
 def make_suite(path, definedTarget, test_method=None, log=None):
