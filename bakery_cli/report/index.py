@@ -16,6 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
 import os.path as op
+import yaml
 
 
 from bakery_cli.utils import UpstreamDirectory
@@ -25,6 +26,11 @@ TAB = 'Index'
 TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
 
 t = lambda templatefile: op.join(TEMPLATE_DIR, templatefile)
+
+
+def filter_with_tag(fonttestdata, tag):
+    tests = fonttestdata['failure'] + fonttestdata['error']
+    return [test for test in tests if tag in test['tags']]
 
 
 def generate(config):
@@ -42,4 +48,10 @@ def generate(config):
     template = Template(open(t('index.html')).read())
 
     destfile = open(op.join(config['path'], 'index.html'), 'w')
-    print(template.render(fonts=faces).encode('utf8'), file=destfile)
+    data = yaml.load(open(op.join(config['path'], '.tests.yaml')))
+    basenames = [op.basename(font['path']) for font in faces]
+
+    print(template.render(fonts=faces, tests=data,
+                          basenames=basenames,
+                          filter_with_tag=filter_with_tag).encode('utf8'),
+          file=destfile)

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ ("Summary") }}</title>
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
 </head>
 <body>
     <div class="container">
@@ -16,6 +16,8 @@
         </ul>
 
         {% for font in fonts %}
+        <h4>{{ font.basename }}</h4>
+
         <style>
             @font-face {font-family: {{ font.basename }}; src: url({{ font.path }});}
             .face{{ loop.index }} {font-family: {{ font.basename }}; font-size: 24pt;}
@@ -25,6 +27,87 @@
             Grumpy wizards make toxic brew for the evil Queen and Jack
         </div>
         {% endfor %}
+
+        <h4>Tests Charts</h4>
+        {% for font in tests.keys() %}
+          {% set blockers = filter_with_tag(tests[font], 'required') %}
+          {% if blockers %}
+          <div class="row">
+            <div class="col-xs-4">
+              <div id="piechart{{ loop.index }}"></div>
+            </div>
+            <div class="col-xs-8">
+              <h5>Blockers</h5>
+              {% for blocker in blockers %}
+              <div>
+                {{blocker['methodName']}}: <br />{{blocker['methodDoc']}}<br />
+                <blockquote class="text-danger">{{ blocker['err_msg']}}</blockquote>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% else %}
+          <div id="piechart{{ loop.index }}"></div>
+          {% endif %}
+        {% endfor %}
+
+        <h4>Summary Chart</h4>
+        <div id="piechartSum"></div>
+
     </div>
 </body>
+<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+<script type="text/javascript">
+  google.load("visualization", "1", {packages:["corechart"]});
+  google.setOnLoadCallback(drawChart);
+  function drawChart() {
+
+    {% set chartsum = {"success": 0, "failure": 0, "fixed": 0, "error": 0} %}
+    {%- for font in tests.keys() %}
+    var data = google.visualization.arrayToDataTable([
+        ['Tests', '#'],
+        ['Success {{ tests[font]['success']|length }}', {{ tests[font]['success']|length }}],
+        ['Fixed {{ tests[font]['fixed']|length }}', {{ tests[font]['fixed']|length }}],
+        ['Failed {{ tests[font]['failure']|length }}', {{ tests[font]['failure']|length }}],
+        ['Error {{ tests[font]['error']|length }}', {{ tests[font]['error']|length }}]
+    ]);
+
+    var options = {
+      title: "{{ font }}",
+      is3D: true,
+      colors: ['#468847', '#3a87ad', '#b94a48', '#c09853'],
+    };
+
+    var chart = new google.visualization.PieChart(document.getElementById('piechart{{ loop.index }}'));
+    chart.draw(data, options);
+
+    {% set chartsum = {
+      "success": chartsum.success + tests[font]['success']|length,
+      "error": chartsum.error + tests[font]['error']|length,
+      "failure": chartsum.failure + tests[font]['failure']|length,
+      "fixed": chartsum.fixed + tests[font]['fixed']|length,
+      } %}
+
+    {% if loop.last %}
+
+    var data = google.visualization.arrayToDataTable([
+        ['Tests', '#'],
+        ['Success {{ chartsum['success'] }}', {{ chartsum['success'] }}],
+        ['Fixed {{ chartsum['fixed'] }}', {{ chartsum['fixed'] }}],
+        ['Failed {{ chartsum['failure'] }}', {{ chartsum['failure'] }}],
+        ['Error {{ chartsum['error'] }}', {{ chartsum['error'] }}]
+    ]);
+
+    var options = {
+      title: "Summary chart",
+      is3D: true,
+      colors: ['#468847', '#3a87ad', '#b94a48', '#c09853'],
+    };
+
+    var chart = new google.visualization.PieChart(document.getElementById('piechartSum'));
+    chart.draw(data, options);
+    {% endif %}
+    {% endfor %}
+  }
+</script>
 </html>
