@@ -58,6 +58,7 @@ def run_bakery(sourcedir, config=None):
         l.close()
 
         b = Bakery('', sourcedir, 'builds', 'build')
+        b.upstream_tests()
 
         b.pipes = [
             pipe.Copy,

@@ -23,7 +23,7 @@ from bakery_lint import run_set
 
 from bakery_cli import pipe
 from bakery_cli.system import shutil, stdoutlog
-from bakery_cli.utils import RedisFd
+from bakery_cli.utils import RedisFd, UpstreamDirectory
 
 
 class BakeryTaskSet(object):
@@ -132,7 +132,7 @@ class Bakery(object):
                 configfile = open(config, 'r')
             except OSError:
                 configfile = open(BAKERY_CONFIGURATION_DEFAULTS, 'r')
-                self.stdout_pipe.write(('Cannot read configuration file.'
+                self.log.write(('Cannot read configuration file.'
                                         ' Using defaults'))
             self.config = yaml.safe_load(configfile)
 
@@ -232,19 +232,20 @@ class Bakery(object):
 
     def upstream_tests(self):
         result = {}
-        source_dir = op.join(self.build_dir, 'sources')
-        self.stdout_pipe.write('Run upstream tests\n', prefix='### ')
+        self.log.write('Run upstream tests\n', prefix='### ')
 
-        result['/'] = run_set(source_dir, 'upstream-repo')
-        for font in self.config.get('process_files', []):
+        result['/'] = run_set(self.rootpath, 'upstream-repo', log=self.log)
+        directory = UpstreamDirectory(self.rootpath)
+
+        for font in directory.ALL_FONTS:
             if font[-4:] in '.ttx':
-                result[font] = run_set(op.join(source_dir, font),
-                                       'upstream-ttx', log=self.stdout_pipe)
+                result[font] = run_set(op.join(self.rootpath, font),
+                                       'upstream-ttx', log=self.log)
             else:
-                result[font] = run_set(op.join(source_dir, font),
-                                       'upstream', log=self.stdout_pipe)
+                result[font] = run_set(op.join(self.rootpath, font),
+                                       'upstream', log=self.log)
 
-        _out_yaml = op.join(source_dir, '.upstream.yaml')
+        _out_yaml = op.join(self.rootpath, '.upstream.yaml')
 
         l = codecs.open(_out_yaml, mode='w', encoding="utf-8")
         l.write(yaml.safe_dump(result))

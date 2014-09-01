@@ -19,7 +19,7 @@ from __future__ import print_function
 import argparse
 import os
 
-from bakery_cli.report import tests, index, buildlog
+from bakery_cli.report import tests, index, buildlog, upstream
 
 
 if __name__ == '__main__':
@@ -30,6 +30,7 @@ if __name__ == '__main__':
                ' Please install jinja2 before using'))
 
     parser = argparse.ArgumentParser()
+    parser.add_argument('--with-upstream-tests')
     parser.add_argument('path')
 
     args = parser.parse_args()
@@ -37,3 +38,7 @@ if __name__ == '__main__':
     tests.generate({'path': os.path.realpath(args.path)})
     index.generate({'path': os.path.realpath(args.path)})
     buildlog.generate({'path': os.path.realpath(args.path)})
+    if args.with_upstream_tests:
+        d = {'upstreamyaml': os.path.realpath(args.with_upstream_tests),
+             'path': os.path.realpath(args.path)}
+        upstream.generate(d)
