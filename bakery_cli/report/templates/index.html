@@ -31,12 +31,12 @@
         <h4>Tests Charts</h4>
         {% for font in tests.keys() %}
           {% set blockers = filter_with_tag(tests[font], 'required') %}
-          {% if blockers %}
           <div class="row">
-            <div class="col-xs-4">
+            <div class="col-xs-6">
               <div id="piechart{{ loop.index }}"></div>
             </div>
-            <div class="col-xs-8">
+            <div class="col-xs-6">
+              {% if blockers %}
               <h5>Blockers</h5>
               {% for blocker in blockers %}
               <div>
@@ -44,11 +44,9 @@
                 <blockquote class="text-danger">{{ blocker['err_msg']}}</blockquote>
               </div>
               {% endfor %}
+              {% endif %}
             </div>
           </div>
-          {% else %}
-          <div id="piechart{{ loop.index }}"></div>
-          {% endif %}
         {% endfor %}
 
         <h4>Summary Chart</h4>
