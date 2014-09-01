@@ -18,8 +18,11 @@ from __future__ import print_function
 import os.path as op
 import yaml
 
-
+from bakery_cli.scripts.vmet import metricview
 from bakery_cli.utils import UpstreamDirectory
+
+from fontaine.cmap import Library
+from fontaine.font import FontFactory
 
 
 TAB = 'Index'
@@ -33,13 +36,34 @@ def filter_with_tag(fonttestdata, tag):
     return [test for test in tests if tag in test['tags']]
 
 
+def get_fonts_table_sizes(fonts):
+    """ Returns tuple with available tables from all fonts and their length """
+    from fontTools.ttLib import sfnt
+    _fonts = {}
+    tables = []
+    for font in fonts:
+        _fonts[op.basename(font)] = {}
+        with open(font) as fp_font:
+            sf = sfnt.SFNTReader(fp_font)
+            for t in sf.tables:
+                if t not in tables:
+                    tables.append(t)
+                _fonts[op.basename(font)][t] = sf.tables[t].length
+    return tables, _fonts
+
+
+def get_orthography(fontaine):
+    library = Library(collections=['subsets'])
+    return fontaine.get_orthographies(_library=library)
+
+
 def generate(config):
     from jinja2 import Template
-    upstream = UpstreamDirectory(config['path'])
+    directory = UpstreamDirectory(config['path'])
 
     faces = []
 
-    for font in upstream.BIN:
+    for font in directory.BIN:
         if 'static/' in font:
             continue
         basename = op.basename(font)[:-4]
@@ -51,7 +75,26 @@ def generate(config):
     data = yaml.load(open(op.join(config['path'], '.tests.yaml')))
     basenames = [op.basename(font['path']) for font in faces]
 
+    fontpaths = [op.join(config['path'], path)
+                 for path in directory.BIN]
+    ttftablesizes = get_fonts_table_sizes(fontpaths)
+    vmet = metricview(fontpaths)
+
+    buildstate = yaml.load(open(op.join(config['path'],
+                                'build.state.yaml')))
+
+    fonts = {}
+    for filename in fontpaths:
+        fontaine = FontFactory.openfont(filename)
+        fonts[filename] = fontaine
+
     print(template.render(fonts=faces, tests=data,
                           basenames=basenames,
-                          filter_with_tag=filter_with_tag).encode('utf8'),
+                          filter_with_tag=filter_with_tag,
+                          vmet=vmet,
+                          autohinting_sizes=buildstate.get('autohinting_sizes', []),
+                          ttftablesizes=ttftablesizes,
+                          fontaineFonts=fonts.itervalues(),
+                          get_orthography=get_orthography,
+                          hex=hex).encode('utf8'),
           file=destfile)
