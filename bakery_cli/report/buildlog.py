@@ -25,12 +25,12 @@ TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
 t = lambda templatefile: op.join(TEMPLATE_DIR, templatefile)
 
 
-def generate(config):
+def generate(config, outfile='buildlog.html'):
     from jinja2 import Template
 
     template = Template(open(t('buildlog.html')).read())
 
-    destfile = open(op.join(config['path'], 'buildlog.html'), 'w')
+    destfile = open(op.join(config['path'], outfile), 'w')
 
     log = open(op.join(config['path'], 'build.log')).read()
     print(template.render(log=log, markdown=markdown).encode('utf8'), file=destfile)

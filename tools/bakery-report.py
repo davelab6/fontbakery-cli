@@ -35,10 +35,15 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    tests.generate({'path': os.path.realpath(args.path)})
-    index.generate({'path': os.path.realpath(args.path)})
-    buildlog.generate({'path': os.path.realpath(args.path)})
-    if args.with_upstream_tests:
-        d = {'upstreamyaml': os.path.realpath(args.with_upstream_tests),
-             'path': os.path.realpath(args.path)}
-        upstream.generate(d)
+    try:
+        tests.generate({'path': os.path.realpath(args.path)})
+        index.generate({'path': os.path.realpath(args.path)})
+        if args.with_upstream_tests:
+            d = {'upstreamyaml': os.path.realpath(args.with_upstream_tests),
+                 'path': os.path.realpath(args.path)}
+            upstream.generate(d)
+    except Exception:
+        buildlog.generate({'path': os.path.realpath(args.path)},
+                          'index.html')
+    else:
+        buildlog.generate({'path': os.path.realpath(args.path)})
