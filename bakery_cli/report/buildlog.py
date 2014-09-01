@@ -16,6 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
 import os.path as op
+from markdown import markdown
 
 
 TAB = 'BuildLog'
@@ -32,4 +33,4 @@ def generate(config):
     destfile = open(op.join(config['path'], 'buildlog.html'), 'w')
 
     log = open(op.join(config['path'], 'build.log')).read()
-    print(template.render(log=log).encode('utf8'), file=destfile)
+    print(template.render(log=log, markdown=markdown).encode('utf8'), file=destfile)

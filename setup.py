@@ -79,7 +79,8 @@ setup(
         'robofab',
         'fontaine',
         'html5lib',
-        'python-magic'
+        'python-magic',
+        'markdown'
     ],
     setup_requires=['nose', 'mock', 'coverage'],
     dependency_links=['https://github.com/behdad/fontTools/tarball/master#egg=fonttools-2.4'],
