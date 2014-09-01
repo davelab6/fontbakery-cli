@@ -155,7 +155,7 @@
           <tr class="{{ support | replace('full','success') | replace('partial','info') | replace('fragmentary','warning') | replace('unsupported','error') }}">
             <td>{{ charmap.common_name }}
             <td>{{ missing }}
-            <td>{% for item in missingchars %} {{ '&#x{:x};'.format(item)|safe }} {% endfor %}
+            <td>{% for item in missingchars %} {{ '&#{};'.format(item)|safe }} {% endfor %}
           </tr>
         {% endfor %}
         </tbody>

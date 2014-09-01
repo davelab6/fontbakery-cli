@@ -234,7 +234,8 @@ class Bakery(object):
         result = {}
         self.log.write('Run upstream tests\n', prefix='### ')
 
-        result['/'] = run_set(self.rootpath, 'upstream-repo', log=self.log)
+        result['Project'] = run_set(self.rootpath, 'upstream-repo',
+                                    log=self.log)
         directory = UpstreamDirectory(self.rootpath)
 
         for font in directory.ALL_FONTS:
