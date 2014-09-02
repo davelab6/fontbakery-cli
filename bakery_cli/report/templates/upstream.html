@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ ("Upstream") }}</title>
+    <title>Upstream Tests</title>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
 </head>
@@ -17,59 +17,44 @@
 
         <h3>Upstream Tests</h3>
 
-        <div style="max-width:900px" id="fonts-tests">
-    <ul class="inline text-muted">
-        <li><i class="fa fa-circle text-warning"></i> {{ ("means the test didn't work: fix the test") }}</li>
-        <li><i class="fa fa-circle text-danger"></i> {{ ("means the test failed: fix the font") }}</li>
-        <li><i class="fa fa-circle text-info"></i> {{ ("means the test was autofixed") }}</li>
-        <li><i class="fa fa-circle text-success"></i> {{ ("means the test passed: fix yourself some cake") }}</li>
-    </ul>
+        <table class="table">
+            {% set map = {'success': 'OK', 'failure': 'FAIL', 'error': 'ERROR', 'fixed': 'FIXED'} %}
+            {% set testTypes = { 'error': 'danger', 'failure': 'error', 'success': 'success', 'fixed': 'info'} %}
 
-    {# Tests per font file #}
-    {%- for font in tests.keys() %}
-    <div class="row">
-        <div class="col-md-9"><h4 class="accordion-toggle" data-toggle="collapse" data-target="#fview{{loop.index}}">{{ font }} <i class="fa fa-angle-double-down"></i></h4></div>
-        <div class="col-md-3">
-        {% set sl = tests[font]['success']|length|int %}
-        {% set el = tests[font]['error']|length|int %}
-        {% set fl = tests[font]['failure']|length|int %}
-        {% set ff = tests[font]['fixed']|length|int %}
+            {% for font in tests %}
 
-        {% set  t = sl + el + fl + ff %}
+                {%- for testType, icon in testTypes.iteritems() | sort %}
+                    {% for item in sort(tests[font][testType]) %}
+                    <tr>
+                        <td>{{ item.tags }}</td>
+                        <td><span class="apopover" data-placement="top" data-content="{{ item.name|replace('.','/') }}.py:{{ item.methodName }}()">{{ item.methodDoc }}</span></td>
+                        <td>{{ font }}</td>
+                        <td>{{ map[testType] }}</td>
+                    </tr>
+                    {% endfor %}
 
-        <!-- <i class="fa fa-circle text-warning"></i> {{fl}} <i class="fa fa-circle text-danger"></i> {{el}} <i class="fa fa-circle text-success"></i> {{sl}} -->
-        <div class="progress" style="height:10px; margin-top:15px;">
-            <div class="progress-bar progress-bar-danger" style="width: {{ 100 * el/(t or 1) }}%;"></div>
-            <div class="progress-bar progress-bar-warning" style="width: {{ 100 * fl/(t or 1) }}%;"></div>
-            <div class="progress-bar progress-bar-info" style="width: {{ 100 * ff/(t or 1) }}%;"></div>
-            <div class="progress-bar progress-bar-success" style="width: {{ 100 * sl/(t or 1) }}%;"></div>
-        </div>
-        </div>
-      </div>
-        <div id="fview{{loop.index}}" class="collapse">
-        <table class="table table-condensed tablesorter">
-        <thead style="text-align:left">
-            <th style="text-align:center">Result </th>
-            <th>Test</th>
-        </thead>
-        {% set testTypes = { 'error': 'danger', 'failure': 'warning', 'success': 'success', 'fixed': 'info'} %}
-        {%- for testType, icon in testTypes.iteritems() | sort %}
-          {%- for item in sort(tests[font][testType]) %}
-            <tr>
-                <td style="text-align:center"><i class="fa fa-circle text-{{ icon }}"></i> <span class="hidden">{{ icon }}</span></td>
-                <td class="{{ icon }}">{% if item.tags %}<span class="pull-right text-info"><small>{{ item.tags|join(', ') }}</small></span>{% endif %} {% if item.methodDoc == None %}{{item.methodName}}() <span class="text-muted">({{ ("add docstring") }})</span>{% else %}{{item.methodDoc|safe}}{% endif %} <br />
-                {% if item.err_msg %}<div class="alert alert-info" style="margin-bottom:5px; padding:5px">{{ item.err_msg }}</div>{% endif %}
-                <small class="text-muted"><strong>{{item.tool}}</strong>: {{ item.methodName }} in {{ item.name|replace('.','/') }}.py</td>
-            </tr>
-          {%- endfor %}
-        {%- endfor %}
+                {%- endfor %}
+
+            {% endfor %}
         </table>
-        </div>
-    {%- endfor %}
 
     </div>
-    </div>
+
 </body>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    $(function(){
+        // apopover class used on dashboard
+        $('.apopover').each(function (index, item) {
+            $(item).popover();
+        });
+    })
+</script>
+<style>
+    .popover {
+        max-width: 1980px;
+        font-family: Courier;
+    }
+</style>
 </html>

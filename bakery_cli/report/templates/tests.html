@@ -18,14 +18,6 @@
 
     <h3>Downstream Tests</h3>
 
-    <div style="max-width:900px" id="fonts-tests">
-    <ul class="inline text-muted">
-        <li><i class="fa fa-circle text-warning"></i> {{ ("means the test didn't work: fix the test") }}</li>
-        <li><i class="fa fa-circle text-danger"></i> {{ ("means the test failed: fix the font") }}</li>
-        <li><i class="fa fa-circle text-info"></i> {{ ("means the test was autofixed") }}</li>
-        <li><i class="fa fa-circle text-success"></i> {{ ("means the test passed: fix yourself some cake") }}</li>
-    </ul>
-
     <table class="table">
         {% set map = {'success': 'OK', 'failure': 'FAIL', 'error': 'ERROR', 'fixed': 'FIXED'} %}
         {% set testTypes = { 'error': 'danger', 'failure': 'error', 'success': 'success', 'fixed': 'info'} %}

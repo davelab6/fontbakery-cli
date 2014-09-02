@@ -43,21 +43,21 @@ class ProjectUpstreamTestCase(TestCase):
 
     @tags('note')
     def test_fontlog_txt_exists(self):
-        """ Repository does contain bakery.yaml configuration file """
+        """ Repository does contain FONTLOG.txt file """
         self.assertTrue(os.path.exists(os.path.join(self.path, 'FONTLOG.txt')),
                         msg=('File `FONTLOG.txt` does not exist in root '
                              'of upstream repository'))
 
     @tags('note')
     def test_description_html_exists(self):
-        """ Repository does contain bakery.yaml configuration file """
+        """ Repository does containDESCRIPTION.en_us.html file """
         self.assertTrue(os.path.exists(os.path.join(self.path, 'DESCRIPTION.en_us.html')),
                         msg=('File `DESCRIPTION.en_us.html` does not exist in root '
                              'of upstream repository'))
 
     @tags('note')
     def test_metadata_json_exists(self):
-        """ Repository does contain bakery.yaml configuration file """
+        """ Repository does contain METADATA.json file """
         self.assertTrue(os.path.exists(os.path.join(self.path, 'METADATA.json')),
                         msg=('File `METADATA.json` does not exist in root '
                              'of upstream repository'))
