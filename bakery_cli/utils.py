@@ -20,6 +20,10 @@ import os.path as op
 import re
 
 
+def weighted_dict_sort(weighteddict):
+    return weighteddict
+
+
 class RedisFd(object):
     """ Redis File Descriptor class, publish writen data to redis channel
         in parallel to file """
