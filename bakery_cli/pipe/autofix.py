@@ -29,56 +29,6 @@ from bakery_cli.scripts import gasp
 from bakery_cli.scripts import dsig
 
 
-class AutoFix(object):
-
-    def __init__(self, bakery):
-        self.project_root = bakery.project_root
-        self.builddir = bakery.build_dir
-        self.bakery = bakery
-
-    def execute(self, pipedata):
-        task = self.bakery.logging_task('Applied autofixes')
-
-        if self.bakery.forcerun:
-            return
-
-        _out_yaml = op.join(self.builddir, '.tests.yaml')
-        try:
-            result = yaml.safe_load(open(_out_yaml, 'r'))
-            fonts = result.keys()
-            for font in fonts:
-                failure_list = []
-                fixed_list = []
-                success_list = []
-                for test in result[font]['failure']:
-                    if test['autofix']:
-                        # self.bakery.logging_cmd('some fix')
-                        fixed_list.append(test)
-                        continue
-                    failure_list.append(test)
-
-                for test in result[font]['success']:
-                    if test['autofix']:
-                        fixed_list.append(test)
-                        # self.bakery.logging_cmd('some fix')
-                        continue
-                    success_list.append(test)
-
-                del result[font]['failure']
-                del result[font]['success']
-                result[font]['failure'] = success_list
-                result[font]['failure'] = failure_list
-                result[font]['fixed'] = fixed_list
-
-            l = open(_out_yaml, 'w')
-            l.write(yaml.safe_dump(result))
-            l.close()
-        except:
-            self.bakery.logging_task_done(task, failed=True)
-            raise
-        self.bakery.logging_task_done(task)
-
-
 PYPATH = ''
 
 

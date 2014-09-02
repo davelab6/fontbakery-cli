@@ -59,10 +59,12 @@ class BakeryTestCase(unittest.TestCase):
 class BakeryTestResult(unittest.TestResult):
 
     def __init__(self, stream=None, descriptions=None, verbosity=None,
-                 success_list=None, error_list=None, failure_list=None):
+                 success_list=None, error_list=None, failure_list=None,
+                 fixed_list=None):
         self.sl = success_list
         self.el = error_list
         self.fl = failure_list
+        self.ff = fixed_list
         super(BakeryTestResult, self).__init__(self)
 
     def callmethod(self, methodname, test):
@@ -75,8 +77,6 @@ class BakeryTestResult(unittest.TestResult):
 
     def addSuccess(self, test):
         super(BakeryTestResult, self).addSuccess(test)
-        if hasattr(self.sl, 'append'):
-            self.sl.append(test)
 
         if hasattr(test, 'logging'):
             test.logging.write('... {} .. OK'.format(test.id()))
@@ -85,6 +85,11 @@ class BakeryTestResult(unittest.TestResult):
         if hasattr(test_method, 'autofix'):
             if getattr(test_method, 'autofix_always_run', False):
                 self.callmethod(test_method.autofix_method, test)
+
+            # if testcase is marked as autofixed then add it to ff
+            self.ff.append(test)
+        elif hasattr(self.sl, 'append'):
+            self.sl.append(test)
 
     def addError(self, test, err):
         super(BakeryTestResult, self).addError(test, err)
@@ -102,8 +107,6 @@ class BakeryTestResult(unittest.TestResult):
         _, _err_exception, _ = err
         test._err = err
         test._err_msg = _err_exception.message
-        if hasattr(self.fl, 'append'):
-            self.fl.append(test)
 
         if hasattr(test, 'logging'):
             test.logging.write('... {} .. FAIL'.format(test.id()))
@@ -111,15 +114,21 @@ class BakeryTestResult(unittest.TestResult):
         test_method = getattr(test, test._testMethodName)
         if hasattr(test_method, 'autofix'):
             self.callmethod(test_method.autofix_method, test)
+            self.ff.append(test)
+        elif hasattr(self.fl, 'append'):
+            self.fl.append(test)
 
 
 class BakeryTestRunner(unittest.TextTestRunner):
+
     def __init__(self, descriptions=True, verbosity=1, resultclass=None,
-                 success_list=None, error_list=None, failure_list=None):
+                 success_list=None, error_list=None, failure_list=None,
+                 fixed_list=None):
 
         self.sl = success_list
         self.el = error_list
         self.fl = failure_list
+        self.ff = fixed_list
 
         self.results = []
         self.descriptions = descriptions
@@ -129,8 +138,8 @@ class BakeryTestRunner(unittest.TextTestRunner):
         super(BakeryTestRunner, self).__init__(self)
 
     def _makeResult(self):
-        return self.resultclass(self.stream, self.descriptions,
-                                self.verbosity, self.sl, self.el, self.fl)
+        return self.resultclass(self.stream, self.descriptions, self.verbosity,
+                                self.sl, self.el, self.fl, self.ff)
 
     def run(self, test):
         "Run the given test case or test suite."
@@ -200,12 +209,14 @@ def run_suite(suite):
     result = {
         'success': [],
         'error': [],
-        'failure': []
+        'failure': [],
+        'fixed': []
     }
     runner = BakeryTestRunner(resultclass=BakeryTestResult,
                               success_list=result['success'],
                               error_list=result['error'],
-                              failure_list=result['failure'])
+                              failure_list=result['failure'],
+                              fixed_list=result['fixed'])
     runner.run(suite)
 
     check = lambda x: 'required' in getattr(x, x._testMethodName).tags

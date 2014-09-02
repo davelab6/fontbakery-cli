@@ -68,7 +68,6 @@ def run_bakery(sourcedir, config=None):
             pipe.Metadata,
             pipe.FontLint,
             pipe.Optimize,
-            pipe.AutoFix,
             pipe.CopyLicense,
             pipe.CopyFontLog,
             pipe.CopyDescription,

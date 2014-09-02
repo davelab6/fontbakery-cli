@@ -96,7 +96,6 @@ class Bakery(object):
             pipe.FontLint,
             pipe.Optimize,
             pipe.FontCrunch,
-            pipe.AutoFix,
             pipe.CopyLicense,
             pipe.CopyFontLog,
             pipe.CopyDescription,

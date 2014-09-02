@@ -7,7 +7,6 @@ from bakery_cli.pipe.pyfontaine import PyFontaine
 from bakery_cli.pipe.metadata import Metadata
 from bakery_cli.pipe.fontlint import FontLint
 from bakery_cli.pipe.optimize import Optimize
-from bakery_cli.pipe.autofix import AutoFix
 from bakery_cli.pipe.rename import Rename
 from bakery_cli.pipe.checkout import Checkout
 from bakery_cli.pipe.zip import Zip

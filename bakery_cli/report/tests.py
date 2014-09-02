@@ -48,6 +48,12 @@ def generate(config):
 
     data = yaml.load(open(op.join(config['path'], '.tests.yaml')))
 
+    tests = {}
+
+    # for font in data:
+
+    #     for test in
+
     template = Template(open(t('tests.html')).read())
 
     destfile = open(op.join(config['path'], 'tests.html'), 'w')

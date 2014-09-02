@@ -16,6 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
 from bakery_lint.base import BakeryTestCase as TestCase
+from bakery_cli.ttfont import Font
 
 
 class TestFontUnencodedGlyph(TestCase):
@@ -28,3 +29,4 @@ class TestFontUnencodedGlyph(TestCase):
     def test_font_unencoded_glyphs(self):
         """ Font does not have unencoded glyphs """
         ttfont = Font.get_ttfont(self.path)
+        assert ttfont
