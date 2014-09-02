@@ -27,26 +27,23 @@
     </ul>
 
     <table class="table">
-        {% set map = {'OK': 'success', 'FAIL': 'warning', 'ERROR': 'danger', 'FIXED': 'info'} %}
-        {% for testmethod in sort(tests) %}
-        {% set item = tests[testmethod] %}
-        <tr>
-            <th colspan="2">
-                {{ item.methodDoc }}<br />
-                <small class="text-muted"><strong>{{item.tool}}</strong>: {{ item.methodName }} in {{ item.name|replace('.','/') }}.py
-                {% if item.tags %}<span class="pull-right text-info"><small>{{ item.tags|join(', ') }}</small></span>{% endif %}
-            </th>
-        </tr>
-        {% for font in item.fonts %}
-        <tr class="{{ map[font.status] }}">
-            <td>
-                {{ font.name }}
-            </td>
-            <td>
-                {{ font.status }}
-            </td>
-        </tr>
-        {% endfor %}
+        {% set map = {'success': 'OK', 'failure': 'FAIL', 'error': 'ERROR', 'fixed': 'FIXED'} %}
+        {% set testTypes = { 'error': 'danger', 'failure': 'error', 'success': 'success', 'fixed': 'info'} %}
+
+        {% for font in tests %}
+
+            {%- for testType, icon in testTypes.iteritems() | sort %}
+                {% for item in sort(tests[font][testType]) %}
+                <tr>
+                    <td>{{ item.tags }}</td>
+                    <td><span class="apopover" data-placement="top" data-content="{{ item.name|replace('.','/') }}.py:{{ item.methodName }}()">{{ item.methodDoc }}</span></td>
+                    <td>{{ font }}</td>
+                    <td>{{ map[testType] }}</td>
+                </tr>
+                {% endfor %}
+
+            {%- endfor %}
+
         {% endfor %}
     </table>
 
@@ -55,4 +52,18 @@
 </body>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    $(function(){
+        // apopover class used on dashboard
+        $('.apopover').each(function (index, item) {
+            $(item).popover();
+        });
+    })
+</script>
+<style>
+    .popover {
+        max-width: 1980px;
+        font-family: Courier;
+    }
+</style>
 </html>

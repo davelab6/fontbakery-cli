@@ -43,6 +43,7 @@ if __name__ == '__main__':
                  'path': os.path.realpath(args.path)}
             upstream.generate(d)
     except Exception:
+        raise
         buildlog.generate({'path': os.path.realpath(args.path)},
                           'index.html')
     else:

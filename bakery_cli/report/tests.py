@@ -19,8 +19,6 @@ from __future__ import print_function
 import os.path as op
 import yaml
 
-from bakery_cli.utils import weighted_dict_sort
-
 
 TAB = 'Tests'
 TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
@@ -29,110 +27,30 @@ t = lambda templatefile: op.join(TEMPLATE_DIR, templatefile)
 
 
 def sort(data):
-    data = weighted_dict_sort(data)
-
-    a = set([])
+    a = []
     for d in data:
-        if 'required' in data[d]['tags']:
-            a.add(d)
+        if 'required' in d['tags']:
+            a.append(d)
 
     for d in data:
-        if 'note' in data[d]['tags'] and 'required' not in data[d]['tags']:
-            a.add(d)
+        if 'note' in d['tags'] and 'required' not in d['tags']:
+            a.append(d)
 
     for d in data:
-        if 'note' not in data[d]['tags'] and 'required' not in data[d]['tags']:
-            a.add(d)
+        if 'note' not in d['tags'] and 'required' not in d['tags']:
+            a.append(d)
 
     return a
+
 
 def generate(config):
     from jinja2 import Template
 
     data = yaml.load(open(op.join(config['path'], '.tests.yaml')))
 
-    tests = {}
-
-    for font in data:
-
-        for test in data[font]['success']:
-            methodname = test['methodName']
-            if methodname not in tests:
-                tests[methodname] = {
-                    'methodDoc': test['methodDoc'],
-                    'methodName': test['methodName'],
-                    'name': test['name'],
-                    'tags': test['tags'],
-                    'targets': test['targets'],
-                    'tool': test['tool'],
-                    'fonts': []
-                }
-
-            tests[methodname]['fonts'].append({
-                'name': font,
-                'status': 'OK'
-                })
-
-        for test in data[font]['error']:
-            methodname = test['methodName']
-            if methodname not in tests:
-                tests[methodname] = {
-                    'methodDoc': test['methodDoc'],
-                    'methodName': test['methodName'],
-                    'name': test['name'],
-                    'tags': test['tags'],
-                    'targets': test['targets'],
-                    'tool': test['tool'],
-                    'fonts': []
-                }
-
-            tests[methodname]['fonts'].append({
-                'name': font,
-                'status': 'ERROR',
-                'err_msg': test['err_msg']
-                })
-
-        for test in data[font]['failure']:
-            methodname = test['methodName']
-            if methodname not in tests:
-                tests[methodname] = {
-                    'methodDoc': test['methodDoc'],
-                    'methodName': test['methodName'],
-                    'name': test['name'],
-                    'tags': test['tags'],
-                    'targets': test['targets'],
-                    'tool': test['tool'],
-                    'fonts': []
-                }
-
-            tests[methodname]['fonts'].append({
-                'name': font,
-                'status': 'FAIL',
-                'err_msg': test['err_msg']
-                })
-
-        for test in data[font]['fixed']:
-            methodname = test['methodName']
-            if methodname not in tests:
-                tests[methodname] = {
-                    'methodDoc': test['methodDoc'],
-                    'methodName': test['methodName'],
-                    'name': test['name'],
-                    'tags': test['tags'],
-                    'targets': test['targets'],
-                    'tool': test['tool'],
-                    'fonts': []
-                }
-
-            tests[methodname]['fonts'].append({
-                'name': font,
-                'status': 'FIXED',
-                'err_msg': test['err_msg']
-                })
-
     template = Template(open(t('tests.html')).read())
 
     destfile = open(op.join(config['path'], 'tests.html'), 'w')
 
-    print(template.render(tests=tests, sort=sort).encode('utf8'),
+    print(template.render(tests=data, sort=sort).encode('utf8'),
           file=destfile)
