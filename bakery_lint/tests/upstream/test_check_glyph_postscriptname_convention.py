@@ -42,4 +42,4 @@ class CheckPostscriptnameGlyphConventions(TestCase):
                            ' start with a digit or period. The only exception'
                            ' is the special character ".notdef". "twocents",'
                            ' "a1", and "_" are valid glyph names. "2cents"'
-                           ' and ".twocents" are not.'))
+                           ' and ".twocents" are not.') % glyph)
