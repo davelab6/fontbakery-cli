@@ -17,7 +17,8 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
 import argparse
-from multiprocessing import Pool
+import multiprocessing
+import multiprocessing.pool
 import os
 import sys
 import yaml
@@ -29,13 +30,9 @@ from bakery_cli.utils import UpstreamDirectory
 
 class DualLog(object):
 
-    def __init__(self, filep):
-        self.filep = filep
-
     def write(self, msg, prefix=u''):
         if prefix:
             msg = prefix + msg
-        print(msg.encode('utf8'), file=self.filep)
         print(msg.encode('utf8'))
 
 
@@ -78,8 +75,6 @@ def run_bakery(sourcedir, config=None):
         if not os.path.exists(os.path.join(sourcedir, 'builds', 'build')):
             os.makedirs(os.path.join(sourcedir, 'builds', 'build'))
 
-        b.log = DualLog(open(os.path.abspath(buildlog_path), 'w'))
-
         config = os.path.join(sourcedir, '.bakery.yaml')
         b.load_config(config)
 
@@ -90,18 +85,34 @@ def run_bakery(sourcedir, config=None):
         raise
 
 
+class NoDaemonProcess(multiprocessing.Process):
+    # make 'daemon' attribute always return False
+    def _get_daemon(self):
+        return False
+    def _set_daemon(self, value):
+        pass
+    daemon = property(_get_daemon, _set_daemon)
+
+# We sub-class multiprocessing.pool.Pool instead of multiprocessing.Pool
+# because the latter is only a wrapper function, not a proper class.
+class Pool(multiprocessing.pool.Pool):
+    Process = NoDaemonProcess
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('projectpath', nargs='+',
                         help=("Path to directory with UFO, SFD, TTX, TTF or OTF files"))
     args = parser.parse_args()
 
-    # for p in args.projectpath:
-    #     run_bakery(p)
+    for p in args.projectpath:
+        run_bakery(p)
 
-    pool = Pool(4)
 
-    pool.map(run_bakery, args.projectpath)
-    pool.close()
 
-    pool.join()
+    # pool = Pool(4)
+
+    # pool.map(run_bakery, args.projectpath)
+    # pool.close()
+
+    # pool.join()

@@ -15,9 +15,11 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import glob
+import multiprocessing
 import os
 import os.path as op
 import shutil
+
 
 from bakery_cli.system import shutil as shellutil
 
@@ -48,6 +50,10 @@ class Pipe(object):
                 raise
 
         return pipedata
+
+
+def taskcopy(k, pipedata):
+    k.execute(pipedata)
 
 
 class Copy(Pipe):
@@ -85,11 +91,14 @@ class Copy(Pipe):
         if not op.exists(build_source_dir):
             os.makedirs(build_source_dir)
 
-        pipechain = [CopyLicense, CopyDescription, CopyTxtFiles,
-                     CopyFontLog, CopyMetadata]
+        pipechain = [CopyMetadata, CopyLicense, CopyDescription, CopyFontLog,
+                     CopyTxtFiles]
 
         for klass in pipechain:
-            klass(self.bakery).execute(pipedata)
+            k = klass(self.bakery)
+            self.bakery.logging_cmd('// target copy background')
+            p = multiprocessing.Process(target=taskcopy, args=(k, pipedata, ))
+            p.start()
 
         try:
             process_files = list(pipedata.get('process_files', []))
@@ -117,7 +126,6 @@ class Copy(Pipe):
 class CopyLicense(Pipe):
 
     def execute(self, pipedata):
-
         if pipedata.get('license_file', None):
             # Set _in license file name
             license_file_in_full_path = pipedata['license_file']
