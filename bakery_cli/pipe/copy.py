@@ -39,16 +39,12 @@ class Pipe(object):
     def execute(self, pipedata, prefix=""):
 
         if op.exists(op.join(self.project_root, self.filename)):
-            task = self.bakery.logging_task('Copy %s' % self.filename)
-            if self.bakery.forcerun:
-                return pipedata
-
             try:
+                args = [op.join(self.project_root, self.filename),
+                        self.builddir]
                 copy_single_file(op.join(self.project_root, self.filename),
                                  self.builddir, self.bakery.log)
-                self.bakery.logging_task_done(task)
             except:
-                self.bakery.logging_task_done(task, failed=True)
                 raise
 
         return pipedata
@@ -69,27 +65,31 @@ class Copy(Pipe):
             splitted_ttx_paths.append(path[l:].strip('/'))
         return splitted_ttx_paths
 
-    def copy_to_builddir(self, process_files):
-        build_source_dir = op.join(self.builddir, 'sources')
-        if not op.exists(build_source_dir):
-            os.makedirs(build_source_dir)
-
-        args = ' '.join(process_files + [build_source_dir])
+    def copy_to_builddir(self, process_files, destdir):
+        args = ' '.join(process_files + [destdir])
         self.bakery.logging_cmd('cp -a %s' % args)
 
         for path in process_files:
             path = op.join(self.project_root, path)
             if op.isdir(path):
-                shutil.copytree(path, op.join(build_source_dir, op.basename(path)))
+                shutil.copytree(path, op.join(destdir, op.basename(path)))
             else:
-                shutil.copy(path, build_source_dir)
-
-        return 'sources'
+                shutil.copy(path, destdir)
 
     def execute(self, pipedata):
         task = self.bakery.logging_task('Copying sources')
         if self.bakery.forcerun:
             return pipedata
+
+        build_source_dir = op.join(self.builddir, 'sources')
+        if not op.exists(build_source_dir):
+            os.makedirs(build_source_dir)
+
+        pipechain = [CopyLicense, CopyDescription, CopyTxtFiles,
+                     CopyFontLog, CopyMetadata]
+
+        for klass in pipechain:
+            klass(self.bakery).execute(pipedata)
 
         try:
             process_files = list(pipedata.get('process_files', []))
@@ -98,7 +98,7 @@ class Copy(Pipe):
             for path in process_files:
                 paths_to_copy += self.lookup_splitted_ttx(path)
 
-            build_source_dir = self.copy_to_builddir(paths_to_copy)
+            self.copy_to_builddir(paths_to_copy, build_source_dir)
 
             sources = []
             for path in process_files:
@@ -117,9 +117,6 @@ class Copy(Pipe):
 class CopyLicense(Pipe):
 
     def execute(self, pipedata):
-        task = self.bakery.logging_task('Copy license file')
-        if self.bakery.forcerun:
-            return
 
         if pipedata.get('license_file', None):
             # Set _in license file name
@@ -159,24 +156,20 @@ class CopyDescription(Pipe):
 class CopyTxtFiles(Pipe):
 
     def execute(self, pipedata, prefix=""):
-        if pipedata.get('txt_files_copied', None):
-            task = self.bakery.logging_task('Copy txt files')
-            if self.bakery.forcerun:
-                return
+        if not pipedata.get('txt_files_copied'):
+            return pipedata
 
-            try:
-                paths = []
-                for filename in pipedata['txt_files_copied']:
-                    paths.append(op.join(self.project_root, filename))
-                    shutil.copy(op.join(self.project_root, filename),
-                                self.builddir)
+        try:
+            paths = []
+            for filename in pipedata['txt_files_copied']:
+                paths.append(op.join(self.project_root, filename))
+                shutil.copy(op.join(self.project_root, filename),
+                            self.builddir)
 
-                args = paths + [self.builddir]
-                self.bakery.logging_cmd('cp -a %s' % ' '.join(args))
-                self.bakery.logging_task_done(task)
-            except:
-                self.bakery.logging_task_done(task, failed=True)
-                raise
+            args = paths + [self.builddir]
+            self.bakery.logging_cmd('cp -a %s' % ' '.join(args))
+        except:
+            raise
         return pipedata
 
 
