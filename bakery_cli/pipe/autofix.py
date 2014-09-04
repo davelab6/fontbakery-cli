@@ -34,7 +34,7 @@ PYPATH = ''
 
 def replace_origfont(testcase):
     command = "$ mv {0}.fix {0}".format(testcase.path)
-    if hasattr(testcase, 'logging'):
+    if hasattr(testcase, 'logging') and testcase.logging:
         testcase.logging.write(command)
     shutil.move(testcase.path + '.fix', testcase.path)
 

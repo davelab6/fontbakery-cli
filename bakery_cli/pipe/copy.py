@@ -88,7 +88,7 @@ class Copy(Pipe):
             os.makedirs(source_dir)
         return source_dir
 
-    def copy_helper_files(self):
+    def copy_helper_files(self, pipedata):
 
         pipechain = [CopyMetadata, CopyLicense, CopyDescription, CopyFontLog,
                      CopyTxtFiles]
@@ -105,7 +105,7 @@ class Copy(Pipe):
 
         source_dir = self.create_source_dir()
 
-        self.copy_helper_files()
+        self.copy_helper_files(pipedata)
 
         try:
             process_files = list(pipedata.get('process_files', []))

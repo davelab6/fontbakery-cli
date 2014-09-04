@@ -14,4 +14,10 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+from bakery_lint.base import BakeryTestCase as TestCase
 
+
+class TTFSourceFontFileNameEqualsFamilyStyle(TestCase):
+
+    def test_source_ttf_font_filename_equals_familystyle(self):
+        pass

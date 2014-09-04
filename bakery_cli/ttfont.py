@@ -161,6 +161,7 @@ class Font(BaseFont):
         elif entry.platformID == 3 and entry.langID == 0x409:
             return Font.bin2unistring(entry)
 
+
     @property
     def fullname(self):
         """ Returns fullname of fonts
@@ -178,6 +179,16 @@ class Font(BaseFont):
         return ''
 
     @property
+    def _style_name(self):
+        for entry in self.names:
+            if entry.nameID != 2:
+                continue
+            value = self.platform_entry(entry)
+            if value:
+                return value
+        return ''
+
+    @property
     def stylename(self):
         """ Returns OpenType specific style name
 
@@ -185,8 +196,13 @@ class Font(BaseFont):
         >>> font.stylename
         'Bold'
         """
+        return self._style_name
+
+    @property
+    def _family_name(self):
+
         for entry in self.names:
-            if entry.nameID != 2:
+            if entry.nameID != 1:
                 continue
             value = self.platform_entry(entry)
             if value:
@@ -201,13 +217,7 @@ class Font(BaseFont):
         >>> font.familyname
         'Font'
         """
-        for entry in self.names:
-            if entry.nameID != 1:
-                continue
-            value = self.platform_entry(entry)
-            if value:
-                return value
-        return ''
+        return self._family_name
 
     @property
     def ot_family_name(self):
