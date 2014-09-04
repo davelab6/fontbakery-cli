@@ -96,7 +96,6 @@ class Copy(Pipe):
 
         for klass in pipechain:
             k = klass(self.bakery)
-            self.bakery.logging_cmd('// target copy background')
             p = multiprocessing.Process(target=taskcopy, args=(k, pipedata, ))
             p.start()
 

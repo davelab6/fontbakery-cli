@@ -16,9 +16,40 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import codecs
 import os.path as op
+import multiprocessing
 
 from fontaine.cmap import Library
 from fontaine.builder import Builder, Director
+
+from bakery_cli.utils import UpstreamDirectory
+
+
+def targettask(pyfontaine, pipedata):
+    pyfontaine.bakery.logging_raw('starting pyfontaine process\n')
+    try:
+        library = Library(collections=['subsets'])
+        director = Director(_library=library)
+
+        sourcedir = op.join(pyfontaine.builddir, 'sources')
+        directory = UpstreamDirectory(sourcedir)
+
+        fonts = []
+        for font in directory.ALL_FONTS:
+            fonts.append(op.join(pyfontaine.builddir, 'sources', font))
+
+        _ = ('fontaine --collections subsets --text %s'
+             ' > fontaine.txt\n') % ' '.join(fonts)
+        pyfontaine.bakery.logging_cmd(_)
+
+        fontaine_log = op.join(pyfontaine.builddir, 'fontaine.txt')
+        fp = codecs.open(fontaine_log, 'w', 'utf-8')
+
+        result = Builder.text_(director.construct_tree(fonts))
+        fp.write(result.output)
+        pyfontaine.bakery.logging_raw('end of pyfontaine process\n')
+    except Exception, ex:
+        pyfontaine.bakery.logging_raw('pyfontaine error: {}'.format(ex))
+        pyfontaine.bakery.logging_raw('pyfontaine process has been failed\n')
 
 
 class PyFontaine(object):
@@ -29,28 +60,8 @@ class PyFontaine(object):
         self.bakery = bakery
 
     def execute(self, pipedata):
-        task = self.bakery.logging_task('pyFontaine TTFs')
         if self.bakery.forcerun:
             return
 
-        try:
-            library = Library(collections=['subsets'])
-            director = Director(_library=library)
-
-            fonts = []
-            for font in pipedata['bin_files']:
-                fonts.append(op.join(self.builddir, font))
-
-            _ = ('fontaine --collections subsets --text %s'
-                 ' > fontaine.txt\n') % ' '.join(fonts)
-            self.bakery.logging_cmd(_)
-
-            fontaine_log = op.join(self.builddir, 'fontaine.txt')
-            fp = codecs.open(fontaine_log, 'w', 'utf-8')
-
-            result = Builder.text_(director.construct_tree(fonts))
-            fp.write(result.output)
-            self.bakery.logging_task_done(task)
-        except:
-            self.bakery.logging_task_done(task, failed=True)
-            raise
+        p = multiprocessing.Process(target=targettask, args=(self, pipedata))
+        p.start()

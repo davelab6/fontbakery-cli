@@ -59,6 +59,7 @@ def run_bakery(sourcedir, config=None):
 
         b.pipes = [
             pipe.Copy,
+            pipe.PyFontaine,
             pipe.Build,
             pipe.Rename,
             pipe.PyFtSubset,
@@ -67,8 +68,7 @@ def run_bakery(sourcedir, config=None):
             pipe.Optimize,
             pipe.MetadataLint,
             pipe.CopyTxtFiles,
-            pipe.TTFAutoHint,
-            pipe.PyFontaine
+            pipe.TTFAutoHint
         ]
 
         buildlog_path = os.path.join(sourcedir, 'builds', 'build', 'build.log')
@@ -105,14 +105,14 @@ if __name__ == '__main__':
                         help=("Path to directory with UFO, SFD, TTX, TTF or OTF files"))
     args = parser.parse_args()
 
-    for p in args.projectpath:
-        run_bakery(p)
+    # for p in args.projectpath:
+    #     run_bakery(p)
 
 
 
-    # pool = Pool(4)
+    pool = Pool(4)
 
-    # pool.map(run_bakery, args.projectpath)
-    # pool.close()
+    pool.map(run_bakery, args.projectpath)
+    pool.close()
 
-    # pool.join()
+    pool.join()
