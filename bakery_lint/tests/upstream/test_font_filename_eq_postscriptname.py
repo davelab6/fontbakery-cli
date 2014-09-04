@@ -19,5 +19,10 @@ from bakery_lint.base import BakeryTestCase as TestCase
 
 class TTFSourceFontFileNameEqualsFamilyStyle(TestCase):
 
+    targets = ['upstream']
+    tool = 'lint'
+    path = '.'
+    name = __name__
+
     def test_source_ttf_font_filename_equals_familystyle(self):
         pass
