@@ -1152,3 +1152,28 @@ class Test_CheckFSTypeTest(TestCase):
                 assert fix.called
 
                 self.assertTrue(getattr(downstream.CheckFsTypeIsNotSet.test_is_fstype_not_set, 'autofix'))
+
+
+class SourceFontFileNameEqualPostScriptName(TestCase):
+
+
+    def test_source_ttf_font_filename_equals_postscriptname(self):
+
+        class Font(OriginFont):
+
+            pass
+        with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
+            get_ttfont.return_value = Font('')
+            get_ttfont.return_value._family_name = 'Bakery'
+            get_ttfont.return_value._style = ''
+            get_ttfont._style = 'Regular'
+
+
+    def test_source_ufo_font_filename_equals_postscriptname(self):
+        pass
+
+    def test_source_ttx_font_filename_equals_postscriptname(self):
+        pass
+
+    def test_source_sfd_font_filename_equals_postscriptname(self):
+        pass

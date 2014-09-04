@@ -78,7 +78,7 @@ class BakeryTestResult(unittest.TestResult):
     def addSuccess(self, test):
         super(BakeryTestResult, self).addSuccess(test)
 
-        if hasattr(test, 'logging'):
+        if hasattr(test, 'logging') and test.logging:
             test.logging.write('... {} .. OK'.format(test.id()))
 
         test_method = getattr(test, test._testMethodName)
@@ -100,7 +100,7 @@ class BakeryTestResult(unittest.TestResult):
         if hasattr(self.el, 'append'):
             self.el.append(test)
 
-        if hasattr(test, 'logging'):
+        if hasattr(test, 'logging') and test.logging:
             test.logging.write('... {} .. ERROR'.format(test.id()))
 
     def addFailure(self, test, err):
@@ -109,7 +109,7 @@ class BakeryTestResult(unittest.TestResult):
         test._err = err
         test._err_msg = _err_exception.message
 
-        if hasattr(test, 'logging'):
+        if hasattr(test, 'logging') and test.logging:
             test.logging.write('... {} .. FAIL'.format(test.id()))
 
         test_method = getattr(test, test._testMethodName)
