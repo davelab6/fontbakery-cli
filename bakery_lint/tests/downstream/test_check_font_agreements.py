@@ -28,8 +28,8 @@ class CheckFsTypeIsNotSet(TestCase):
     targets = ['result']
     tool = 'lint'
 
-    @autofix('bakery_cli.pipe.autofix.fix_fstype_to_zero', always_run=True)
     @tags('required')
+    @autofix('bakery_cli.pipe.autofix.fix_fstype_to_zero', always_run=True)
     def test_is_fstype_not_set(self):
         """ Is the OS/2 table fsType set to 0? """
         font = Font.get_ttfont(self.path)

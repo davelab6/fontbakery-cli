@@ -17,7 +17,6 @@
 import unittest
 import mock
 import json
-import StringIO
 
 from bakery_lint.tests import downstream, upstream
 from bakery_lint.tests.downstream.test_check_subsets_exists import File
@@ -51,7 +50,8 @@ def _get_tests(testcase_klass):
 
 
 def _run_font_test(testcase_klass):
-    runner = unittest.TextTestRunner(stream=StringIO.StringIO())
+    from bakery_lint.base import BakeryTestRunner, BakeryTestResult
+    runner = BakeryTestRunner(resultclass=BakeryTestResult)
     tests = _get_tests(testcase_klass)
     return runner.run(tests)
 
@@ -793,11 +793,14 @@ class Test_CheckFontHasDsigTable(TestCase):
     def test_twenty_nine(self):
 
         with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
-            get_ttfont.return_value = {'DSIG': True}
-            self.success_run(downstream.CheckFontHasDsigTable)
+            with mock.patch('bakery_cli.pipe.autofix.dsig_signature') as dsig:
+                get_ttfont.return_value = {'DSIG': True}
+                self.success_run(downstream.CheckFontHasDsigTable)
+                self.assert_(not dsig.called)
 
-            get_ttfont.return_value = {}
-            self.failure_run(downstream.CheckFontHasDsigTable)
+                get_ttfont.return_value = {}
+                self.failure_run(downstream.CheckFontHasDsigTable)
+                self.assert_(dsig.called)
 
 
 class Test_CheckFontHasNotKernTable(TestCase):

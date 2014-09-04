@@ -87,7 +87,8 @@ class BakeryTestResult(unittest.TestResult):
                 self.callmethod(test_method.autofix_method, test)
 
             # if testcase is marked as autofixed then add it to ff
-            self.ff.append(test)
+            if hasattr(self.ff, 'append'):
+                self.ff.append(test)
         elif hasattr(self.sl, 'append'):
             self.sl.append(test)
 
@@ -114,7 +115,8 @@ class BakeryTestResult(unittest.TestResult):
         test_method = getattr(test, test._testMethodName)
         if hasattr(test_method, 'autofix'):
             self.callmethod(test_method.autofix_method, test)
-            self.ff.append(test)
+            if hasattr(self.ff, 'append'):
+                self.ff.append(test)
         elif hasattr(self.fl, 'append'):
             self.fl.append(test)
 

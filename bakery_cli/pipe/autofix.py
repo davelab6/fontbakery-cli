@@ -34,7 +34,8 @@ PYPATH = ''
 
 def replace_origfont(testcase):
     command = "$ mv {0}.fix {0}".format(testcase.path)
-    testcase.logging.write(command)
+    if hasattr(testcase, 'logging'):
+        testcase.logging.write(command)
     shutil.move(testcase.path + '.fix', testcase.path)
 
 
@@ -43,7 +44,8 @@ def dsig_signature(testcase):
     SCRIPTPATH = 'bakery-dsig.py'
 
     command = "$ {0} {1}".format(SCRIPTPATH, testcase.path)
-    testcase.logging.write(command)
+    if hasattr(testcase, 'logging'):
+        testcase.logging.write(command)
 
     dsig.create(testcase.path)
 
@@ -55,7 +57,8 @@ def gaspfix(testcase):
     SCRIPTPATH = 'bakery-gasp.py'
 
     command = "$ {0} --set={1} {2}".format(SCRIPTPATH, 15, testcase.path)
-    testcase.logging.write(command)
+    if hasattr(testcase, 'logging'):
+        testcase.logging.write(command)
 
     gasp.set(testcase.path, 15)
 
@@ -67,7 +70,8 @@ def fix_opentype_specific_fields(testcase):
     SCRIPTPATH = 'bakery-opentype-fix.py'
 
     command = "$ {0} {1} {2}".format(PYPATH, SCRIPTPATH, testcase.path)
-    testcase.logging.write(command)
+    if hasattr(testcase, 'logging'):
+        testcase.logging.write(command)
 
     opentype.fix(testcase.path)
 
@@ -79,7 +83,8 @@ def fix_nbsp(testcase):
     SCRIPTPATH = 'bakery-nbsp-fix.py'
 
     command = "$ {0} {1} {2}".format(PYPATH, SCRIPTPATH, testcase.path)
-    testcase.logging.write(command)
+    if hasattr(testcase, 'logging'):
+        testcase.logging.write(command)
     checkAndFix(testcase.path)
 
     replace_origfont(testcase)
@@ -99,7 +104,8 @@ def fix_metrics(testcase):
 
     command = "$ {0} {1} --autofix {2}"
     command = command.format(PYPATH, SCRIPTPATH, ' '.join(paths))
-    testcase.logging.write(command)
+    if hasattr(testcase, 'logging'):
+        testcase.logging.write(command)
 
     metricfix(paths)
 
@@ -115,7 +121,8 @@ def fix_name_ascii(testcase):
     """ Replacing non ascii names in copyright """
     SCRIPTPATH = 'bakery-ascii-fix.py'
     command = "$ {0} {1} {2}".format(PYPATH, SCRIPTPATH, testcase.path)
-    testcase.logging.write(command)
+    if hasattr(testcase, 'logging'):
+        testcase.logging.write(command)
     fix_name_table(testcase.path)
     shutil.move(testcase.path + '.fix', testcase.path, log=testcase.logging)
 
@@ -124,6 +131,7 @@ def fix_fstype_to_zero(testcase):
     """ Fix fsType to zero """
     SCRIPTPATH = 'bakery-fstype-fix.py'
     command = "$ {0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, testcase.path)
-    testcase.logging.write(command)
+    if hasattr(testcase, 'logging'):
+        testcase.logging.write(command)
     reset_fstype(testcase.path)
     shutil.move(testcase.path + '.fix', testcase.path, log=testcase.logging)
