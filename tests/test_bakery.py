@@ -1,10 +1,11 @@
 import unittest
+
 from mock import patch
+
 from bakery_cli.pipe.copy import Copy
 from bakery_cli.pipe.build import Build
 from bakery_cli.pipe.rename import Rename
 from bakery_cli.bakery import Bakery
-import bakery_cli.system
 
 
 class TestBakery(unittest.TestCase):
@@ -18,12 +19,15 @@ class TestBakery(unittest.TestCase):
 
         b = Copy(b)
         with patch.object(b, 'copy_to_builddir') as mock_copy2builddir:
-            mock_copy2builddir.return_value = 'sources'
+            with patch.object(b, 'create_source_dir') as mock_create_src:
+                mock_create_src.return_value = 'sources'
+                with patch.object(b, 'copy_helper_files') as mock_copyhf:
+                    pipedata = b.execute(pipedata)
 
-            pipedata = b.execute(pipedata)
-
-            mock_copy2builddir.assert_called_once_with(['1.in/fontname-bold.ttx'])
-            self.assertEqual(pipedata['process_files'], ['sources/fontname-bold.ttx'])
+                    mock_copy2builddir.assert_called_once_with(['1.in/fontname-bold.ttx'], 'sources')
+                    self.assertEqual(pipedata['process_files'], ['sources/fontname-bold.ttx'])
+                    self.assert_(mock_copyhf.called)
+                    self.assert_(mock_create_src.called)
 
     def test_copy_with_splitted_ttx(self):
         pipedata = {'process_files': ['1.in/fontname-bold.ttx'],
@@ -35,14 +39,18 @@ class TestBakery(unittest.TestCase):
         b = Copy(b)
         with patch.object(b, 'copy_to_builddir') as copy2builddir:
             with patch.object(b, 'lookup_splitted_ttx') as splitted_ttx:
-                splitted_ttx.return_value = ['1.in/fontname-bold._g_p_o_s.ttx']
-                copy2builddir.return_value = 'sources'
+                with patch.object(b, 'create_source_dir') as mock_create_src:
+                    mock_create_src.return_value = 'sources'
+                    with patch.object(b, 'copy_helper_files') as mock_copyhf:
+                        splitted_ttx.return_value = ['1.in/fontname-bold._g_p_o_s.ttx']
 
-                pipedata = b.execute(pipedata)
+                        pipedata = b.execute(pipedata)
 
-                copy2builddir.assert_called_once_with(['1.in/fontname-bold.ttx',
-                                                       '1.in/fontname-bold._g_p_o_s.ttx'])
-                self.assertEqual(pipedata['process_files'], ['sources/fontname-bold.ttx'])
+                        copy2builddir.assert_called_once_with(['1.in/fontname-bold.ttx',
+                                                               '1.in/fontname-bold._g_p_o_s.ttx'], 'sources')
+                        self.assertEqual(pipedata['process_files'], ['sources/fontname-bold.ttx'])
+                        self.assert_(mock_create_src.called)
+                        self.assert_(mock_copyhf.called)
 
     def test_convert(self):
         pipedata = {'process_files': ['sources/fontname-bold.ttx',

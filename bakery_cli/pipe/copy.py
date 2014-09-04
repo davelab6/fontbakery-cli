@@ -82,14 +82,13 @@ class Copy(Pipe):
             else:
                 shutil.copy(path, destdir)
 
-    def execute(self, pipedata):
-        task = self.bakery.logging_task('Copying sources')
-        if self.bakery.forcerun:
-            return pipedata
+    def create_source_dir(self):
+        source_dir = op.join(self.builddir, 'sources')
+        if not op.exists(source_dir):
+            os.makedirs(source_dir)
+        return source_dir
 
-        build_source_dir = op.join(self.builddir, 'sources')
-        if not op.exists(build_source_dir):
-            os.makedirs(build_source_dir)
+    def copy_helper_files(self):
 
         pipechain = [CopyMetadata, CopyLicense, CopyDescription, CopyFontLog,
                      CopyTxtFiles]
@@ -99,6 +98,15 @@ class Copy(Pipe):
             p = multiprocessing.Process(target=taskcopy, args=(k, pipedata, ))
             p.start()
 
+    def execute(self, pipedata):
+        task = self.bakery.logging_task('Copying sources')
+        if self.bakery.forcerun:
+            return pipedata
+
+        source_dir = self.create_source_dir()
+
+        self.copy_helper_files()
+
         try:
             process_files = list(pipedata.get('process_files', []))
 
@@ -106,12 +114,12 @@ class Copy(Pipe):
             for path in process_files:
                 paths_to_copy += self.lookup_splitted_ttx(path)
 
-            self.copy_to_builddir(paths_to_copy, build_source_dir)
+            self.copy_to_builddir(paths_to_copy, source_dir)
 
             sources = []
             for path in process_files:
                 filename = op.basename(path)
-                sources.append(op.join(build_source_dir, filename))
+                sources.append(op.join(source_dir, filename))
 
             pipedata.update({'process_files': sources})
             self.bakery.logging_task_done(task)

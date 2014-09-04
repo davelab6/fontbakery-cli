@@ -20,15 +20,15 @@ from bakery_lint.base import BakeryTestCase as TestCase
 from bakery_cli.ttfont import Font
 
 
-class CheckPostscriptnameGlyphConventions(TestCase):
+class GlyphNameDoesNotContainsDisallowedChars(TestCase):
 
     path = '.'
     name = __name__
     targets = ['upstream-ttx']
     tool = 'lint'
 
-    def test_check_postscriptname_glyph_conventions(self):
-        """ Check glyphs names comply with PostScript conventions """
+    def test_glyphname_does_not_contain_disallowed_chars(self):
+        """ GlyphName length < 30 and does contain allowed chars only """
         font = Font.get_ttfont(self.path)
 
         for _, glyphName in enumerate(font.ttfont.getGlyphOrder()):
