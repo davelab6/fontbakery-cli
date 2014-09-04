@@ -28,14 +28,10 @@ class SourceTTXTest(TestCase):
     path = '.'
 
     def setUp(self):
-        # TODO: Need somebody to check this options
         font = TTFont(None, lazy=False, recalcBBoxes=True,
                       verbose=False, allowVID=False)
         font.importXML(self.path, quiet=True)
         self.font = font
-        # You can use ipdb here to interactively develop tests!
-        # Uncommand the next line, then at the iPython prompt: print(self.path)
-        # import ipdb; ipdb.set_trace()
 
     def test_ttx_doesnt_contain_duplicate_glyphs(self):
         """ Font doesnt contain duplicated glyphs.
@@ -46,13 +42,10 @@ class SourceTTXTest(TestCase):
             For details see https://github.com/girish-dalvi/Ek-Mukta/issues/1
         """
         glyphs = []
-        for g in self.font['glyf'].glyphs:
-            # Each glyph must not match pattern <glyphname>#<int>
-            # TODO: make sure that error occur even if in pattern
-            # any characters used after number sign (#)
-            self.assertFalse(re.search('#\w+$', g),
+        for _, g in enumerate(self.font.getGlyphOrder()):
+            self.assertFalse(re.search(r'#\w+$', g),
                              msg="Font contains incorrectly named glyph %s" % g)
-            glyphID = re.sub('#\w+', '', g)
+            glyphID = re.sub(r'#\w+', '', g)
 
             # Each GlyphID has to be unique in TTX
             self.assertFalse(glyphID in glyphs,
