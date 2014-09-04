@@ -14,16 +14,13 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-import codecs
 import os
 import os.path as op
 import yaml
 
-from bakery_lint import run_set
-
 from bakery_cli import pipe
 from bakery_cli.system import shutil, stdoutlog
-from bakery_cli.utils import RedisFd, UpstreamDirectory
+from bakery_cli.utils import RedisFd
 
 
 class BakeryTaskSet(object):
@@ -224,25 +221,3 @@ class Bakery(object):
 
     def logging_err(self, message):
         self.log.write(message.strip() + '\n', prefix="Error: ")
-
-    def upstream_tests(self):
-        result = {}
-        self.log.write('Run upstream tests\n', prefix='### ')
-
-        result['Project'] = run_set(self.rootpath, 'upstream-repo',
-                                    log=self.log)
-        directory = UpstreamDirectory(self.rootpath)
-
-        for font in directory.ALL_FONTS:
-            if font[-4:] in '.ttx':
-                result[font] = run_set(op.join(self.rootpath, font),
-                                       'upstream-ttx', log=self.log)
-            else:
-                result[font] = run_set(op.join(self.rootpath, font),
-                                       'upstream', log=self.log)
-
-        _out_yaml = op.join(self.rootpath, '.upstream.yaml')
-
-        l = codecs.open(_out_yaml, mode='w', encoding="utf-8")
-        l.write(yaml.safe_dump(result))
-        l.close()
