@@ -140,11 +140,13 @@ def fix_fstype_to_zero(testcase):
 
 
 def fix_encode_glyphs(testcase):
-    print("fix_encode_glyphs")
+    # print("fix_encode_glyphs")
     SCRIPTPATH = 'bakery-encode-glyphs-fix.py'
     command = "$ {0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, testcase.path)
     if hasattr(testcase, 'logging') and testcase.logging:
         testcase.logging.write(command)
+
     encode_glyphs.add_spua_by_glyph_id_mapping_to_cmap(
         testcase.ttx, testcase.path, testcase.unencoded_glyphs)
+
     shutil.move(testcase.path + '.fix', testcase.path, log=testcase.logging)

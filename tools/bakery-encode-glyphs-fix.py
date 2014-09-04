@@ -20,19 +20,22 @@ import argparse
 import os
 
 import fontTools.ttLib
-
 from bakery_cli.scripts import encode_glyphs
 
-parser = argparse.ArgumentParser()
-parser.add_argument('filename', help='Font file to fix encoding')
-parser.add_argument('--autofix', action="store_true",
-                    help='Apply autofix. '
-                         'Otherwise just check if there are unencoded glyphs')
 
-args = parser.parse_args()
-assert os.path.exists(args.filename)
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('filename', help='Font file to fix encoding')
+    parser.add_argument('--autofix', action="store_true",
+                        help='Apply autofix. '
+                             'Otherwise just check if there are unencoded glyphs')
 
-ttx = fontTools.ttLib.TTFont(args.infile, 0)
-unencoded_glyphs = encode_glyphs.get_unencoded_glyphs(ttx)
-if args.autofix and unencoded_glyphs:
-    encode_glyphs.add_spua_by_glyph_id_mapping_to_cmap(ttx, args.infile, unencoded_glyphs)
+    args = parser.parse_args()
+    assert os.path.exists(args.filename)
+
+    ttx = fontTools.ttLib.TTFont(args.filename, 0)
+    if args.autofix:
+        unencoded_glyphs = encode_glyphs.get_unencoded_glyphs(ttx)
+        encode_glyphs.add_spua_by_glyph_id_mapping_to_cmap(ttx, args.filename, unencoded_glyphs)
+    else:
+        print(encode_glyphs.get_unencoded_glyphs(ttx))

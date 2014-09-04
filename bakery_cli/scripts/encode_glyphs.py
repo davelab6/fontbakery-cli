@@ -30,6 +30,10 @@ def add_spua_by_glyph_id_mapping_to_cmap(ttx, fontpath, unencoded_glyphs):
     :param unencoded_glyphs: list of unencoded glyphs.
     :return: instance of `ttLib.TTFont` with modified 'cmap'.
     """
+
+    if not unencoded_glyphs:
+        return
+
     ucs2cmap = None
     cmap = ttx["cmap"]
 
@@ -76,9 +80,4 @@ def get_unencoded_glyphs(ttx):
     assert new_cmap
 
     diff = list(set(ttx.glyphOrder) - set(new_cmap.cmap.values()) - {'.notdef'})
-    if not diff:
-        print("There are no unencoded glyphs")
-        return []
-    print("There are unencoded glyphs")
-    diff = [g for g in diff[:] if g != '.notdef']
-    return diff
+    return [g for g in diff[:] if g != '.notdef']

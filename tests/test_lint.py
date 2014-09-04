@@ -1161,21 +1161,30 @@ class SourceFontFileNameEqualsFamilyStyle(TestCase):
 
         class Font(OriginFont):
 
+            _family_name = ''
+            _style_name = ''
+
             def __init__(self, fn):
                 pass
 
-        # with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
-        #     get_ttfont.return_value = Font('Font.ttf')
-        #     get_ttfont.return_value.familyname = 'Bakery'
-        #     get_ttfont.return_value.stylename = ''
+        with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
+            get_ttfont.return_value = Font('Font.ttf')
+            get_ttfont.return_value._family_name = 'Bakery'
+            get_ttfont.return_value._style_name = ''
 
-        #     self.failure_run(upstream.TTFSourceFontFileNameEqualsFamilyStyle)
+            upstream.TTFSourceFontFileNameEqualsFamilyStyle.path = 'Font.ttf'
+            self.failure_run(upstream.TTFSourceFontFileNameEqualsFamilyStyle)
 
-        #     get_ttfont.return_value = Font('Bakery-BoldItalic.ttf')
-        #     get_ttfont.return_value.familyname = 'Bakery'
-        #     get_ttfont.return_value.stylename = 'BoldItalic'
+            # self.assert_(renamefix.called)
 
-        #     self.success_run(upstream.TTFSourceFontFileNameEqualsFamilyStyle)
+            get_ttfont.return_value = Font('Bakery-BoldItalic.ttf')
+            get_ttfont.return_value._family_name = 'Bakery'
+            get_ttfont.return_value._style_name = 'BoldItalic'
+
+            upstream.TTFSourceFontFileNameEqualsFamilyStyle.path = 'Bakery-BoldItalic.ttf'
+            self.success_run(upstream.TTFSourceFontFileNameEqualsFamilyStyle)
+
+            # self.assert_(not renamefix.called)
 
 
     def test_source_ufo_font_filename_equals_familystyle(self):

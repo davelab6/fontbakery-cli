@@ -14,19 +14,21 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+import os.path
 
 from bakery_lint.base import BakeryTestCase as TestCase
 from bakery_cli.ttfont import Font
 
 
-class TestFontUnencodedGlyph(TestCase):
+class TTFSourceFontFileNameEqualsFamilyStyle(TestCase):
 
-    path = '.'
-    targets = ['result']
-    name = __name__
+    targets = ['upstream']
     tool = 'lint'
+    path = '.'
+    name = __name__
 
-    def test_font_unencoded_glyphs(self):
-        """ Font does not have unencoded glyphs """
+    def test_source_ttf_font_filename_equals_familystyle(self):
         ttfont = Font.get_ttfont(self.path)
-        assert ttfont
+        expectedname = '{0}-{1}'.format(ttfont.familyname, ttfont.stylename)
+        actualname, _ = os.path.splitext(os.path.basename(self.path))
+        self.assertEqual(actualname, expectedname)
