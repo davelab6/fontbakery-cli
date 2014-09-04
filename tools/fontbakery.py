@@ -61,7 +61,6 @@ def run_bakery(sourcedir, config=None):
             pipe.PyFontaine,
             pipe.UpstreamLint,
             pipe.Build,
-            pipe.Rename,
             pipe.PyFtSubset,
             pipe.Metadata,
             pipe.FontLint,
