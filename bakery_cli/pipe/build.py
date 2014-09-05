@@ -20,7 +20,7 @@ import os.path as op
 from fontTools import ttx
 
 from bakery_cli.scripts.font2ttf import convert
-from bakery_cli.system import prun, shutil as shellutil
+from bakery_cli.system import shutil as shellutil
 from bakery_cli.utils import UpstreamDirectory
 
 
@@ -62,10 +62,11 @@ class Build(object):
         return result
 
     def print_vertical_metrics(self, binfiles):
+        from bakery_cli.scripts import vmet
         SCRIPTPATH = 'bakery-vmet-fix.py'
-        command = ' '.join([op.join(self.builddir, x) for x in binfiles])
-        prun('%s %s' % (SCRIPTPATH, command), cwd=op.dirname(__file__),
-             log=self.bakery.log)
+        fonts = [op.join(self.builddir, x) for x in binfiles]
+        command = ' '.join(fonts)
+        self.bakery.logging_raw(vmet.metricview(fonts))
 
     def execute(self, pipedata, prefix=""):
         task = self.bakery.logging_task('Convert sources to TTF')
