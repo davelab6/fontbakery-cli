@@ -20,14 +20,13 @@ from bakery_cli.ttfont import Font
 
 class TestCheckUPMHeightsLess120(TestCase):
 
-    path = '.'
     targets = ['result']
     name = __name__
     tool = 'lint'
 
     def test_check_upm_heigths_less_120(self):
         """ Check if UPM Heights NOT more than 120% """
-        ttfont = Font.get_ttfont(self.path)
+        ttfont = Font.get_ttfont(self.operator.path)
         value = ttfont.ascents.get_max() + abs(ttfont.descents.get_min())
         value = value * 100 / float(ttfont.get_upm_height())
         if value > 120:

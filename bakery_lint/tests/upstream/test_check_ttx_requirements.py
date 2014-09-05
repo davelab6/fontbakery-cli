@@ -25,12 +25,11 @@ class SourceTTXTest(TestCase):
     targets = ['upstream-ttx']
     tool = 'fontTools'
     name = __name__
-    path = '.'
 
     def setUp(self):
         font = TTFont(None, lazy=False, recalcBBoxes=True,
                       verbose=False, allowVID=False)
-        font.importXML(self.path, quiet=True)
+        font.importXML(self.operator.path, quiet=True)
         self.font = font
 
     def test_ttx_doesnt_contain_duplicate_glyphs(self):

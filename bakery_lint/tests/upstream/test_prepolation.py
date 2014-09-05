@@ -23,18 +23,17 @@ from bakery_cli.utils import UpstreamDirectory
 
 class FontTestPrepolation(TestCase):
 
-    path = '.'
     name = __name__
     targets = ['upstream-repo']
     tool = 'lint'
 
     def test_font_test_prepolation_glyph_names(self):
         """ Check glyph names are all the same across family """
-        directory = UpstreamDirectory(self.path)
+        directory = UpstreamDirectory(self.operator.path)
 
         glyphs = []
         for f in directory.get_fonts():
-            font = PiFont(op.join(self.path, f))
+            font = PiFont(op.join(self.operator.path, f))
             glyphs_ = font.get_glyphs()
 
             if glyphs and glyphs != glyphs_:
@@ -42,11 +41,11 @@ class FontTestPrepolation(TestCase):
 
     def test_font_prepolation_glyph_contours(self):
         """ Check that glyphs has same number of contours across family """
-        directory = UpstreamDirectory(self.path)
+        directory = UpstreamDirectory(self.operator.path)
 
         glyphs = {}
         for f in directory.get_fonts():
-            font = PiFont(op.join(self.path, f))
+            font = PiFont(op.join(self.operator.path, f))
             glyphs_ = font.get_glyphs()
 
             for glyphcode, glyphname in glyphs_:
@@ -59,11 +58,11 @@ class FontTestPrepolation(TestCase):
 
     def test_font_prepolation_glyph_points(self):
         """ Check that glyphs has same number of points across family """
-        directory = UpstreamDirectory(self.path)
+        directory = UpstreamDirectory(self.operator.path)
 
         glyphs = {}
         for f in directory.get_fonts():
-            font = PiFont(op.join(self.path, f))
+            font = PiFont(op.join(self.operator.path, f))
             glyphs_ = font.get_glyphs()
 
             for g, glyphname in glyphs_:

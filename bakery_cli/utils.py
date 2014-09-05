@@ -90,6 +90,9 @@ class UpstreamDirectory(object):
 
         self.walk()
 
+    def get_ttx(self):
+        return self.TTX
+
     def get_fonts(self):
         return self.UFO + self.TTX + self.BIN + self.SFD
     ALL_FONTS = property(get_fonts)

@@ -23,11 +23,10 @@ class CheckVerticalMetrics(TestCase):
 
     targets = ['metadata']
     name = __name__
-    path = '.'
     tool = 'lint'
 
     def read_metadata_contents(self):
-        return open(self.path).read()
+        return open(self.operator.path).read()
 
     @autofix('bakery_cli.pipe.autofix.fix_metrics')
     def test_metrics_linegaps_are_zero(self):
@@ -37,7 +36,7 @@ class CheckVerticalMetrics(TestCase):
 
         fonts_gaps_are_not_zero = []
         for font_metadata in family_metadata.fonts:
-            ttfont = Font.get_ttfont_from_metadata(self.path, font_metadata)
+            ttfont = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
             if bool(ttfont.linegaps.os2typo) or bool(ttfont.linegaps.hhea):
                 fonts_gaps_are_not_zero.append(font_metadata.filename)
 
@@ -56,7 +55,7 @@ class CheckVerticalMetrics(TestCase):
 
         _cache = {}
         for font_metadata in family_metadata.fonts:
-            ttfont = Font.get_ttfont_from_metadata(self.path, font_metadata)
+            ttfont = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
 
             ymin_, ymax_ = ttfont.get_bounding()
             ymax = max(ymax, ymax_)
@@ -86,7 +85,7 @@ class CheckVerticalMetrics(TestCase):
 
         _cache = {}
         for font_metadata in family_metadata.fonts:
-            ttfont = Font.get_ttfont_from_metadata(self.path, font_metadata)
+            ttfont = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
 
             ymin_, ymax_ = ttfont.get_bounding()
             ymin = min(ymin, ymin_)

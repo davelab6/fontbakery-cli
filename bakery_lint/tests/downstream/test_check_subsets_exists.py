@@ -38,16 +38,15 @@ class File(object):
 
 class CheckSubsetsExist(TestCase):
 
-    path = '.'
     targets = ['metadata']
     tool = 'lint'
     name = __name__
 
     def setUp(self):
-        self.f = File(op.dirname(self.path))
+        self.f = File(op.dirname(self.operator.path))
 
     def read_metadata_contents(self):
-        return open(self.path).read()
+        return open(self.operator.path).read()
 
     def get_subset_filename(self, font_filename, subset_name):
         return font_filename.replace('.ttf', '.%s' % subset_name)

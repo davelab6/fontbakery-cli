@@ -45,13 +45,12 @@ weights = {
 
 class CheckCanonicalWeights(TestCase):
 
-    path = '.'
     targets = 'metadata'
     name = __name__
     tool = 'lint'
 
     def read_metadata_contents(self):
-        return open(self.path).read()
+        return open(self.operator.path).read()
 
     def test_check_canonical_weights(self):
         """ Check that weights have canonical value """
@@ -65,10 +64,10 @@ class CheckCanonicalWeights(TestCase):
             _ = ("%s: The weight is %d which is not a "
                  "multiple of 100 between 1 and 9")
 
-            self.assertFalse(is_invalid, _ % (op.basename(self.path),
+            self.assertFalse(is_invalid, _ % (op.basename(self.operator.path),
                                               font_metadata.weight))
 
-            tf = Font.get_ttfont_from_metadata(self.path, font_metadata)
+            tf = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
             _ = ("%s: METADATA.json overwrites the weight. "
                  " The METADATA.json weight is %d and the font"
                  " file %s weight is %d")
@@ -80,13 +79,12 @@ class CheckCanonicalWeights(TestCase):
 
 class CheckPostScriptNameMatchesWeight(TestCase):
 
-    path = '.'
     targets = 'metadata'
     name = __name__
     tool = 'lint'
 
     def read_metadata_contents(self):
-        return open(self.path).read()
+        return open(self.operator.path).read()
 
     def test_postscriptname_contains_correct_weight(self):
         """ Metadata weight matches postScriptName """
@@ -112,13 +110,12 @@ class CheckPostScriptNameMatchesWeight(TestCase):
 
 class CheckFontWeightSameAsInMetadata(TestCase):
 
-    path = '.'
     targets = 'metadata'
     name = __name__
     tool = 'lint'
 
     def read_metadata_contents(self):
-        return open(self.path).read()
+        return open(self.operator.path).read()
 
     def test_font_weight_same_as_in_metadata(self):
         """ Font weight matches metadata.json value of key "weight" """
@@ -127,7 +124,7 @@ class CheckFontWeightSameAsInMetadata(TestCase):
 
         for font_metadata in fm.fonts:
 
-            font = Font.get_ttfont_from_metadata(self.path, font_metadata)
+            font = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
             if font.OS2_usWeightClass != font_metadata.weight:
                 msg = 'METADATA.JSON has weight %s but in TTF it is %s'
                 self.fail(msg % (font_metadata.weight, font.OS2_usWeightClass))
@@ -135,13 +132,12 @@ class CheckFontWeightSameAsInMetadata(TestCase):
 
 class CheckFullNameEqualCanonicalName(TestCase):
 
-    path = '.'
     targets = 'metadata'
     name = __name__
     tool = 'lint'
 
     def read_metadata_contents(self):
-        return open(self.path).read()
+        return open(self.operator.path).read()
 
     def test_metadata_contains_current_font(self):
         """ METADATA.json should contains testing font, under canonic name"""
@@ -150,7 +146,7 @@ class CheckFullNameEqualCanonicalName(TestCase):
         fm = Metadata.get_family_metadata(contents)
 
         for font_metadata in fm.fonts:
-            font = Font.get_ttfont_from_metadata(self.path, font_metadata)
+            font = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
 
             _weights = []
             for value, intvalue in weights.items():

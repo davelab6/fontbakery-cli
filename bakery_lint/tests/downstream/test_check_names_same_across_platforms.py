@@ -20,7 +20,6 @@ from bakery_cli.ttfont import Font
 
 class CheckNamesSameAcrossPlatforms(TestCase):
 
-    path = '.'
     name = __name__
     tool = 'lint'
     targets = ['result']
@@ -28,7 +27,7 @@ class CheckNamesSameAcrossPlatforms(TestCase):
     @tags('required')
     def test_check_names_same_across_platforms(self):
         """ Font names are same across specific-platforms """
-        font = Font.get_ttfont(self.path)
+        font = Font.get_ttfont(self.operator.path)
 
         for name in font.names:
             for name2 in font.names:

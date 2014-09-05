@@ -20,14 +20,13 @@ from bakery_cli.ttfont import Font
 
 class CheckGlyfTableLength(TestCase):
 
-    path = '.'
     targets = ['result']
     name = __name__
     tool = 'lint'
 
     def test_check_glyf_table_length(self):
         """ Check if there is unused data at the end of the glyf table """
-        font = Font.get_ttfont(self.path)
+        font = Font.get_ttfont(self.operator.path)
 
         expected = font.get_loca_length()
         actual = font.get_glyf_length()

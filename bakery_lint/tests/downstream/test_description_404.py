@@ -22,13 +22,12 @@ from bakery_lint.base import BakeryTestCase as TestCase
 
 class TestDescription404Links(TestCase):
 
-    path = '.'
     targets = ['description']
     tool = 'FontBakery'
     name = __name__
 
     def test_single(self):
-        contents = open(self.path).read()
+        contents = open(self.operator.path).read()
         doc = lxml.html.fromstring(contents)
         for link in doc.xpath('//a/@href'):
             try:

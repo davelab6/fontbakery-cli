@@ -20,13 +20,12 @@ from bakery_lint.metadata import Metadata
 
 class CheckMetadataFields(TestCase):
 
-    path = '.'
     name = __name__
     targets = ['metadata']
     tool = 'lint'
 
     def read_metadata_contents(self):
-        return open(self.path).read()
+        return open(self.operator.path).read()
 
     @tags('required')
     def test_check_metadata_fields(self):

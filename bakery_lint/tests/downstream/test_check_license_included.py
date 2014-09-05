@@ -22,7 +22,6 @@ from bakery_cli.ttfont import Font
 
 class CheckLicenseIncluded(TestCase):
 
-    path = '.'
     targets = 'result'
     name = __name__
     tool = 'lint'
@@ -30,7 +29,7 @@ class CheckLicenseIncluded(TestCase):
     @tags('required')
     def test_license_included_in_font_names(self):
         """ Check font has a correct license url """
-        font = Font.get_ttfont(self.path)
+        font = Font.get_ttfont(self.operator.path)
 
         regex = re.compile(
             r'^(?:http|ftp)s?://'  # http:// or https://

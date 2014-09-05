@@ -26,25 +26,24 @@ class UfoOpenTest(TestCase):
     targets = ['upstream']
     tool = 'Robofab'
     name = __name__
-    path = '.'
 
     def setUp(self):
-        self.font = robofab.world.OpenFont(self.path)
+        self.font = robofab.world.OpenFont(self.operator.path)
         # You can use ipdb here to interactively develop tests!
-        # Uncommand the next line, then at the iPython prompt: print(self.path)
+        # Uncommand the next line, then at the iPython prompt: print(self.operator.path)
         # import ipdb; ipdb.set_trace()
 
     def test_it_exists(self):
         """ Does this UFO path exist? """
-        self.assertEqual(os.path.exists(self.path), True)
+        self.assertEqual(os.path.exists(self.operator.path), True)
 
     def test_is_folder(self):
         """ Is this UFO really a folder?"""
-        self.assertEqual(os.path.isdir(self.path), True)
+        self.assertEqual(os.path.isdir(self.operator.path), True)
 
     def test_is_ended_ufo(self):
         """ Does this font file's name end with '.ufo'?"""
-        self.assertEqual(self.path.lower().endswith('.ufo'), True)
+        self.assertEqual(self.operator.path.lower().endswith('.ufo'), True)
 
     # @tags('required')
     def test_is_A(self):

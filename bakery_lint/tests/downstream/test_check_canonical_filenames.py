@@ -36,13 +36,12 @@ class CheckCanonicalFilenames(TestCase):
         'italic': 'Italic'
     }
 
-    path = '.'
     name = __name__
     tool = 'Lint'
     targets = ['metadata']
 
     def read_metadata_contents(self):
-        return open(self.path).read()
+        return open(self.operator.path).read()
 
     @tags('required')
     def test_check_canonical_filenames(self):

@@ -20,14 +20,13 @@ from bakery_cli.ttfont import Font
 
 
 class CheckGlyphConsistencyInFamily(TestCase):
+
     targets = ['metadata']
     tool = 'lint'
     name = __name__
-    path = '.'
-    longMessage = True
 
     def read_metadata_contents(self):
-        return open(self.path).read()
+        return open(self.operator.path).read()
 
     def setUp(self):
         contents = self.read_metadata_contents()
@@ -37,7 +36,7 @@ class CheckGlyphConsistencyInFamily(TestCase):
         """ The same number of glyphs across family? """
         glyphs_count = 0
         for font_metadata in self.familymetadata.fonts:
-            ttfont = Font.get_ttfont_from_metadata(self.path, font_metadata)
+            ttfont = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
             if not glyphs_count:
                 glyphs_count = len(ttfont.glyphs)
 
@@ -48,7 +47,7 @@ class CheckGlyphConsistencyInFamily(TestCase):
         """ The same names of glyphs across family? """
         glyphs = None
         for font_metadata in self.familymetadata.fonts:
-            ttfont = Font.get_ttfont_from_metadata(self.path, font_metadata)
+            ttfont = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
             if not glyphs:
                 glyphs = len(ttfont.glyphs)
 
@@ -59,7 +58,7 @@ class CheckGlyphConsistencyInFamily(TestCase):
         """ The same unicode encodings of glyphs across family? """
         encoding = None
         for font_metadata in self.familymetadata.fonts:
-            ttfont = Font.get_ttfont_from_metadata(self.path, font_metadata)
+            ttfont = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
             cmap = ttfont.retrieve_cmap_format_4()
 
             if not encoding:

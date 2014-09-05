@@ -78,8 +78,8 @@ class BakeryTestResult(unittest.TestResult):
     def addSuccess(self, test):
         super(BakeryTestResult, self).addSuccess(test)
 
-        if hasattr(test, 'logging') and test.logging:
-            test.logging.write('... {} .. OK'.format(test.id()))
+        if hasattr(test, 'operator'):
+            test.operator.debug('... {} .. OK'.format(test.id()))
 
         test_method = getattr(test, test._testMethodName)
         if hasattr(test_method, 'autofix'):
@@ -100,8 +100,8 @@ class BakeryTestResult(unittest.TestResult):
         if hasattr(self.el, 'append'):
             self.el.append(test)
 
-        if hasattr(test, 'logging') and test.logging:
-            test.logging.write('... {} .. ERROR'.format(test.id()))
+        if hasattr(test, 'operator'):
+            test.operator.debug('... {} .. ERROR'.format(test.id()))
 
     def addFailure(self, test, err):
         super(BakeryTestResult, self).addFailure(test, err)
@@ -109,8 +109,8 @@ class BakeryTestResult(unittest.TestResult):
         test._err = err
         test._err_msg = _err_exception.message
 
-        if hasattr(test, 'logging') and test.logging:
-            test.logging.write('... {} .. FAIL'.format(test.id()))
+        if hasattr(test, 'operator'):
+            test.operator.debug('... {} .. FAIL'.format(test.id()))
 
         test_method = getattr(test, test._testMethodName)
         if hasattr(test_method, 'autofix'):
@@ -187,15 +187,30 @@ class autofix(object):
         return f
 
 
+class TestCaseOperator(object):
+    """ This class contains path to tested target and logging instance """
+
+    def __init__(self, path, logger_instance=None):
+        self.path = path
+        self.logger = logger_instance
+
+    def debug(self, message):
+        if not self.logger:
+            return
+        self.logger.write(message)
+
+
 def make_suite(path, definedTarget, test_method=None, log=None):
     """ path - is full path to file,
         definedTarget is filter to only select small subset of tests
     """
     suite = unittest.TestSuite()
+
+    operator = TestCaseOperator(path, log)
+
     for TestCase in TestRegistry.list():
         if definedTarget in TestCase.targets:
-            TestCase.path = path
-            TestCase.logging = log
+            TestCase.operator = operator
             if getattr(TestCase, '__generateTests__', None):
                 TestCase.__generateTests__()
 

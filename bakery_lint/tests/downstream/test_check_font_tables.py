@@ -20,7 +20,6 @@ from bakery_cli.ttfont import Font
 
 class CheckFontHasDsigTable(TestCase):
 
-    path = '.'
     name = __name__
     targets = ['result']
     tool = 'lint'
@@ -28,7 +27,7 @@ class CheckFontHasDsigTable(TestCase):
     @autofix('bakery_cli.pipe.autofix.dsig_signature')
     def test_check_font_has_dsig_table(self):
         """ Check that font has DSIG table """
-        font = Font.get_ttfont(self.path)
+        font = Font.get_ttfont(self.operator.path)
         try:
             font['DSIG']
         except KeyError:
@@ -37,14 +36,13 @@ class CheckFontHasDsigTable(TestCase):
 
 class CheckFontHasNotKernTable(TestCase):
 
-    path = '.'
     name = __name__
     targets = ['result']
     tool = 'lint'
 
     def test_no_kern_table_exists(self):
         """ Check that no "KERN" table exists """
-        font = Font.get_ttfont(self.path)
+        font = Font.get_ttfont(self.operator.path)
         try:
             font['KERN']
             self.fail('Font does have "KERN" table')

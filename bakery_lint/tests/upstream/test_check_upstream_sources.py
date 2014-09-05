@@ -31,41 +31,40 @@ class ProjectUpstreamTestCase(TestCase):
 
     targets = ['upstream-repo']
     tool = 'FontBakery'
-    path = '.'
     name = __name__
 
     @tags('note')
     def test_bakery_yaml_exists(self):
         """ Repository does contain bakery.yaml configuration file """
-        self.assertTrue(os.path.exists(os.path.join(self.path, 'bakery.yaml')),
+        self.assertTrue(os.path.exists(os.path.join(self.operator.path, 'bakery.yaml')),
                         msg=('File `bakery.yaml` does not exist in root '
                              'of upstream repository'))
 
     @tags('note')
     def test_fontlog_txt_exists(self):
         """ Repository does contain FONTLOG.txt file """
-        self.assertTrue(os.path.exists(os.path.join(self.path, 'FONTLOG.txt')),
+        self.assertTrue(os.path.exists(os.path.join(self.operator.path, 'FONTLOG.txt')),
                         msg=('File `FONTLOG.txt` does not exist in root '
                              'of upstream repository'))
 
     @tags('note')
     def test_description_html_exists(self):
         """ Repository does containDESCRIPTION.en_us.html file """
-        self.assertTrue(os.path.exists(os.path.join(self.path, 'DESCRIPTION.en_us.html')),
+        self.assertTrue(os.path.exists(os.path.join(self.operator.path, 'DESCRIPTION.en_us.html')),
                         msg=('File `DESCRIPTION.en_us.html` does not exist in root '
                              'of upstream repository'))
 
     @tags('note')
     def test_metadata_json_exists(self):
         """ Repository does contain METADATA.json file """
-        self.assertTrue(os.path.exists(os.path.join(self.path, 'METADATA.json')),
+        self.assertTrue(os.path.exists(os.path.join(self.operator.path, 'METADATA.json')),
                         msg=('File `METADATA.json` does not exist in root '
                              'of upstream repository'))
 
     def test_copyright_notices_same_across_family(self):
         """ Are all copyright notices the same in all styles? """
         ufo_dirs = []
-        for root, dirs, files in os.walk(self.path):
+        for root, dirs, files in os.walk(self.operator.path):
             for d in dirs:
                 fullpath = os.path.join(root, d)
                 if os.path.splitext(fullpath)[1].lower() == '.ufo':
@@ -97,7 +96,7 @@ class ProjectUpstreamTestCase(TestCase):
         except (IOError, OSError):
             pass
 
-        while os.path.realpath(self.path) != current_path:
+        while os.path.realpath(self.operator.path) != current_path:
             # look for all text files inside folder
             # read contents from them and compare with copyright notice
             # pattern

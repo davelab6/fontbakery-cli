@@ -20,7 +20,6 @@ from bakery_cli.ttfont import Font
 
 class CheckGaspTableType(TestCase):
 
-    path = '.'
     name = __name__
     targets = ['result']
     tool = 'lint'
@@ -28,7 +27,7 @@ class CheckGaspTableType(TestCase):
     @autofix('bakery_cli.pipe.autofix.gaspfix', always_run=True)
     def test_check_gasp_table_type(self):
         """ Font table gasp should be 15 """
-        font = Font.get_ttfont(self.path)
+        font = Font.get_ttfont(self.operator.path)
         try:
             font['gasp']
         except KeyError:

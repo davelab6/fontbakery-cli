@@ -22,14 +22,12 @@ from bakery_lint.metadata import Metadata
 
 class CheckFontNameNotInCamelCase(TestCase):
 
-    path = '.'
     targets = ['metadata']
     name = __name__
     tool = 'lint'
-    longMessage = True
 
     def read_metadata_contents(self):
-        return open(self.path).read()
+        return open(self.operator.path).read()
 
     def test_fontname_not_in_camel_case(self):
         """ Check if fontname is not camel cased """

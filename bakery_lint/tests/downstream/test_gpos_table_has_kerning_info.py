@@ -20,14 +20,13 @@ from bakery_cli.ttfont import Font
 
 class CheckGposTableHasKerningInfo(TestCase):
 
-    path = '.'
     name = __name__
     targets = ['result']
     tool = 'lint'
 
     def test_gpos_table_has_kerning_info(self):
         """ GPOS table has kerning information """
-        font = Font.get_ttfont(self.path)
+        font = Font.get_ttfont(self.operator.path)
 
         try:
             font['GPOS']

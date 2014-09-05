@@ -22,7 +22,6 @@ from bakery_cli.scripts import encode_glyphs
 
 class TestFontUnencodedGlyph(TestCase):
 
-    path = '.'
     targets = ['result']
     name = __name__
     tool = 'lint'
@@ -34,7 +33,7 @@ class TestFontUnencodedGlyph(TestCase):
     @autofix('bakery_cli.pipe.autofix.fix_encode_glyphs')
     def test_font_unencoded_glyphs(self):
         """ Font does not have unencoded glyphs """
-        self.ttx = fontTools.ttLib.TTFont(self.path, 0)
+        self.ttx = fontTools.ttLib.TTFont(self.operator.path, 0)
         self.unencoded_glyphs = encode_glyphs.get_unencoded_glyphs(self.ttx)
         self.assertIs(self.unencoded_glyphs, [],
                       msg='There should not be unencoded glyphs')

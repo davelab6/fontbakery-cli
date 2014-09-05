@@ -21,19 +21,18 @@ from bakery_cli.ttfont import Font
 
 class CheckMetadataMatchesNameTable(TestCase):
 
-    path = '.'
     targets = ['metadata']
     tool = 'lint'
     name = __name__
 
     def read_metadata_contents(self):
-        return open(self.path).read()
+        return open(self.operator.path).read()
 
     def test_check_metadata_matches_nametable(self):
         contents = self.read_metadata_contents()
         fm = Metadata.get_family_metadata(contents)
         for font_metadata in fm.fonts:
-            ttfont = Font.get_ttfont_from_metadata(self.path, font_metadata)
+            ttfont = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
 
             report = '%s: Family name was supposed to be "%s" but is "%s"'
             report = report % (font_metadata.name, fm.name,

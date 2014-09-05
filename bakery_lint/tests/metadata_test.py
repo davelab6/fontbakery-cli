@@ -35,7 +35,6 @@ class MetadataTest(TestCase):
 
     targets = ['metadata']
     tool = 'METADATA.json'
-    path = '.'
     name = __name__
 
     rules = {
@@ -65,17 +64,17 @@ class MetadataTest(TestCase):
     }
 
     def setUp(self):
-        self.metadata = json.load(open(self.path))
+        self.metadata = json.load(open(self.operator.path))
 
     def test_description_is_valid_html(self):
         """ DESCRIPTION.en_us.html is not real html file """
-        p = op.join(op.dirname(self.path), 'DESCRIPTION.en_us.html')
+        p = op.join(op.dirname(self.operator.path), 'DESCRIPTION.en_us.html')
         msg = 'DESCRIPTION.en_us.html is not real html file'
         self.assertEqual(magic.from_file(p, mime=True), 'text/html', msg)
 
     def test_description_is_more_than_500b(self):
         """ DESCRIPTION.en_us.html is more than 500 bytes """
-        p = op.join(op.dirname(self.path), 'DESCRIPTION.en_us.html')
+        p = op.join(op.dirname(self.operator.path), 'DESCRIPTION.en_us.html')
         msg = 'DESCRIPTION.en_us.html is not real html file'
         statinfo = os.stat(p)
         msg = 'DESCRIPTION.en_us.html must have size larger than 500 bytes'
@@ -351,7 +350,7 @@ class MetadataTest(TestCase):
         """ Subset file is a TrueType format """
         for font in self.metadata.get('fonts', []):
             for subset in self.metadata.get('subsets', []) + ['menu']:
-                path = op.join(op.dirname(self.path),
+                path = op.join(op.dirname(self.operator.path),
                                font.get('filename')[:-3] + subset)
                 if not op.exists(path):
                     self.fail('%s subset file does not exist' % subset)

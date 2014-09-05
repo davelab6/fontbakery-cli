@@ -28,14 +28,13 @@ OPTIONAL_TABLES = set(['cvt', 'fpgm', 'loca', 'prep', 'CFF',
 
 class CheckNoProblematicFormats(TestCase):
 
-    path = '.'
     targets = ['result']
     name = __name__
     tool = 'lint'
 
     def test_check_no_problematic_formats(self):
         """ Check that font contain required tables """
-        tables = set(FontTool.get_tables(self.path))
+        tables = set(FontTool.get_tables(self.operator.path))
         desc = []
         if REQUIRED_TABLES - tables:
             desc += ["Font is missing required tables: [%s]" % (REQUIRED_TABLES - tables)]

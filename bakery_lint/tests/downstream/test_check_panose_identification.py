@@ -20,7 +20,6 @@ from bakery_cli.ttfont import Font
 
 class CheckPanoseIdentification(TestCase):
 
-    path = '.'
     name = __name__
     targets = ['result']
     tool = 'lint'
@@ -28,7 +27,7 @@ class CheckPanoseIdentification(TestCase):
     def test_check_panose_identification(self):
         """ Check if Panose is not set to monospaced if advancewidth of
             all glyphs is not equal to each others """
-        font = Font.get_ttfont(self.path)
+        font = Font.get_ttfont(self.operator.path)
 
         if font['OS/2'].panose.bProportion == 9:
             prev = 0

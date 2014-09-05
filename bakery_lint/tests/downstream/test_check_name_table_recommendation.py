@@ -23,13 +23,12 @@ class CheckStyleNameRecommendation(TestCase):
     targets = ['result']
     tool = 'lint'
     name = __name__
-    path = '.'
 
     @autofix('bakery_cli.pipe.autofix.fix_opentype_specific_fields')
     def test_check_stylename_is_under_recommendations(self):
         """ Style name must be equal to one of the following four
             values: “Regular”, “Italic”, “Bold” or “Bold Italic” """
-        font = Font.get_ttfont(self.path)
+        font = Font.get_ttfont(self.operator.path)
         self.assertIn(font.stylename, ['Regular', 'Italic',
                                        'Bold', 'Bold Italic'])
 
@@ -39,12 +38,11 @@ class CheckOTFamilyNameRecommendation(TestCase):
     targets = ['result']
     tool = 'lint'
     name = __name__
-    path = '.'
 
     @autofix('bakery_cli.pipe.autofix.fix_opentype_specific_fields')
     def test_check_opentype_familyname(self):
         """ OT Family Name for Windows should be equal to Family Name """
-        font = Font.get_ttfont(self.path)
+        font = Font.get_ttfont(self.operator.path)
         self.assertEqual(font.ot_family_name, font.familyname)
 
 
@@ -53,7 +51,6 @@ class CheckOTStyleNameRecommendation(TestCase):
     targets = ['result']
     tool = 'lint'
     name = __name__
-    path = '.'
 
     @autofix('bakery_cli.pipe.autofix.fix_opentype_specific_fields')
     def test_check_opentype_stylename(self):
@@ -68,7 +65,7 @@ class CheckOTStyleNameRecommendation(TestCase):
             'Bold Italic': ['Bold Italic']
         }
 
-        font = Font.get_ttfont(self.path)
+        font = Font.get_ttfont(self.operator.path)
         self.assertIn(font.stylename, stylename_mapping)
         self.assertIn(font.ot_style_name, stylename_mapping[font.stylename])
 
@@ -78,10 +75,9 @@ class CheckOTFullNameRecommendation(TestCase):
     targets = ['result']
     tool = 'lint'
     name = __name__
-    path = '.'
 
     @autofix('bakery_cli.pipe.autofix.fix_opentype_specific_fields')
     def test_check_opentype_fullname(self):
         """ Full name matches Windows-only Opentype-specific FullName """
-        font = Font.get_ttfont(self.path)
+        font = Font.get_ttfont(self.operator.path)
         self.assertEqual(font.ot_full_name, font.fullname)

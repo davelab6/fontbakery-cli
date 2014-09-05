@@ -21,6 +21,7 @@ from fontTools import ttx
 
 from bakery_cli.scripts.font2ttf import convert
 from bakery_cli.system import prun, shutil as shellutil
+from bakery_cli.utils import UpstreamDirectory
 
 
 class Build(object):
@@ -60,44 +61,32 @@ class Build(object):
                 pass
         return result
 
+    def print_vertical_metrics(self, binfiles):
+        SCRIPTPATH = 'bakery-vmet-fix.py'
+        command = ' '.join([op.join(self.builddir, x) for x in binfiles])
+        prun('%s %s' % (SCRIPTPATH, command), cwd=op.dirname(__file__),
+             log=self.bakery.log)
+
     def execute(self, pipedata, prefix=""):
         task = self.bakery.logging_task('Convert sources to TTF')
         if self.bakery.forcerun:
             return
 
-        ttxfiles = []
-        ufo = []
-        sfd = []
-        bin = []
-        for p in pipedata['process_files']:
-            if p.endswith('.ttx'):
-                ttxfiles.append(p)
-            elif p.endswith('.sfd'):
-                sfd.append(p)
-            elif p.endswith('.ufo'):
-                ufo.append(p)
-            elif p.endswith('.ttf'):
-                bin.append(p)
-            elif p.endswith('.otf'):
-                bin.append(p)
-
+        directory = UpstreamDirectory(op.join(self.builddir, 'sources'))
+        self.bakery.logging_task('{}'.format(directory.get_ttx()))
         try:
-            if ttxfiles:
-                self.execute_ttx(ttxfiles)
-            if ufo:
-                self.execute_ufo_sfd(ufo)
-            if sfd:
-                self.execute_ufo_sfd(sfd)
-            if bin:
-                self.execute_bin(bin)
+            if directory.get_ttx():
+                self.execute_ttx([op.join('sources', x) for x in directory.get_ttx()])
+            if directory.UFO:
+                self.execute_ufo_sfd([op.join('sources', x) for x in directory.UFO])
+            if directory.SFD:
+                self.execute_ufo_sfd([op.join('sources', x) for x in directory.SFD])
+            if directory.BIN:
+                self.execute_bin([op.join('sources', x) for x in directory.BIN])
 
-            binfiles = self.movebin_to_builddir(ufo + ttxfiles + sfd + bin)
+            binfiles = self.movebin_to_builddir([op.join('sources', x) for x in directory.ALL_FONTS])
 
-            SCRIPTPATH = 'bakery-vmet-fix.py'
-            command = ' '.join(map(lambda x: op.join(self.builddir, x), binfiles))
-            prun('%s %s' % (SCRIPTPATH, command),
-                 cwd=op.abspath(op.join(op.dirname(__file__), '..', '..')),
-                 log=self.bakery.log)
+            self.print_vertical_metrics(binfiles)
 
             pipedata['bin_files'] = binfiles
         except:

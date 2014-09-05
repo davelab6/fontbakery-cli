@@ -20,16 +20,14 @@ from bakery_cli.ttfont import Font
 
 class CheckMagicPREPByteCode(TestCase):
 
-    path = '.'
     targets = ['result']
     name = __name__
     tool = 'lint'
-    longMessage = True
 
     def test_prep_magic_code(self):
         """ Font contains in PREP table magic code """
         magiccode = '\xb8\x01\xff\x85\xb0\x04\x8d'
-        font = Font.get_ttfont(self.path)
+        font = Font.get_ttfont(self.operator.path)
         try:
             bytecode = font.get_program_bytecode()
         except KeyError:

@@ -21,18 +21,14 @@ from bakery_cli.ttfont import Font
 class CheckNbspWidthMatchesSpWidth(TestCase):
 
     targets = ['result']
-    path = '.'
     tool = 'lint'
     name = __name__
-
-    def read_metadata_contents(self):
-        return open(self.path).read()
 
     @tags('required')
     @autofix('bakery_cli.pipe.autofix.fix_nbsp')
     def test_check_nbsp_width_matches_sp_width(self):
         """ Check NO-BREAK SPACE advanceWidth is the same as SPACE """
-        tf = Font.get_ttfont(self.path)
+        tf = Font.get_ttfont(self.operator.path)
         space_advance_width = tf.advance_width('space')
         nbsp_advance_width = tf.advance_width('uni00A0')
 

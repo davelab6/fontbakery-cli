@@ -92,9 +92,11 @@ class NoDaemonProcess(multiprocessing.Process):
         pass
     daemon = property(_get_daemon, _set_daemon)
 
+
 # We sub-class multiprocessing.pool.Pool instead of multiprocessing.Pool
 # because the latter is only a wrapper function, not a proper class.
 class Pool(multiprocessing.pool.Pool):
+
     Process = NoDaemonProcess
 
 
@@ -106,8 +108,6 @@ if __name__ == '__main__':
 
     for p in args.projectpath:
         run_bakery(p)
-
-
 
     # pool = Pool(4)
 

@@ -22,13 +22,12 @@ from bakery_cli.ttfont import Font
 
 class CheckGlyphExistence(TestCase):
 
-    path = '.'
     name = __name__
     targets = ['result']
     tool = 'lint'
 
     def assertExists(self, d):
-        font = Font.get_ttfont(self.path)
+        font = Font.get_ttfont(self.operator.path)
         glyphs = font.retrieve_cmap_format_4().cmap
         if not bool(ord(unicodedata.lookup(d)) in glyphs):
             self.fail('%s does not exist in font' % d)

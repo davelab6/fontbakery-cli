@@ -21,13 +21,12 @@ from bakery_cli.ttfont import Font
 
 class CheckItalicStyleMatchesMacStyle(TestCase):
 
-    path = '.'
     name = __name__
     targets = ['metadata']
     tool = 'lint'
 
     def read_metadata_contents(self):
-        return open(self.path).read()
+        return open(self.operator.path).read()
 
     def test_check_italic_style_matches_names(self):
         """ Check metadata.json font.style `italic` matches font internal """
@@ -38,7 +37,7 @@ class CheckItalicStyleMatchesMacStyle(TestCase):
             if font_metadata.style != 'italic':
                 continue
 
-            font = Font.get_ttfont_from_metadata(self.path, font_metadata)
+            font = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
 
             if not bool(font.macStyle & 0b10):
                 self.fail(('Metadata style has been set to italic'
@@ -58,13 +57,12 @@ class CheckItalicStyleMatchesMacStyle(TestCase):
 
 class CheckNormalStyleMatchesMacStyle(TestCase):
 
-    path = '.'
     name = __name__
     targets = ['metadata']
     tool = 'lint'
 
     def read_metadata_contents(self):
-        return open(self.path).read()
+        return open(self.operator.path).read()
 
     def test_check_normal_style_matches_names(self):
         """ Check metadata.json font.style `italic` matches font internal """
@@ -75,7 +73,7 @@ class CheckNormalStyleMatchesMacStyle(TestCase):
             if font_metadata.style != 'normal':
                 continue
 
-            font = Font.get_ttfont_from_metadata(self.path, font_metadata)
+            font = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
 
             if bool(font.macStyle & 0b10):
                 self.fail(('Metadata style has been set to normal'

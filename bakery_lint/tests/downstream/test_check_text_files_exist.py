@@ -21,7 +21,6 @@ from bakery_lint.base import BakeryTestCase as TestCase, tags
 
 class CheckTextFilesExist(TestCase):
 
-    path = '.'
     name = __name__
     targets = ['metadata']
     tool = 'lint'
@@ -32,7 +31,7 @@ class CheckTextFilesExist(TestCase):
 
         exist = False
         for p in filename:
-            if op.exists(op.join(op.dirname(self.path), p)):
+            if op.exists(op.join(op.dirname(self.operator.path), p)):
                 exist = True
         if not exist:
             self.fail('%s does not exist in project' % filename)

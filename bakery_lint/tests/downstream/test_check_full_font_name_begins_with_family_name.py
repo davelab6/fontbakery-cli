@@ -20,14 +20,13 @@ from bakery_cli.ttfont import Font
 
 class CheckFullFontNameBeginsWithFamilyName(TestCase):
 
-    path = '.'
     targets = ['result']
     tool = 'lint'
     name = __name__
 
     def test_check_full_font_name_begins_with_family_name(self):
         """ Check if full font name begins with the font family name """
-        font = Font.get_ttfont(self.path)
+        font = Font.get_ttfont(self.operator.path)
         for entry in font.names:
             if entry.nameID != 1:
                 continue

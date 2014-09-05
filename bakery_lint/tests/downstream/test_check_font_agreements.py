@@ -23,7 +23,6 @@ from bakery_cli.ttfont import Font
 
 class CheckFsTypeIsNotSet(TestCase):
 
-    path = '.'
     name = __name__
     targets = ['result']
     tool = 'lint'
@@ -32,19 +31,18 @@ class CheckFsTypeIsNotSet(TestCase):
     @autofix('bakery_cli.pipe.autofix.fix_fstype_to_zero', always_run=True)
     def test_is_fstype_not_set(self):
         """ Is the OS/2 table fsType set to 0? """
-        font = Font.get_ttfont(self.path)
+        font = Font.get_ttfont(self.operator.path)
         self.assertEqual(font.OS2_fsType, 0)
 
 
 class CheckFontAgreements(TestCase):
 
-    path = '.'
     name = __name__
     targets = ['result']
     tool = 'lint'
 
     def setUp(self):
-        self.font = Font.get_ttfont(self.path)
+        self.font = Font.get_ttfont(self.operator.path)
 
     @tags('required')
     def test_em_is_1000(self):
@@ -54,17 +52,17 @@ class CheckFontAgreements(TestCase):
     @tags('required')
     def test_latin_file_exists(self):
         """ Check latin subset font file exists """
-        path = os.path.dirname(self.path)
-        path = os.path.join(path, self.path[:-3] + "latin")
+        path = os.path.dirname(self.operator.path)
+        path = os.path.join(path, self.operator.path[:-3] + "latin")
         self.assertTrue(os.path.exists(path))
 
     @tags('required')
     def test_file_is_font(self):
         """ Menu file have font-name-style.menu format """
-        self.assertTrue(magic.from_file(self.path), 'TrueType font data')
+        self.assertTrue(magic.from_file(self.operator.path), 'TrueType font data')
 
     @tags('required')
     def test_font_is_font(self):
         """ File provided as parameter is TTF font file """
-        self.assertTrue(magic.from_file(self.path, mime=True),
+        self.assertTrue(magic.from_file(self.operator.path, mime=True),
                         'application/x-font-ttf')

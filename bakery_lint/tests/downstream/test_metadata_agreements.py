@@ -23,7 +23,6 @@ from bakery_cli.ttfont import Font
 
 class CheckMetadataAgreements(TestCase):
 
-    path = '.'
     name = __name__
     targets = ['metadata']
     tool = 'lint'
@@ -33,7 +32,7 @@ class CheckMetadataAgreements(TestCase):
         self.metadata = Metadata.get_family_metadata(contents)
 
     def read_metadata_contents(self):
-        return open(self.path).read()
+        return open(self.operator.path).read()
 
     def test_metadata_family_values_are_all_the_same(self):
         """ Check that METADATA family values are all the same """
@@ -47,7 +46,7 @@ class CheckMetadataAgreements(TestCase):
     def test_metadata_family(self):
         """ Font and METADATA.json have the same name """
         for font_metadata in self.metadata.fonts:
-            font = Font.get_ttfont_from_metadata(self.path, font_metadata)
+            font = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
             if font.familyname != font_metadata.name:
                 msg = 'Family name in TTF is "%s" but in METADATA "%s"'
                 self.fail(msg % (font.familyname, font_metadata.name))
@@ -100,14 +99,14 @@ class CheckMetadataAgreements(TestCase):
     def test_metadata_postScriptName_matches_ttf_fontname(self):
         """ Checks METADATA.json 'postScriptName' matches TTF 'postScriptName' """
         for font_metadata in self.metadata.fonts:
-            font = Font.get_ttfont_from_metadata(self.path, font_metadata)
+            font = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
             self.assertEqual(font.post_script_name,
                              font_metadata.post_script_name)
 
     def test_metadata_fullname_is_equal_to_internal_font_fullname(self):
         """ METADATA.json 'fullname' value matches internal 'fullname' """
         for font_metadata in self.metadata.fonts:
-            font = Font.get_ttfont_from_metadata(self.path, font_metadata)
+            font = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
             self.assertEqual(font.fullname, font_metadata.full_name)
 
     def test_font_name_matches_family(self):
@@ -115,7 +114,7 @@ class CheckMetadataAgreements(TestCase):
             same as font familyname """
 
         for font_metadata in self.metadata.fonts:
-            font = Font.get_ttfont_from_metadata(self.path, font_metadata)
+            font = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
             if font_metadata.name != font.familyname:
                 msg = '"fonts.name" property is not the same as TTF familyname'
                 self.fail(msg)
@@ -124,7 +123,7 @@ class CheckMetadataAgreements(TestCase):
         """ METADATA.json fonts items fields "name", "postScriptName",
             "fullName", "filename" contains font name right format """
         for x in self.metadata.fonts:
-            font = Font.get_ttfont_from_metadata(self.path, x)
+            font = Font.get_ttfont_from_metadata(self.operator.path, x)
 
             self.assertIn(font.familyname, x.name)
             self.assertIn(font.familyname, x.full_name)

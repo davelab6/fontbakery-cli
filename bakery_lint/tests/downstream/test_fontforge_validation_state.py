@@ -24,11 +24,9 @@ class FontForgeValidateStateTest(TestCase):
     targets = ['result']
     tool = 'FontForge'
     name = __name__
-    path = '.'
-    longMessage = True
 
     def setUp(self):
-        font = fontforge.open(self.path)
+        font = fontforge.open(self.operator.path)
         self.validation_state = font.validate()
 
     def test_validation_open_contours(self):

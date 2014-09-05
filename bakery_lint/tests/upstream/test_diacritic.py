@@ -24,7 +24,6 @@ from bakery_cli.utils import UpstreamDirectory
 class TestDiacritic(TestCase):
     """ These tests are using text file with contents of diacritics glyphs """
 
-    path = '.'
     name = __name__
     targets = ['upstream-repo']
     tool = 'lint'
@@ -33,7 +32,7 @@ class TestDiacritic(TestCase):
         path = op.realpath(op.dirname(__file__))
         content = open(op.join(path, 'diacritics.txt')).read()
         self.diacriticglyphs = [x.strip() for x in content.split() if x.strip()]
-        self.directory = UpstreamDirectory(self.path)
+        self.directory = UpstreamDirectory(self.operator.path)
 
     def is_diacritic(self, glyphname):
         for diacriticglyph in self.diacriticglyphs:
@@ -43,7 +42,7 @@ class TestDiacritic(TestCase):
     def filter_diacritics_glyphs(self):
         diacritic_glyphs = []
         for filepath in self.directory.UFO:
-            pifont = PiFont(op.join(self.path, filepath))
+            pifont = PiFont(op.join(self.operator.path, filepath))
             for glyphcode, glyphname in pifont.get_glyphs():
                 if not self.is_diacritic(glyphname):
                     continue

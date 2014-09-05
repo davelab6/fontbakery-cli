@@ -42,17 +42,16 @@ def get_name_record(records, nameid, platform, platencid, language):
 class TTX_FontFamilyNamingTest(TestCase):
 
     targets = ['upstream-ttx']
-    path = '.'
     name = __name__
     tool = 'TTFont'
 
     def test_ttx_family_naming_recommendation(self):
         """ The font corresponds the font family naming recommendation.
         See http://forum.fontlab.com/index.php?topic=313.0 """
-        if not self.path.lower().endswith('.ttx'):
+        if not self.operator.path.lower().endswith('.ttx'):
             return
         font = TTFont(None)
-        font.importXML(self.path, quiet=True)
+        font.importXML(self.operator.path, quiet=True)
 
         names = font['name'].names
         # <Full name> limitation is < 64 chars

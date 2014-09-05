@@ -22,19 +22,18 @@ from bakery_cli.ttfont import Font
 class CheckMenuSubsetContainsProperGlyphs(TestCase):
 
     targets = ['metadata']
-    path = '.'
     name = __name__
     tool = 'lint'
 
     def read_metadata_contents(self):
-        return open(self.path).read()
+        return open(self.operator.path).read()
 
     def test_check_menu_contains_proper_glyphs(self):
         """ Check menu file contains proper glyphs """
         contents = self.read_metadata_contents()
         fm = Metadata.get_family_metadata(contents)
         for font_metadata in fm.fonts:
-            tf = Font.get_ttfont_from_metadata(self.path, font_metadata, is_menu=True)
+            tf = Font.get_ttfont_from_metadata(self.operator.path, font_metadata, is_menu=True)
             self.check_retrieve_glyphs(tf, font_metadata)
 
     def check_retrieve_glyphs(self, ttfont, font_metadata):

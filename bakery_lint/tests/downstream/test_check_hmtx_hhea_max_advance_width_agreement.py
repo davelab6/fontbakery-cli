@@ -20,14 +20,13 @@ from bakery_cli.ttfont import Font
 
 class CheckHmtxHheaMaxAdvanceWidthAgreement(TestCase):
 
-    path = '.'
     targets = ['result']
     name = __name__
     tool = 'lint'
 
     def test_check_hmtx_hhea_max_advance_width_agreement(self):
         """ Check if MaxAdvanceWidth agree in the Hmtx and Hhea tables """
-        font = Font.get_ttfont(self.path)
+        font = Font.get_ttfont(self.operator.path)
 
         hmtx_advance_width_max = font.get_hmtx_max_advanced_width()
         hhea_advance_width_max = font.advance_width_max

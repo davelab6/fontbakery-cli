@@ -20,14 +20,13 @@ from bakery_cli.ttfont import Font
 
 class CheckUnusedGlyphData(TestCase):
 
-    path = '.'
     targets = ['result']
     tool = 'lint'
     name = __name__
 
     def test_check_unused_glyph_data(self):
         """ Check that "glyf" table does not contain unused glyphs """
-        f = Font.get_ttfont(self.path)
+        f = Font.get_ttfont(self.operator.path)
         glyf_length = f.get_glyf_length()
 
         loca_num_glyphs = f.get_loca_num_glyphs()

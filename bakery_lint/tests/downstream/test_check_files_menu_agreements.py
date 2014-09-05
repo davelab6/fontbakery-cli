@@ -23,13 +23,12 @@ from bakery_lint.metadata import Metadata
 
 class CheckFontsMenuAgreements(TestCase):
 
-    path = '.'
     name = __name__
     targets = ['metadata']
     tool = 'lint'
 
     def read_metadata_contents(self):
-        return open(self.path).read()
+        return open(self.operator.path).read()
 
     def menufile(self, font_metadata):
         return '%s.menu' % font_metadata.post_script_name
@@ -41,7 +40,7 @@ class CheckFontsMenuAgreements(TestCase):
         fm = Metadata.get_family_metadata(contents)
         for font_metadata in fm.fonts:
             menufile = self.menufile(font_metadata)
-            path = op.join(op.dirname(self.path), menufile)
+            path = op.join(op.dirname(self.operator.path), menufile)
 
             if not op.exists(path):
                 self.fail('%s does not exist' % menufile)

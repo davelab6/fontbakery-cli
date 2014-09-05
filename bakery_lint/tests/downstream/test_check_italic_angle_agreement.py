@@ -20,7 +20,6 @@ from bakery_cli.ttfont import Font
 
 class CheckItalicAngleAgreement(TestCase):
 
-    path = '.'
     name = __name__
     targets = ['result']
     tool = 'lint'
@@ -28,7 +27,7 @@ class CheckItalicAngleAgreement(TestCase):
     @tags('required')
     def test_check_italic_angle_agreement(self):
         """ Check italicangle property zero or negative """
-        font = Font.get_ttfont(self.path)
+        font = Font.get_ttfont(self.operator.path)
         if font.italicAngle > 0:
             self.fail('italicAngle must be less or equal zero')
         if abs(font.italicAngle) > 20:

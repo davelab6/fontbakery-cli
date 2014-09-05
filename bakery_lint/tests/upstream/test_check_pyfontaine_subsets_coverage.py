@@ -36,16 +36,15 @@ class FontaineTest(TestCase):
     targets = ['upstream-repo']
     tool = 'PyFontaine'
     name = __name__
-    path = '.'
 
     @classmethod
     def __generateTests__(cls):
         pattern = re.compile('[\W_]+')
         library = Library(collections=['subsets'])
 
-        directory = UpstreamDirectory(cls.path)
+        directory = UpstreamDirectory(cls.operator.path)
         for fontpath in directory.UFO + directory.TTX:
-            font = FontFactory.openfont(op.join(cls.path, fontpath))
+            font = FontFactory.openfont(op.join(cls.operator.path, fontpath))
             for charmap, _, coverage, _ in \
                     font.get_orthographies(_library=library):
                 common_name = charmap.common_name.replace('Subset ', '')

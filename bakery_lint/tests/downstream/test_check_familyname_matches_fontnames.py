@@ -21,12 +21,11 @@ from bakery_lint.metadata import Metadata
 class CheckFamilyNameMatchesFontNames(TestCase):
 
     name = __name__
-    path = '.'
     targets = ['metadata']
     tool = 'lint'
 
     def read_metadata_contents(self):
-        return open(self.path).read()
+        return open(self.operator.path).read()
 
     def test_check_familyname_matches_fontnames(self):
         """ Check font name is the same as family name """

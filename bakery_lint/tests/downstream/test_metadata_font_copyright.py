@@ -20,13 +20,12 @@ from bakery_lint.metadata import Metadata
 
 class CheckMetadataContainsReservedFontName(TestCase):
 
-    path = '.'
     targets = 'metadata'
     name = __name__
     tool = 'lint'
 
     def read_metadata_contents(self):
-        return open(self.path).read()
+        return open(self.operator.path).read()
 
     @tags(['required', 'info'])
     def test_copyright_contains_correct_rfn(self):

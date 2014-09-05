@@ -20,14 +20,13 @@ from bakery_cli.ttfont import Font
 
 class CheckFontNameEqualToMacStyleFlags(TestCase):
 
-    path = '.'
     targets = ['result']
     name = __name__
     tool = 'lint'
 
     def test_fontname_is_equal_to_macstyle(self):
         """ Check that fontname is equal to macstyle flags """
-        font = Font.get_ttfont(self.path)
+        font = Font.get_ttfont(self.operator.path)
 
         macStyle = font.macStyle
 

@@ -16,19 +16,27 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import os.path
 
-from bakery_lint.base import BakeryTestCase as TestCase
+from bakery_lint.base import BakeryTestCase as TestCase, autofix
 from bakery_cli.ttfont import Font
 
 
-class TTFSourceFontFileNameEqualsFamilyStyle(TestCase):
+class TestTTFSourceFontFileNameEqualsFamilyStyle(TestCase):
 
-    targets = ['upstream']
+    targets = ['upstream', 'upstream-ttx']
     tool = 'lint'
-    path = '.'
     name = __name__
 
+    @autofix('bakery_cli.pipe.autofix.rename')
     def test_source_ttf_font_filename_equals_familystyle(self):
-        ttfont = Font.get_ttfont(self.path)
-        expectedname = '{0}-{1}'.format(ttfont.familyname, ttfont.stylename)
-        actualname, _ = os.path.splitext(os.path.basename(self.path))
+        ttfont = Font.get_ttfont(self.operator.path)
+
+        style_name = ttfont.stylename
+        if style_name == 'Normal' or style_name == 'Roman':
+            style_name = 'Regular'
+
+        expectedname = '{0}-{1}'.format(ttfont.familyname.replace(' ', ''),
+                                        style_name)
+        actualname, extension = os.path.splitext(self.operator.path)
+
+        self.expectedfilename = '{0}{1}'.format(expectedname, extension)
         self.assertEqual(actualname, expectedname)

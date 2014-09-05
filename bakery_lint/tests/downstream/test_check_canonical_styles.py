@@ -21,7 +21,6 @@ from bakery_cli.ttfont import Font
 
 class CheckCanonicalStyles(TestCase):
 
-    path = '.'
     name = __name__
     targets = ['metadata']
     tool = 'lint'
@@ -30,7 +29,7 @@ class CheckCanonicalStyles(TestCase):
     ITALIC_MASK = 0b10
 
     def read_metadata_contents(self):
-        return open(self.path).read()
+        return open(self.operator.path).read()
 
     def test_check_canonical_styles(self):
         """ Test If font styles are canonical """
@@ -48,7 +47,7 @@ class CheckCanonicalStyles(TestCase):
                     self.fail(_ % (font_metadata.filename, font_metadata.style))
 
     def is_italic(self, font_metadata):
-        ttfont = Font.get_ttfont_from_metadata(self.path, font_metadata)
+        ttfont = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
         return (ttfont.macStyle & self.ITALIC_MASK
                 or ttfont.italicAngle
                 or self.find_italic_in_name_table(ttfont))

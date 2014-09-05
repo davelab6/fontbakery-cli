@@ -20,7 +20,6 @@ from bakery_cli.ttfont import Font
 
 class CheckNamesAreASCIIOnly(TestCase):
 
-    path = '.'
     name = __name__
     targets = ['result']
     tool = 'lint'
@@ -28,7 +27,7 @@ class CheckNamesAreASCIIOnly(TestCase):
     @autofix('bakery_cli.pipe.autofix.fix_name_ascii')
     def test_check_names_are_ascii_only(self):
         """ NAME and CFF tables must not contain non-ascii characters """
-        font = Font.get_ttfont(self.path)
+        font = Font.get_ttfont(self.operator.path)
 
         for name_record in font.names:
             string = Font.bin2unistring(name_record)

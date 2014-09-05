@@ -20,16 +20,15 @@ from bakery_lint.base import BakeryTestCase as TestCase
 from bakery_cli.ttfont import Font
 
 
-class GlyphNameDoesNotContainsDisallowedChars(TestCase):
+class TestGlyphNameDoesNotContainsDisallowedChars(TestCase):
 
-    path = '.'
     name = __name__
     targets = ['upstream-ttx']
     tool = 'lint'
 
     def test_glyphname_does_not_contain_disallowed_chars(self):
         """ GlyphName length < 30 and does contain allowed chars only """
-        font = Font.get_ttfont(self.path)
+        font = Font.get_ttfont(self.operator.path)
 
         for _, glyphName in enumerate(font.ttfont.getGlyphOrder()):
             if glyphName == '.notdef':
