@@ -60,7 +60,7 @@
 
         <h4>TTF Table Sizes</h4>
 
-        <table class="table-striped table-bordered table-condensed">
+        <table class="table-striped table-bordered table-condensed tablesorter">
             <tr>
                 <th></th>
                 {% for f in ttftablesizes[1] %}
@@ -80,7 +80,7 @@
 
         {% if autohinting_sizes %}
         <h4>ttfautohint filesize impact statistic</h4>
-        <table class="table-striped table-bordered table-condensed">
+        <table class="table-striped table-bordered table-condensed tablesorter">
         {% for t in autohinting_sizes %}
             <tr>
                 <th colspan="2">{{ t['fontname'] }}</th>
