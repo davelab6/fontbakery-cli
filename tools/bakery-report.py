@@ -30,7 +30,6 @@ if __name__ == '__main__':
                ' Please install jinja2 before using'))
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--with-upstream-tests')
     parser.add_argument('path')
 
     args = parser.parse_args()
@@ -39,13 +38,7 @@ if __name__ == '__main__':
         tests.generate({'path': os.path.realpath(args.path)})
         index.generate({'path': os.path.realpath(args.path)})
         metadata.generate({'path': os.path.realpath(args.path)})
-        if args.with_upstream_tests:
-            d = {'upstreamyaml': os.path.realpath(args.with_upstream_tests),
-                 'path': os.path.realpath(args.path)}
-            upstream.generate(d)
-        else:
-            upstream.generate({'path': os.path.realpath(args.path)},
-                              force_no_data=True)
+        upstream.generate({'path': os.path.realpath(args.path)})
     except Exception:
         raise
         buildlog.generate({'path': os.path.realpath(args.path)},

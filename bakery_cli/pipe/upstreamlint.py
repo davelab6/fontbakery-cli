@@ -49,7 +49,7 @@ class UpstreamLint(object):
                 result[font] = run_set(op.join(upstreamdir, font),
                                        'upstream', log=self.bakery.log)
 
-        _out_yaml = op.join(upstreamdir, '.upstream.yaml')
+        _out_yaml = op.join(self.builddir, 'upstream.yaml')
 
         l = codecs.open(_out_yaml, mode='w', encoding="utf-8")
         l.write(yaml.safe_dump(result))
