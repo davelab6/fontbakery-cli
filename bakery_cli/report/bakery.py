@@ -16,17 +16,19 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
 import os.path as op
-from markdown import markdown
+
 from bakery_cli.report.utils import render_template
 
 
-TAB = 'BuildLog'
+TAB = 'Bakery'
 
 
-def generate(config, outfile='buildlog.html'):
+def generate(config):
+    if not op.exists(op.join(config['path'], 'bakery.yaml')):
+        return
 
-    destfile = open(op.join(config['path'], outfile), 'w')
+    destfile = open(op.join(config['path'], 'bakery-yaml.html'), 'w')
 
-    log = open(op.join(config['path'], 'build.log')).read()
-    print(render_template('buildlog.html', log=log, markdown=markdown),
+    data = open(op.join(config['path'], 'bakery.yaml')).read()
+    print(render_template('bakery-yaml.html', data=data).encode('utf8'),
           file=destfile)

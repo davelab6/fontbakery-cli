@@ -19,7 +19,7 @@ from __future__ import print_function
 import argparse
 import os
 
-from bakery_cli.report import tests, index, buildlog, upstream, metadata
+from bakery_cli.report import tests, index, buildlog, upstream, metadata, bakery
 
 
 if __name__ == '__main__':
@@ -39,8 +39,8 @@ if __name__ == '__main__':
         index.generate({'path': os.path.realpath(args.path)})
         metadata.generate({'path': os.path.realpath(args.path)})
         upstream.generate({'path': os.path.realpath(args.path)})
-    except Exception:
-        raise
+        bakery.generate({'path': os.path.realpath(args.path)})
+    except:
         buildlog.generate({'path': os.path.realpath(args.path)},
                           'index.html')
     else:
