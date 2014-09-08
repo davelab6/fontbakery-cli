@@ -10,6 +10,6 @@ from bakery_cli.pipe.optimize import Optimize
 from bakery_cli.pipe.rename import Rename
 from bakery_cli.pipe.checkout import Checkout
 from bakery_cli.pipe.zip import Zip
-from bakery_cli.pipe.fontcrunch import FontCrunch
 from bakery_cli.pipe.metadatalint import MetadataLint
 from bakery_cli.pipe.upstreamlint import UpstreamLint
+from bakery_cli.pipe.font_crunch import FontCrunch

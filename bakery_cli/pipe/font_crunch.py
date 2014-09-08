@@ -36,7 +36,7 @@ class FontCrunch(object):
             for filename in fnmatch.filter(files, pattern):
                 fn = os.path.join(root, filename)
                 print('Optimize: {}'.format(fn))
-                quadopt.optimize_run(fn, fn + '.opt')
+                quadopt.optimize_run(fn, fn + 'opt')
 
     def execute(self, pipedata):
         if not pipedata.get('fontcrunch'):
@@ -60,5 +60,4 @@ class FontCrunch(object):
             self.bakery.logging_task_done(task, failed=True)
             raise
         finally:
-            os.chdir(orig_dir)
             shutil.rmtree(bez_dir)

@@ -67,7 +67,8 @@ def run_bakery(sourcedir, config=None):
             pipe.Optimize,
             pipe.MetadataLint,
             pipe.CopyTxtFiles,
-            pipe.TTFAutoHint
+            pipe.TTFAutoHint,
+            pipe.FontCrunch
         ]
 
         buildlog_path = os.path.join(sourcedir, 'builds', 'build', 'build.log')
