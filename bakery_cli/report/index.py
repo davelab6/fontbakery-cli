@@ -20,6 +20,7 @@ import yaml
 
 from bakery_cli.scripts.vmet import metricview
 from bakery_cli.utils import UpstreamDirectory
+from bakery_cli.report.utils import render_template
 
 from fontaine.cmap import Library
 from fontaine.font import FontFactory
@@ -57,8 +58,11 @@ def get_orthography(fontaine):
     return fontaine.get_orthographies(_library=library)
 
 
+def to_google_data_list(tdict):
+    return [[x, tdict[x]] for x in tdict]
+
+
 def generate(config):
-    from jinja2 import Template
     directory = UpstreamDirectory(config['path'])
 
     faces = []
@@ -69,8 +73,6 @@ def generate(config):
         basename = op.basename(font)[:-4]
         faces.append({'basename': basename, 'path': font})
 
-    template = Template(open(t('index.html')).read())
-
     destfile = open(op.join(config['path'], 'index.html'), 'w')
     data = yaml.load(open(op.join(config['path'], '.tests.yaml')))
     basenames = [op.basename(font['path']) for font in faces]
@@ -78,23 +80,22 @@ def generate(config):
     fontpaths = [op.join(config['path'], path)
                  for path in directory.BIN]
     ttftablesizes = get_fonts_table_sizes(fontpaths)
-    vmet = metricview(fontpaths)
 
     buildstate = yaml.load(open(op.join(config['path'],
                                 'build.state.yaml')))
+    autohint_sizes = buildstate.get('autohinting_sizes', [])
+    vmet = metricview(fontpaths)
 
-    fonts = {}
-    for filename in fontpaths:
-        fontaine = FontFactory.openfont(filename)
-        fonts[filename] = fontaine
+    fonts = {x: FontFactory.openfont(x) for x in fontpaths}
 
-    print(template.render(fonts=faces, tests=data,
+    print(render_template('index.html', fonts=faces, tests=data,
                           basenames=basenames,
                           filter_with_tag=filter_with_tag,
                           vmet=vmet,
-                          autohinting_sizes=buildstate.get('autohinting_sizes', []),
+                          autohinting_sizes=autohint_sizes,
                           ttftablesizes=ttftablesizes,
                           fontaineFonts=fonts.itervalues(),
                           get_orthography=get_orthography,
-                          hex=hex).encode('utf8'),
+                          to_google_data_list=to_google_data_list,
+                          hex=hex),
           file=destfile)
