@@ -32,5 +32,8 @@ def generate(config, outfile='metadata.html'):
 
     destfile = open(op.join(config['path'], outfile), 'w')
 
-    data = open(op.join(config['path'], 'METADATA.json')).read()
-    print(template.render(data=data, markdown=markdown).encode('utf8'), file=destfile)
+    metadata = open(op.join(config['path'], 'METADATA.json')).read()
+    metadata_new = open(op.join(config['path'], 'METADATA.json.new')).read()
+    print(template.render(metadata=metadata,
+                          metadata_new=metadata_new,
+                          markdown=markdown).encode('utf8'), file=destfile)
