@@ -36,20 +36,19 @@
           {% if blockers %}
           <h4>{{ font }} Blockers</h4>
 
-          <table class="table-striped table-bordered table-condensed">
+          <table class="table-striped table-bordered table-condensed tablesorter">
           <thead>
               <tr>
-                <th>Test method</th>
-                <th>Blocker info</th>
+                <th>Check</th>
+                <th>Method</th>
+                <th>Result</th>
               </tr>
           </thead>
           <tbody>
           {% for blocker in blockers %}
-          <tr>
-            <td rowspan="2">{{ blocker['methodName'] }}</td>
+          <tr class="apopover" data-placement="top" data-content="{{ blocker.name|replace('.','/') }}.py:{{ blocker.methodName }}()">
             <td>{{ blocker['methodDoc'] }}</td>
-          </tr>
-          <tr>
+            <td>{{ blocker['methodName'] }}</td>
             <td>{{ blocker['err_msg'] }}</td>
           </tr>
           {% endfor %}
@@ -175,11 +174,15 @@
     </div>
 </body>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.7/js/jquery.tablesorter.min.js"></script>
 <script>
 $(function(){
     $('.tablesorter').tablesorter();
+    $('.apopover').each(function (index, item) {
+        $(item).popover();
     });
+});
 </script>
 <script type="text/javascript" src="http://www.google.com/jsapi"></script>
 <script type="text/javascript">
@@ -219,4 +222,10 @@ $(function(){
     {% endfor %}
   }
 </script>
+<style>
+    .popover {
+        max-width: 1980px;
+        font-family: Courier;
+    }
+</style>
 </html>
