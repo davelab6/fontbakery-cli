@@ -17,8 +17,6 @@
 from __future__ import print_function
 import os.path as op
 from markdown import markdown
-from lxml import etree
-from cStringIO import StringIO
 
 
 TAB = 'Description'
@@ -28,14 +26,12 @@ t = lambda templatefile: op.join(TEMPLATE_DIR, templatefile)
 
 
 def generate(config, outfile='description.html'):
+    source_file = op.join(config['path'], 'DESCRIPTION.en_US.html')
+    if not op.exists(source_file):
+        return
     from jinja2 import Template
-
     template = Template(open(t(outfile)).read())
-
     destfile = open(op.join(config['path'], outfile), 'w')
-
-    data = open(op.join(config['path'], 'DESCRIPTION.en_US.html')).read()
-    # t = etree.parse(StringIO(data))
-
+    data = open(source_file).read()
     print(template.render(data=data,
                           markdown=markdown).encode('utf8'), file=destfile)
