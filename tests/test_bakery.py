@@ -60,9 +60,7 @@ class TestBakery(unittest.TestCase):
         b = Build(b)
         with patch('bakery_cli.utils.UpstreamDirectory.get_ttx') as ttx:
             ttx.return_value = ['Font-Regular.ttx']
-            with patch.object(b, 'print_vertical_metrics') as vmet:
-                with patch.object(b, 'execute_ttx') as execttx:
-                    b.execute(pipedata)
-                    execttx.assert_called_once_with(['sources/Font-Regular.ttx'])
-                    assert vmet.called
+            with patch.object(b, 'execute_ttx') as execttx:
+                b.execute(pipedata)
+                execttx.assert_called_once_with(['sources/Font-Regular.ttx'], {'process_files': ['sources/fontname-bold.ttx', 'sources/fontname-regular.ttx']})
 
