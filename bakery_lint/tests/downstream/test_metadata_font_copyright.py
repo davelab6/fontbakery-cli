@@ -27,7 +27,7 @@ class CheckMetadataContainsReservedFontName(TestCase):
     def read_metadata_contents(self):
         return open(self.operator.path).read()
 
-    @tags(['required', 'info'])
+    @tags('required', 'info')
     def test_copyright_contains_correct_rfn(self):
         """ Copyright string contains "Reserved File Name" """
         contents = self.read_metadata_contents()
