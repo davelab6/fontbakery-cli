@@ -19,7 +19,7 @@ from __future__ import print_function
 import argparse
 import os
 
-from bakery_cli.report import tests, index, buildlog, upstream
+from bakery_cli.report import tests, index, buildlog, upstream, metadata
 
 
 if __name__ == '__main__':
@@ -38,6 +38,7 @@ if __name__ == '__main__':
     try:
         tests.generate({'path': os.path.realpath(args.path)})
         index.generate({'path': os.path.realpath(args.path)})
+        metadata.generate({'path': os.path.realpath(args.path)})
         if args.with_upstream_tests:
             d = {'upstreamyaml': os.path.realpath(args.with_upstream_tests),
                  'path': os.path.realpath(args.path)}
