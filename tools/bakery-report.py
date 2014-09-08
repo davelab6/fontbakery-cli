@@ -42,6 +42,9 @@ if __name__ == '__main__':
             d = {'upstreamyaml': os.path.realpath(args.with_upstream_tests),
                  'path': os.path.realpath(args.path)}
             upstream.generate(d)
+        else:
+            upstream.generate({'path': os.path.realpath(args.path)},
+                              force_no_data=True)
     except Exception:
         raise
         buildlog.generate({'path': os.path.realpath(args.path)},

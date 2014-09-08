@@ -45,13 +45,15 @@ def sort(data):
     return a
 
 
-def generate(config):
+def generate(config, force_no_data=False):
     from jinja2 import Template
 
     template = Template(open(t('upstream.html')).read())
 
     destfile = open(op.join(config['path'], 'upstream.html'), 'w')
-
-    upstream = yaml.load(open(config['upstreamyaml']))
+    if force_no_data:
+        upstream = []
+    else:
+        upstream = yaml.load(open(config['upstreamyaml']))
     print(template.render(sort=sort, tests=upstream).encode('utf8'),
           file=destfile)
