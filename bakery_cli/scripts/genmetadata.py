@@ -528,22 +528,14 @@ def striplines(jsontext):
 
 
 def writeFile(familydir, metadata):
-    filename = METADATA_JSON
+    filename = "METADATA.json"
     if hasMetadata(familydir):
-        filename = METADATA_JSON_NEW
+        filename = "METADATA.json.new"
     with io.open(os.path.join(familydir, filename), 'w', encoding='utf-8') as f:
         data = sortOldMetadata(metadata)
         contents = json.dumps(data, indent=2, ensure_ascii=False)
         f.write(striplines(contents))
     print(json.dumps(metadata, indent=2, ensure_ascii=False))
-
-    #TODO(andriy.hrytskiv: Both files exist, but they have different content.
-    # Should METADATA.json.new just replace METADATA.json ?)
-    metadata_json_path = os.path.join(familydir, METADATA_JSON)
-    metadata_json_new_path = os.path.join(familydir, METADATA_JSON_NEW)
-    if all([os.path.exists(p) for p in (metadata_json_path,
-                                        metadata_json_new_path)]):
-        shutil.move(metadata_json_new_path, metadata_json_path)
 
 
 def ansiprint(string, color):
