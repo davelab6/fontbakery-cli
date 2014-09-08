@@ -38,7 +38,7 @@
             {%- for testType, icon in testTypes.iteritems() | sort %}
                 {% for item in sort(tests[font][testType]) %}
                 <tr>
-                    <td>{{ ', '.join(item.tags) }}</td>
+                    <td>{{ item.tags|join(', ') }}</td>
                     <td><span class="apopover" data-placement="top" data-content="{{ item.name|replace('.','/') }}.py:{{ item.methodName }}()">{{ item.methodDoc }}</span></td>
                     <td>{{ font }}</td>
                     <td>{{ map[testType] }}</td>
