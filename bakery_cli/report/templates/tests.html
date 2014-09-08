@@ -19,6 +19,14 @@
     <h3>Downstream Tests</h3>
 
     <table class="table">
+        <thead>
+        <tr>
+          <th>Category</th>
+          <th>Description</th>
+          <th>File</th>
+          <th>Status</th>
+        </tr>
+        </thead>
         {% set map = {'success': 'OK', 'failure': 'FAIL', 'error': 'ERROR', 'fixed': 'FIXED'} %}
         {% set testTypes = { 'error': 'danger', 'failure': 'error', 'success': 'success', 'fixed': 'info'} %}
 

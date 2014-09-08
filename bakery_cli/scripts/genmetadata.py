@@ -33,6 +33,7 @@ from fontTools import ttLib
 import io
 import json
 import os
+import shutil
 import sys
 import gzip
 
@@ -49,6 +50,8 @@ else:
 # This is only here to have the JSON file data written in a predictable way
 # We only care about the the json object being able to iterate over the keys, so
 # other stuff might be broken...
+METADATA_JSON = 'METADATA.json'
+METADATA_JSON_NEW = '{}.new'.format(METADATA_JSON)
 
 
 class InsertOrderedDict(dict):
@@ -478,12 +481,12 @@ def getToday():
 
 
 def hasMetadata(familydir):
-    fn = os.path.join(familydir, "METADATA.json")
+    fn = os.path.join(familydir, METADATA_JSON)
     return os.path.exists(fn) and (os.path.getsize(fn) > 0)
 
 
 def loadMetadata(familydir):
-    with io.open(os.path.join(familydir, "METADATA.json"), 'r', encoding="utf-8") as fp:
+    with io.open(os.path.join(familydir, METADATA_JSON), 'r', encoding="utf-8") as fp:
         return sortOldMetadata(json.load(fp))
 
 
@@ -525,14 +528,22 @@ def striplines(jsontext):
 
 
 def writeFile(familydir, metadata):
-    filename = "METADATA.json"
+    filename = METADATA_JSON
     if hasMetadata(familydir):
-        filename = "METADATA.json.new"
+        filename = METADATA_JSON_NEW
     with io.open(os.path.join(familydir, filename), 'w', encoding='utf-8') as f:
         data = sortOldMetadata(metadata)
         contents = json.dumps(data, indent=2, ensure_ascii=False)
         f.write(striplines(contents))
     print(json.dumps(metadata, indent=2, ensure_ascii=False))
+
+    #TODO(andriy.hrytskiv: Both files exist, but they have different content.
+    # Should METADATA.json.new just replace METADATA.json ?)
+    metadata_json_path = os.path.join(familydir, METADATA_JSON)
+    metadata_json_new_path = os.path.join(familydir, METADATA_JSON_NEW)
+    if all([os.path.exists(p) for p in (metadata_json_path,
+                                        metadata_json_new_path)]):
+        shutil.move(metadata_json_new_path, metadata_json_path)
 
 
 def ansiprint(string, color):
