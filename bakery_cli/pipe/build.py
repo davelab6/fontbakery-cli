@@ -38,12 +38,11 @@ class Build(object):
 
         ttfpath = '{}.ttf'.format(os.path.basename(fontname))
 
-        _ = 'font2ttf.py {0}.otf {1}\n'
-        self.bakery.logging_cmd(_.format(fontname, ttfpath))
-
-        path = '{}.otf'.format(fontname)
+        path = '{}.otf'.format(os.path.basename(fontname))
 
         if op.exists(op.join(self.builddir, path)):
+            _ = 'font2ttf.py {0}.otf {1}\n'
+            self.bakery.logging_cmd(_.format(fontname, ttfpath))
             try:
                 convert(op.join(self.builddir, path),
                         op.join(self.builddir, ttfpath),
