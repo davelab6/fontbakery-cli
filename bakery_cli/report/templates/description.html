@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ ("Build Log") }}</title>
+    <title>{{ ("Description") }}</title>
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
 </head>
@@ -12,12 +12,11 @@
           <li><a href="index.html">Summary</a></li>
           <li><a href="upstream.html">Upstream Tests</a></li>
           <li><a href="tests.html">Downstream Tests</a></li>
-          <li class="active"><a href="buildlog.html">Build Log</a></li>
+          <li><a href="buildlog.html">Build Log</a></li>
           <li><a href="metadata.html">METADATA.json</a></li>
-          <li><a href="bakery-yaml.html">bakery.yaml</a></li>
-          <li><a href="description.html">Description</a></li>
+          <li class="active"><a href="description.html">Description</a></li>
         </ul>
-        <pre>{{ markdown(log) }}</pre>
+      {{ data }}
     </div>
 </body>
 </html>
