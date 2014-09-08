@@ -31,25 +31,31 @@
         </div>
         {% endfor %}
 
-        <h4>Tests Charts</h4>
         {% for font in tests.keys() %}
           {% set blockers = filter_with_tag(tests[font], 'required') %}
-          <div class="row">
-            <div class="col-xs-6">
-              <div id="piechart{{ loop.index }}"></div>
-            </div>
-            <div class="col-xs-6">
-              {% if blockers %}
-              <h5>Blockers</h5>
-              {% for blocker in blockers %}
-              <div>
-                {{blocker['methodName']}}: <br />{{blocker['methodDoc']}}<br />
-                <blockquote class="text-danger">{{ blocker['err_msg']}}</blockquote>
-              </div>
-              {% endfor %}
-              {% endif %}
-            </div>
-          </div>
+          {% if blockers %}
+          <h4>{{ font }} Blockers</h4>
+
+          <table class="table-striped table-bordered table-condensed">
+          <thead>
+              <tr>
+                <th>Test method</th>
+                <th>Blocker info</th>
+              </tr>
+          </thead>
+          <tbody>
+          {% for blocker in blockers %}
+          <tr>
+            <td rowspan="2">{{ blocker['methodName'] }}</td>
+            <td>{{ blocker['methodDoc'] }}</td>
+          </tr>
+          <tr>
+            <td>{{ blocker['err_msg'] }}</td>
+          </tr>
+          {% endfor %}
+          </tbody>
+          </table>
+          {% endif %}
         {% endfor %}
 
         <h4>Summary Chart</h4>
@@ -183,22 +189,6 @@ $(function(){
 
     {% set chartsum = {"success": 0, "failure": 0, "fixed": 0, "error": 0} %}
     {%- for font in tests.keys() %}
-    var data = google.visualization.arrayToDataTable([
-        ['Tests', '#'],
-        ['Success {{ tests[font]['success']|length }}', {{ tests[font]['success']|length }}],
-        ['Fixed {{ tests[font]['fixed']|length }}', {{ tests[font]['fixed']|length }}],
-        ['Failed {{ tests[font]['failure']|length }}', {{ tests[font]['failure']|length }}],
-        ['Error {{ tests[font]['error']|length }}', {{ tests[font]['error']|length }}]
-    ]);
-
-    var options = {
-      title: "{{ font }}",
-      is3D: true,
-      colors: ['#468847', '#3a87ad', '#b94a48', '#c09853'],
-    };
-
-    var chart = new google.visualization.PieChart(document.getElementById('piechart{{ loop.index }}'));
-    chart.draw(data, options);
 
     {% set chartsum = {
       "success": chartsum.success + tests[font]['success']|length,
