@@ -34,27 +34,32 @@ class Optimize(object):
 
         try:
             for filename in pipedata['bin_files']:
-                # convert the ttf to a ttx file - this may fail
-
-                from fontTools import subset
-
-                args = [op.join(self.builddir, filename), '*']
-                args += ['--layout-features="*"']
-                args += ['--notdef-outline', '--name-IDs="*"', '--hinting']
-                self.bakery.logging_cmd('pyftsubset %s' % ' '.join(args))
-
-                subset.main(args)
-
-                # compare filesizes TODO print analysis of this :)
-                comment = "# look at the size savings of that subset process"
-                cmd = "ls -l '%s'* %s" % (filename, comment)
-                run(cmd, cwd=self.builddir, log=self.bakery.log)
-
-                # move ttx files to src
-                shutil.move(op.join(self.builddir, filename + '.subset'),
-                            op.join(self.builddir, filename),
-                            log=self.bakery.log)
+                self.run(filename, pipedata)
             self.bakery.logging_task_done(task)
         except:
             self.bakery.logging_task_done(task, failed=True)
             raise
+
+    def run(self, filename, pipedata):
+        if 'optimize' in pipedata and not pipedata['optimize']:
+            return
+        self.bakery.logging_raw('### Optimize TTF {}'.format(filename))
+
+        from fontTools import subset
+
+        args = [op.join(self.builddir, filename), '*']
+        args += ['--layout-features="*"']
+        args += ['--notdef-outline', '--name-IDs="*"', '--hinting']
+        self.bakery.logging_cmd('pyftsubset %s' % ' '.join(args))
+
+        subset.main(args)
+
+        # compare filesizes TODO print analysis of this :)
+        comment = "# look at the size savings of that subset process"
+        cmd = "ls -l '%s'* %s" % (filename, comment)
+        run(cmd, cwd=self.builddir, log=self.bakery.log)
+
+        # move ttx files to src
+        shutil.move(op.join(self.builddir, filename + '.subset'),
+                    op.join(self.builddir, filename),
+                    log=self.bakery.log)

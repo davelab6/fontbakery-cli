@@ -65,32 +65,41 @@ class PyFtSubset(object):
             return
 
         for name in pipedata['bin_files']:
-            # create menu subset with glyph for text of family name
-            ttfont = ttLib.TTFont(op.join(self.builddir, name))
-            L = map(lambda X: (X.nameID, X.string), ttfont['name'].names)
-            D = dict(L)
-
-            string = bin2unistring(D.get(16) or D.get(1))
-            menu_glyphs = ['U+%04x' % ord(c) for c in string]
-
-            for subset in pipedata.get('subset', []):
-                glyphs = SubsetExtension.get_glyphs(subset)
-
-                # The every subsets must include the "latin" subset
-                if subset != 'latin':
-                    G = SubsetExtension.get_glyphs('latin')
-                    glyphs += ' ' + ' '.join(G.split())
-                self.execute_pyftsubset(pipedata, subset, name, glyphs=glyphs)
-
-                # If any subset other than latin or latin-ext has been
-                #   generated when the subsetting is done, this string should
-                #   additionally include some characters corresponding to each
-                #   of those subsets.
-                G = SubsetExtension.get_glyphs(subset + '-menu')
-                if G:
-                    menu_glyphs += G.split()
-
-            self.execute_pyftsubset(pipedata, 'menu', name,
-                                    glyphs='\n'.join(menu_glyphs))
+            self.run(name, pipedata)
 
         self.bakery.logging_task_done(task)
+
+    def run(self, name, pipedata):
+        # create menu subset with glyph for text of family name
+        if not pipedata.get('pyftsubset'):
+            return
+
+        self.bakery.logging_raw('### Subset TTFs (pyftsubset) {}\n'.format(name))
+
+        ttfont = ttLib.TTFont(op.join(self.builddir, name))
+        L = map(lambda X: (X.nameID, X.string), ttfont['name'].names)
+        D = dict(L)
+
+        string = bin2unistring(D.get(16) or D.get(1))
+        menu_glyphs = ['U+%04x' % ord(c) for c in string]
+
+        for subset in pipedata.get('subset', []):
+            glyphs = SubsetExtension.get_glyphs(subset)
+
+            # The every subsets must include the "latin" subset
+            if subset != 'latin':
+                G = SubsetExtension.get_glyphs('latin')
+                glyphs += ' ' + ' '.join(G.split())
+            self.execute_pyftsubset(pipedata, subset, name, glyphs=glyphs)
+
+            # If any subset other than latin or latin-ext has been
+            #   generated when the subsetting is done, this string should
+            #   additionally include some characters corresponding to each
+            #   of those subsets.
+            G = SubsetExtension.get_glyphs(subset + '-menu')
+            if G:
+                menu_glyphs += G.split()
+
+        self.execute_pyftsubset(pipedata, 'menu', name,
+                                glyphs='\n'.join(menu_glyphs))
+

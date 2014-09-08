@@ -23,6 +23,8 @@ from bakery_cli.scripts.font2ttf import convert
 from bakery_cli.system import shutil as shellutil
 from bakery_cli.utils import UpstreamDirectory
 
+import multiprocessing
+
 
 class Build(object):
 
@@ -31,22 +33,27 @@ class Build(object):
         self.builddir = bakery.build_dir
         self.bakery = bakery
 
-    def otf2ttf(self, filepath):
+    def otf2ttf(self, filepath, pipedata):
         fontname = filepath[:-4]
 
-        _ = 'font2ttf.py {0}.otf {0}.ttf\n'
-        self.bakery.logging_cmd(_.format(fontname))
+        ttfpath = '{}.ttf'.format(os.path.basename(fontname))
+
+        _ = 'font2ttf.py {0}.otf {1}\n'
+        self.bakery.logging_cmd(_.format(fontname, ttfpath))
 
         path = '{}.otf'.format(fontname)
+
         if op.exists(op.join(self.builddir, path)):
             try:
-                ttfpath = '{}.ttf'.format(fontname)
                 convert(op.join(self.builddir, path),
-                        op.join(self.builddir, ttfpath), log=self.bakery.log)
+                        op.join(self.builddir, ttfpath),
+                        log=self.bakery.log)
                 os.remove(op.join(self.builddir, path))
             except Exception, ex:
                 self.bakery.logging_err(ex.message)
                 raise
+
+        self.start_processes(ttfpath, pipedata)
 
     def movebin_to_builddir(self, files):
         result = []
@@ -68,63 +75,89 @@ class Build(object):
         command = ' '.join(fonts)
         self.bakery.logging_raw(vmet.metricview(fonts))
 
+    def convert(self, pipedata):
+        directory = UpstreamDirectory(op.join(self.builddir, 'sources'))
+        try:
+            if directory.get_ttx():
+                self.execute_ttx([op.join('sources', x) for x in directory.get_ttx()], pipedata)
+            if directory.UFO:
+                self.execute_ufo_sfd([op.join('sources', x) for x in directory.UFO], pipedata)
+            if directory.SFD:
+                self.execute_ufo_sfd([op.join('sources', x) for x in directory.SFD], pipedata)
+            if directory.BIN:
+                self.execute_bin([op.join('sources', x) for x in directory.BIN], pipedata)
+
+            # binfiles = self.movebin_to_builddir([op.join('sources', x) for x in directory.ALL_FONTS])
+
+            # self.print_vertical_metrics(binfiles)
+
+            # pipedata['bin_files'] = binfiles
+        except:
+            raise
+
     def execute(self, pipedata, prefix=""):
         task = self.bakery.logging_task('Convert sources to TTF')
         if self.bakery.forcerun:
             return
 
-        directory = UpstreamDirectory(op.join(self.builddir, 'sources'))
-        self.bakery.logging_task('{}'.format(directory.get_ttx()))
-        try:
-            if directory.get_ttx():
-                self.execute_ttx([op.join('sources', x) for x in directory.get_ttx()])
-            if directory.UFO:
-                self.execute_ufo_sfd([op.join('sources', x) for x in directory.UFO])
-            if directory.SFD:
-                self.execute_ufo_sfd([op.join('sources', x) for x in directory.SFD])
-            if directory.BIN:
-                self.execute_bin([op.join('sources', x) for x in directory.BIN])
+        self.convert(pipedata)
 
-            binfiles = self.movebin_to_builddir([op.join('sources', x) for x in directory.ALL_FONTS])
-
-            self.print_vertical_metrics(binfiles)
-
-            pipedata['bin_files'] = binfiles
-        except:
-            self.bakery.logging_task_done(task, failed=True)
-            raise
-
-        self.bakery.logging_task_done(task)
         return pipedata
 
-    def execute_ttx(self, files):
+    def run_processes(self, filename, pipedata):
+        from bakery_cli.pipe.fontlint import FontLint
+        from bakery_cli.pipe.pyftsubset import PyFtSubset
+        from bakery_cli.pipe.optimize import Optimize
+        from bakery_cli.pipe.ttfautohint import TTFAutoHint
+        from bakery_cli.pipe.font_crunch import FontCrunch
+
+        pyftsubset = PyFtSubset(self.bakery)
+        pyftsubset.run(filename, pipedata)
+
+        fontlint = FontLint(self.bakery)
+        fontlint.run(filename, pipedata)
+
+        optimize = Optimize(self.bakery)
+        optimize.run(filename, pipedata)
+
+        ttfautohint = TTFAutoHint(self.bakery)
+        ttfautohint.run(filename, pipedata)
+
+        fontcrunch = FontCrunch(self.bakery)
+        fontcrunch.run(filename, pipedata)
+
+    def start_processes(self, f, pipedata):
+        p = multiprocessing.Process(target=self.run_processes, args=(f, pipedata, ))
+        p.start()
+
+    def execute_ttx(self, files, pipedata):
         paths = []
         for f in files:
             f = op.join(self.builddir, f)
             paths.append(f)
 
-        self.bakery.logging_cmd('ttx %s' % ' '.join(paths))
-        ttx.main(paths)
+        self.bakery.logging_cmd('ttx -d {0} {1}'.format(self.builddir, ' '.join(paths)))
+        ttx.main(['-d', self.builddir] + paths)
 
         for p in files:
-            self.otf2ttf(p)
+            self.otf2ttf(p, pipedata)
 
-    def execute_ufo_sfd(self, files):
+    def execute_ufo_sfd(self, files, pipedata):
         for f in files:
-            filepath = op.join(self.builddir, f)
+            # filepath = op.join(self.builddir, f)
             _ = 'font2ttf.py %s %s'
-            self.bakery.logging_cmd(_ % (filepath,
-                                         filepath[:-4] + '.ttf'))
-            ttfpath = filepath[:-4] + '.ttf'
+            ttfpath = os.path.basename(filepath)[:-4] + '.ttf'
+            self.bakery.logging_cmd(_ % (filepath, ttpath))
 
             try:
                 convert(op.join(self.builddir, filepath),
                         op.join(self.builddir, ttfpath), log=self.bakery.log)
+                self.start_processes(op.basename(ttfpath), pipedata)
             except Exception, ex:
                 self.bakery.logging_err(ex.message)
                 raise
 
-    def execute_bin(self, files):
+    def execute_bin(self, files, pipedata):
         for p in files:
             if p.endswith('.otf'):
-                self.otf2ttf(p)
+                self.otf2ttf(p, pipedata)

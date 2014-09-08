@@ -61,17 +61,10 @@ def run_bakery(sourcedir, config=None):
             pipe.PyFontaine,
             pipe.UpstreamLint,
             pipe.Build,
-            pipe.PyFtSubset,
             pipe.Metadata,
-            pipe.FontLint,
-            pipe.Optimize,
-            pipe.MetadataLint,
-            pipe.CopyTxtFiles,
-            pipe.TTFAutoHint,
-            pipe.FontCrunch
+            pipe.MetadataLint
         ]
 
-        buildlog_path = os.path.join(sourcedir, 'builds', 'build', 'build.log')
         if not os.path.exists(os.path.join(sourcedir, 'builds', 'build')):
             os.makedirs(os.path.join(sourcedir, 'builds', 'build'))
 

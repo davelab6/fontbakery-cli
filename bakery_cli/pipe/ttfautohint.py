@@ -26,6 +26,40 @@ class TTFAutoHint(object):
         self.builddir = bakery.build_dir
         self.bakery = bakery
 
+    def run(self, filepath, pipedata):
+        if not pipedata.get('ttfautohint', ''):
+            return False
+
+        self.bakery.logging_raw('Autohint TTFs (ttfautohint) {}\n'.format(filepath))
+
+        params = pipedata['ttfautohint']
+        filepath = op.join(self.project_root,
+                           self.builddir, filepath)
+        cmd = ("ttfautohint {params} {source}"
+               " '{name}.autohint.ttf'").format(params=params.strip(),
+                                                name=filepath[:-4],
+                                                source=filepath)
+        try:
+            run(cmd, cwd=self.builddir, log=self.bakery.log)
+        except:
+            self.bakery.logging_err('TTFAutoHint is not available')
+            return False
+
+        if 'autohinting_sizes' not in pipedata:
+            pipedata['autohinting_sizes'] = []
+        pipedata['autohinting_sizes'].append({
+            'fontname': op.basename(filepath),
+            'origin': op.getsize(filepath),
+            'processed': op.getsize(filepath[:-4] + '.autohint.ttf')
+        })
+        # compare filesizes TODO print analysis of this :)
+        comment = "# look at the size savings of that subset process"
+        cmd = "ls -l %s.*ttf %s" % (filepath[:-4], comment)
+        run(cmd, cwd=self.builddir, log=self.bakery.log)
+        shellutil.move(filepath[:-4] + '.autohint.ttf', filepath,
+                       log=self.bakery.log)
+        return 1
+
     def execute(self, pipedata, prefix=""):
         """ Run ttfautohint with project command line settings
 
@@ -43,36 +77,9 @@ class TTFAutoHint(object):
         if self.bakery.forcerun:
             return
 
-        if 'autohinting_sizes' not in pipedata:
-            pipedata['autohinting_sizes'] = []
-
-        is_failed = False
         for filepath in pipedata['bin_files']:
-            filepath = op.join(self.project_root,
-                               self.builddir, filepath)
-            cmd = ("ttfautohint {params} {source}"
-                   " '{name}.autohint.ttf'").format(params=params.strip(),
-                                                    name=filepath[:-4],
-                                                    source=filepath)
-            try:
-                run(cmd, cwd=self.builddir, log=self.bakery.log)
-            except:
-                self.bakery.logging_err('TTFAutoHint is not available')
-                self.bakery.logging_task_done(task, failed=True)
-                is_failed = True
+            if not self.run(filepath, pipedata):
+                self.bakery.logging_task_done(task)
                 break
-            pipedata['autohinting_sizes'].append({
-                'fontname': op.basename(filepath),
-                'origin': op.getsize(filepath),
-                'processed': op.getsize(filepath[:-4] + '.autohint.ttf')
-            })
-            # compare filesizes TODO print analysis of this :)
-            comment = "# look at the size savings of that subset process"
-            cmd = "ls -l %s.*ttf %s" % (filepath[:-4], comment)
-            run(cmd, cwd=self.builddir, log=self.bakery.log)
-            shellutil.move(filepath[:-4] + '.autohint.ttf', filepath,
-                           log=self.bakery.log)
 
-        if not is_failed:
-            self.bakery.logging_task_done(task)
         return pipedata

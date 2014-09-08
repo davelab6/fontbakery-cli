@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+import os
 import os.path as op
 import yaml
 
@@ -45,6 +46,18 @@ class FontLint(object):
     #     path = op.join(self.builddir, 'METADATA.json')
     #     return run_set(path, 'metadata', log=self.bakery.log)
 
+    def run(self, ttf_path, pipedata):
+        if 'downstream' in pipedata and not pipedata['downstream']:
+            return
+
+        self.bakery.logging_raw('### Test %s\n' % ttf_path)
+        result = run_set(op.join(self.builddir, ttf_path), 'result',
+                         log=self.bakery.log)
+
+        l = open(os.path.join(self.builddir, '{}.yaml'.format(ttf_path[:-4])), 'w')
+        l.write(yaml.safe_dump(result))
+        l.close()
+
     def execute(self, pipedata, prefix=""):
         _out_yaml = op.join(self.builddir, '.tests.yaml')
 
@@ -58,9 +71,7 @@ class FontLint(object):
         try:
             result = {}
             for font in pipedata['bin_files']:
-                self.bakery.logging_raw('### Test %s\n' % font)
-                result[font] = run_set(op.join(self.builddir, font), 'result',
-                                       log=self.bakery.log)
+                self.run(ttf_path, pipedata)
 
             # self.bakery.logging_raw('### Test METADATA.json\n')
             # result['METADATA.json'] = self.run_metadata_tests()

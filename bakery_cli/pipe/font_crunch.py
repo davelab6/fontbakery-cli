@@ -38,6 +38,19 @@ class FontCrunch(object):
                 print('Optimize: {}'.format(fn))
                 quadopt.optimize_run(fn, fn + 'opt')
 
+    def run(self, filename, pipedata):
+        if not pipedata.get('fontcrunch'):
+            return  # run fontcrunch only if user set flag in config
+        filename = os.path.join(self.builddir, filename)
+        self.bakery.logging_raw('### Foncrunch {}\n'.format(filename))
+        bez_dir = os.path.join(self.builddir, 'bez')
+        os.chdir(self.builddir)
+        fontcrunch.generate(filename)
+        self._quadopt_optimize(bez_dir)
+        fontcrunch.repack(filename, '{}.crunched'.format(filename))
+        shutil.move('{}.crunched'.format(filename), filename)
+        return 1
+
     def execute(self, pipedata):
         if not pipedata.get('fontcrunch'):
             return  # run fontcrunch only if user set flag in config
@@ -45,16 +58,11 @@ class FontCrunch(object):
         if self.bakery.forcerun:
             return
 
-        orig_dir = os.path.dirname(__file__)
         bez_dir = os.path.join(self.builddir, 'bez')
-        os.chdir(self.builddir)
         try:
             for filename in [os.path.join(self.builddir, x) \
                              for x in pipedata['bin_files']]:
-                fontcrunch.generate(filename)
-                self._quadopt_optimize(bez_dir)
-                fontcrunch.repack(filename, '{}.crunched'.format(filename))
-                shutil.move('{}.crunched'.format(filename), filename)
+                self.run(filename, pipedata)
             self.bakery.logging_task_done(task)
         except:
             self.bakery.logging_task_done(task, failed=True)
