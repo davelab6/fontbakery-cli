@@ -41,6 +41,7 @@ if __name__ == '__main__':
         upstream.generate({'path': os.path.realpath(args.path)})
         bakery.generate({'path': os.path.realpath(args.path)})
     except:
+        raise
         buildlog.generate({'path': os.path.realpath(args.path)},
                           'index.html')
     else:

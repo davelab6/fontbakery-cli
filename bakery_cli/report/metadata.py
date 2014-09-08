@@ -17,23 +17,24 @@
 from __future__ import print_function
 import os.path as op
 from markdown import markdown
+from bakery_cli.report.utils import render_template
 
 
 TAB = 'METADATA.json'
-TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
-
-t = lambda templatefile: op.join(TEMPLATE_DIR, templatefile)
 
 
 def generate(config, outfile='metadata.html'):
-    from jinja2 import Template
-
-    template = Template(open(t(outfile)).read())
+    if not op.exists(op.join(config['path'], 'METADATA.json')):
+        return
 
     destfile = open(op.join(config['path'], outfile), 'w')
 
     metadata = open(op.join(config['path'], 'METADATA.json')).read()
-    metadata_new = open(op.join(config['path'], 'METADATA.json.new')).read()
-    print(template.render(metadata=metadata,
-                          metadata_new=metadata_new,
-                          markdown=markdown).encode('utf8'), file=destfile)
+
+    try:
+        metadata_new = open(op.join(config['path'], 'METADATA.json.new')).read()
+    except (IOError, OSError):
+        metadata_new = ''
+    print(render_template(outfile, metadata=metadata,
+                          metadata_new=metadata_new, markdown=markdown),
+          file=destfile)
