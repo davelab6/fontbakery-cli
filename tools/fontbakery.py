@@ -20,6 +20,7 @@ import argparse
 import multiprocessing
 import multiprocessing.pool
 import os
+import os.path as op
 import sys
 import yaml
 
@@ -36,23 +37,34 @@ class DualLog(object):
         print(msg.encode('utf8'))
 
 
+def create_bakery_config(bakery_config_dir, data):
+    if not op.exists(bakery_config_dir):
+        os.makedirs(bakery_config_dir)
+
+    bakeryyaml = op.abspath(op.join(bakery_config_dir, 'bakery.yaml'))
+
+    l = open(bakeryyaml, 'w')
+    l.write(yaml.safe_dump(data))
+    l.close()
+
+
 def run_bakery(sourcedir, config=None):
-    sourcedir = os.path.realpath(sourcedir)
+    sourcedir = op.realpath(sourcedir)
     try:
         if config:
-            bakeryyaml = open(os.path.join(sourcedir, "bakery.yaml"), 'r')
+            bakeryyaml = open(op.join(sourcedir, "bakery.yaml"), 'r')
             config = yaml.safe_load(bakeryyaml)
         else:
             config = yaml.safe_load(open(BAKERY_CONFIGURATION_DEFAULTS))
 
+        build_project_dir = op.join(sourcedir, 'builds', 'build')
+
         if 'process_files' not in config:
             directory = UpstreamDirectory(sourcedir)
+            # normalize process_files path
             config['process_files'] = directory.get_fonts()
 
-        bakeryyaml = os.path.abspath(os.path.join(sourcedir, '.bakery.yaml'))
-        l = open(bakeryyaml, 'w')
-        l.write(yaml.safe_dump(config))
-        l.close()
+        create_bakery_config(build_project_dir, config)
 
         b = Bakery('', sourcedir, 'builds', 'build')
 
@@ -65,10 +77,8 @@ def run_bakery(sourcedir, config=None):
             pipe.MetadataLint
         ]
 
-        if not os.path.exists(os.path.join(sourcedir, 'builds', 'build')):
-            os.makedirs(os.path.join(sourcedir, 'builds', 'build'))
 
-        config = os.path.join(sourcedir, '.bakery.yaml')
+        config = op.join(build_project_dir, 'bakery.yaml')
         b.load_config(config)
 
         b.run()
@@ -100,12 +110,12 @@ if __name__ == '__main__':
                         help=("Path to directory with UFO, SFD, TTX, TTF or OTF files"))
     args = parser.parse_args()
 
-    for p in args.projectpath:
-        run_bakery(p)
+    # for p in args.projectpath:
+    #     run_bakery(p)
 
-    # pool = Pool(4)
+    pool = Pool(4)
 
-    # pool.map(run_bakery, args.projectpath)
-    # pool.close()
+    pool.map(run_bakery, args.projectpath)
+    pool.close()
 
-    # pool.join()
+    pool.join()
