@@ -19,6 +19,8 @@ from __future__ import print_function
 import os.path as op
 import yaml
 
+from bakery_cli.utils import UpstreamDirectory
+
 
 TAB = 'Tests'
 TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
@@ -46,7 +48,12 @@ def sort(data):
 def generate(config):
     from jinja2 import Template
 
-    data = yaml.load(open(op.join(config['path'], '.tests.yaml')))
+    # data = yaml.load(open(op.join(config['path'], '.tests.yaml')))
+
+    directory = UpstreamDirectory(config['path'])
+    data = {fp: yaml.load(open(op.join(config['path'],
+                                       '{}.yaml'.format(fp[:-4]))))
+            for fp in directory.BIN}
 
     template = Template(open(t('tests.html')).read())
 
