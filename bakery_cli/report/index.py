@@ -55,7 +55,8 @@ def get_fonts_table_sizes(fonts):
 
 def get_orthography(fontaine):
     library = Library(collections=['subsets'])
-    return fontaine.get_orthographies(_library=library)
+    return sorted(fontaine.get_orthographies(_library=library),
+                  key=lambda x: x[2], reverse=True)
 
 
 def to_google_data_list(tdict, haxis=0):
@@ -90,7 +91,8 @@ def generate(config):
     autohint_sizes = buildstate.get('autohinting_sizes', [])
     vmet = metricview(fontpaths)
 
-    fonts = {x: FontFactory.openfont(x) for x in fontpaths}
+    fonts = [(path, FontFactory.openfont(op.join(config['path'], path)))
+             for path in directory.BIN]
 
     print(render_template('index.html', fonts=faces, tests=data,
                           basenames=basenames,
@@ -98,7 +100,7 @@ def generate(config):
                           vmet=vmet,
                           autohinting_sizes=autohint_sizes,
                           ttftablesizes=ttftablesizes,
-                          fontaineFonts=fonts.itervalues(),
+                          fontaineFonts=fonts,
                           get_orthography=get_orthography,
                           to_google_data_list=to_google_data_list,
                           average_table_size=average_table_size,
