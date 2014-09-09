@@ -35,11 +35,12 @@ PYPATH = ''
 
 def replace_origfont(testcase):
     targetpath = testcase.operator.path
-
     command = "$ mv {0}.fix {0}".format(targetpath)
     if hasattr(testcase, 'operator'):
         testcase.operator.debug(command)
-    shutil.move(targetpath + '.fix', targetpath)
+    fixed_font_path = '{}.fix'.format(targetpath)
+    if op.exists(fixed_font_path):
+        shutil.move(fixed_font_path, targetpath)
 
 
 def dsig_signature(testcase):
@@ -166,9 +167,9 @@ def fix_encode_glyphs(testcase):
 
     encode_glyphs.add_spua_by_glyph_id_mapping_to_cmap(
         testcase.ttx, targetpath, testcase.unencoded_glyphs)
-
-    shutil.move(targetpath + '.fix', targetpath,
-                log=testcase.operator.logger)
+    if testcase.unencoded_glyphs:
+        shutil.move(targetpath + '.fix', targetpath,
+                    log=testcase.operator.logger)
 
 
 def rename(testcase):
