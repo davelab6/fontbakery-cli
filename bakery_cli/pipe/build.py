@@ -110,8 +110,6 @@ class Build(object):
         from bakery_cli.pipe.ttfautohint import TTFAutoHint
         from bakery_cli.pipe.font_crunch import FontCrunch
 
-        pyftsubset = PyFtSubset(self.bakery)
-        pyftsubset.run(filename, pipedata)
 
         fontlint = FontLint(self.bakery)
         fontlint.run(filename, pipedata)
@@ -121,6 +119,9 @@ class Build(object):
 
         ttfautohint = TTFAutoHint(self.bakery)
         ttfautohint.run(filename, pipedata)
+
+        pyftsubset = PyFtSubset(self.bakery)
+        pyftsubset.run(filename, pipedata)
 
         fontcrunch = FontCrunch(self.bakery)
         fontcrunch.run(filename, pipedata)
