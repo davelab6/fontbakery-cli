@@ -44,7 +44,7 @@ class FontaineTest(TestCase):
         library = Library(collections=['subsets'])
 
         directory = UpstreamDirectory(cls.operator.path)
-        yamlpath = yaml.load(open(op.join(cls.operatot.path, 'bakery.yaml')))
+        yamlpath = yaml.load(open(op.join(cls.operator.path, 'bakery.yaml')))
 
         for fontpath in directory.UFO + directory.TTX:
             font = FontFactory.openfont(op.join(cls.operator.path, fontpath))
