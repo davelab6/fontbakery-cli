@@ -42,7 +42,6 @@ class TTFAutoHint(object):
         try:
             run(cmd, cwd=self.builddir, log=self.bakery.log)
         except:
-            self.bakery.logging_err('TTFAutoHint is not available')
             return False
 
         if 'autohinting_sizes' not in pipedata:

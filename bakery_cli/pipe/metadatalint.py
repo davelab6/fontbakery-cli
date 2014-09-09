@@ -52,7 +52,7 @@ class MetadataLint(object):
         if self.bakery.forcerun:
             return
 
-        result = self.read_lint_testsresult()
+        result = {}
         try:
             result['METADATA.json'] = self.run_metadata_tests()
             self.bakery.logging_task_done(task)

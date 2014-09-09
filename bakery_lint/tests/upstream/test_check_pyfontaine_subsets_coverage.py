@@ -16,6 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import os.path as op
 import re
+import yaml
 
 from bakery_lint.base import BakeryTestCase as TestCase
 from bakery_cli.utils import UpstreamDirectory
@@ -43,6 +44,8 @@ class FontaineTest(TestCase):
         library = Library(collections=['subsets'])
 
         directory = UpstreamDirectory(cls.operator.path)
+        yamlpath = yaml.load(open(op.join(cls.operatot.path, 'bakery.yaml')))
+
         for fontpath in directory.UFO + directory.TTX:
             font = FontFactory.openfont(op.join(cls.operator.path, fontpath))
             for charmap, _, coverage, _ in \
