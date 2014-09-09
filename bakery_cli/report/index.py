@@ -54,6 +54,13 @@ def filter_with_tag(fonttestdata, tag):
     return [test for test in tests if tag in test['tags']]
 
 
+def filter_by_results_with_tag(fonttestdata, tag, *results):
+    tests = []
+    for res in results:
+        tests = tests + fonttestdata.get(res)
+    return [test for test in tests if tag in test.get('tags')]
+
+
 def get_fonts_table_sizes(fonts):
     """ Returns tuple with available tables from all fonts and their length """
     from fontTools.ttLib import sfnt
@@ -117,6 +124,7 @@ def generate(config):
     print(render_template('index.html', fonts=faces, tests=data,
                           basenames=basenames,
                           filter_with_tag=filter_with_tag,
+                          filter_by_results_with_tag=filter_by_results_with_tag,
                           vmet=vmet._its_metrics,
                           vhead=vmet._its_metrics_header,
                           autohinting_sizes=autohint_sizes,
