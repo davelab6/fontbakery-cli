@@ -48,13 +48,13 @@ def create_bakery_config(bakery_config_dir, data):
     l.close()
 
 
-def run_bakery(sourcedir, config=None):
+def run_bakery(sourcedir):
     sourcedir = op.realpath(sourcedir)
     try:
-        if config:
+        try:
             bakeryyaml = open(op.join(sourcedir, "bakery.yaml"), 'r')
             config = yaml.safe_load(bakeryyaml)
-        else:
+        except IOError:
             config = yaml.safe_load(open(BAKERY_CONFIGURATION_DEFAULTS))
 
         build_project_dir = op.join(sourcedir, 'builds', 'build')
@@ -110,12 +110,12 @@ if __name__ == '__main__':
                         help=("Path to directory with UFO, SFD, TTX, TTF or OTF files"))
     args = parser.parse_args()
 
-    # for p in args.projectpath:
-    #     run_bakery(p)
+    for p in args.projectpath:
+        run_bakery(p)
 
-    pool = Pool(4)
+    # pool = Pool(4)
 
-    pool.map(run_bakery, args.projectpath)
-    pool.close()
+    # pool.map(run_bakery, args.projectpath)
+    # pool.close()
 
-    pool.join()
+    # pool.join()

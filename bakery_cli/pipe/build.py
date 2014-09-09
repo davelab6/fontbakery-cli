@@ -142,11 +142,10 @@ class Build(object):
             self.otf2ttf(p, pipedata)
 
     def execute_ufo_sfd(self, files, pipedata):
-        for f in files:
-            # filepath = op.join(self.builddir, f)
+        for filepath in files:
             _ = 'font2ttf.py %s %s'
             ttfpath = os.path.basename(filepath)[:-4] + '.ttf'
-            self.bakery.logging_cmd(_ % (filepath, ttpath))
+            self.bakery.logging_cmd(_ % (filepath, ttfpath))
 
             try:
                 convert(op.join(self.builddir, filepath),

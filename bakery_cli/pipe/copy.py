@@ -154,9 +154,7 @@ class CopyLicense(Pipe):
 
             try:
                 shellutil.copy(_in_license, _out_license, log=self.bakery.log)
-                self.bakery.logging_task_done(task)
             except:
-                self.bakery.logging_task_done(task, failed=True)
                 raise
         else:
             self.bakery.logging_err('License file not copied')
