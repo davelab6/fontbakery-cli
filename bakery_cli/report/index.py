@@ -53,10 +53,13 @@ def get_fonts_table_sizes(fonts):
     return tables, _fonts
 
 
-def get_orthography(fontaine):
+def get_orthography(fontaineFonts):
     library = Library(collections=['subsets'])
-    return sorted(fontaine.get_orthographies(_library=library),
-                  key=lambda x: x[2], reverse=True)
+    result = []
+    for font, fontaine in fontaineFonts:
+        for f1, f2, f3, f4 in fontaine.get_orthographies(_library=library):
+            result.append([font, f1, f2, f3, f4])
+    return sorted(result, key=lambda x: x[3], reverse=True)
 
 
 def to_google_data_list(tdict, haxis=0):

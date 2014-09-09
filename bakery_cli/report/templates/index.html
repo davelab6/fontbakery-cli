@@ -231,18 +231,19 @@
 
         <h4>Font Coverage characters</h4>
 
-        {% for font, fontaine in fontaineFonts %}
         <table class="table table-striped table-bordered table-condensed tablesorter">
           <thead>
             <tr>
+              <th>Font</th>
               <th width='20%'>Character Set</th>
               <th>Coverage</th>
               <th>Missing Characters</th>
             </tr>
           </thead>
           <tbody>
-          {% for charmap, support, missing, missingchars in get_orthography(fontaine) %}
+          {% for font, charmap, support, missing, missingchars in get_orthography(fontaineFonts) %}
             <tr class="{{ support | replace('full','success') | replace('partial','info') | replace('fragmentary','warning') | replace('unsupported','error') }}">
+              <td style="white-space: nowrap">{{ font }}</td>
               <td>{{ charmap.common_name }}
               <td>{{ missing }}
               <td>{% for item in missingchars %} {{ '&#{};'.format(item)|safe }} {% endfor %}
@@ -250,7 +251,6 @@
           {% endfor %}
           </tbody>
         </table>
-        {% endfor %}
     </div>
 </body>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
