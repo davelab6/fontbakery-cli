@@ -48,7 +48,7 @@ def sort(data):
 def generate(config):
     from jinja2 import Template
 
-    # data = yaml.load(open(op.join(config['path'], '.tests.yaml')))
+    # data = yaml.load(open(op.join(config['path'], 'METADATA.yaml')))
 
     directory = UpstreamDirectory(config['path'])
     data = {fp: yaml.load(open(op.join(config['path'],

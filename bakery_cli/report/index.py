@@ -82,7 +82,7 @@ def generate(config):
         faces.append({'basename': basename, 'path': font})
 
     destfile = open(op.join(config['path'], 'index.html'), 'w')
-    data = yaml.load(open(op.join(config['path'], '.tests.yaml')))
+    data = yaml.load(open(op.join(config['path'], 'METADATA.yaml')))
     basenames = [op.basename(font['path']) for font in faces]
 
     fontpaths = [op.join(config['path'], path)
