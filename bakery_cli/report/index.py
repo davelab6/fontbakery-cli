@@ -18,7 +18,7 @@ from __future__ import print_function
 import os.path as op
 import yaml
 
-from bakery_cli.scripts.vmet import metricview
+from bakery_cli.scripts.vmet import metricview, get_metric_view
 from bakery_cli.utils import UpstreamDirectory
 from bakery_cli.report.utils import render_template
 
@@ -30,6 +30,23 @@ TAB = 'Index'
 TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
 
 t = lambda templatefile: op.join(TEMPLATE_DIR, templatefile)
+
+
+def sort(data):
+    a = []
+    for d in data:
+        if 'required' in d['tags']:
+            a.append(d)
+
+    for d in data:
+        if 'note' in d['tags'] and 'required' not in d['tags']:
+            a.append(d)
+
+    for d in data:
+        if 'note' not in d['tags'] and 'required' not in d['tags']:
+            a.append(d)
+
+    return a
 
 
 def filter_with_tag(fonttestdata, tag):
@@ -79,7 +96,7 @@ def generate(config):
         if 'static/' in font:
             continue
         basename = op.basename(font)[:-4]
-        faces.append({'basename': basename, 'path': font})
+        faces.append({'name': font, 'basename': basename, 'path': font})
 
     destfile = open(op.join(config['path'], 'index.html'), 'w')
     data = yaml.load(open(op.join(config['path'], 'METADATA.yaml')))
@@ -92,7 +109,7 @@ def generate(config):
     buildstate = yaml.load(open(op.join(config['path'],
                                 'build.state.yaml')))
     autohint_sizes = buildstate.get('autohinting_sizes', [])
-    vmet = metricview(fontpaths)
+    vmet = get_metric_view(fontpaths)
 
     fonts = [(path, FontFactory.openfont(op.join(config['path'], path)))
              for path in directory.BIN]
@@ -100,12 +117,13 @@ def generate(config):
     print(render_template('index.html', fonts=faces, tests=data,
                           basenames=basenames,
                           filter_with_tag=filter_with_tag,
-                          vmet=vmet,
+                          vmet=vmet._its_metrics,
+                          vhead=vmet._its_metrics_header,
                           autohinting_sizes=autohint_sizes,
                           ttftablesizes=ttftablesizes,
                           fontaineFonts=fonts,
                           get_orthography=get_orthography,
                           to_google_data_list=to_google_data_list,
                           average_table_size=average_table_size,
-                          hex=hex),
+                          hex=hex, sort=sort),
           file=destfile)
