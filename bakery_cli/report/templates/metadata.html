@@ -1,121 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>{{ ("METADATA.json") }}</title>
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
-    <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <meta charset="UTF-8">
+  <title>{{ ("METADATA.json") }}</title>
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
+  <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 </head>
 <body>
+<div class="container">
+  <ul class="nav nav-tabs">
+    <li><a href="index.html">Summary</a></li>
+    <li><a href="upstream.html">Upstream Tests</a></li>
+    <li><a href="tests.html">Downstream Tests</a></li>
+    <li><a href="buildlog.html">Build Log</a></li>
+    <li class="active"><a href="metadata.html">METADATA.json</a></li>
+    <li><a href="bakery-yaml.html">bakery.yaml</a></li>
+    <li><a href="description.html">Description</a></li>
+  </ul>
+  {% if metadata_new and metadata %}
+  <div class="col-md-6">
+    <h4>{{ ("METADATA.json imported from upstream repo") }}</h4>
     <div class="container">
-        <ul class="nav nav-tabs">
-          <li><a href="index.html">Summary</a></li>
-          <li><a href="upstream.html">Upstream Tests</a></li>
-          <li><a href="tests.html">Downstream Tests</a></li>
-          <li><a href="buildlog.html">Build Log</a></li>
-          <li class="active"><a href="metadata.html">METADATA.json</a></li>
-          <li><a href="bakery-yaml.html">bakery.yaml</a></li>
-          <li><a href="description.html">Description</a></li>
-        </ul>
-        {% if metadata_new and metadata %}
-        <div class="col-md-6">
-          <h4>{{ ("METADATA.json imported from upstream repo") }}</h4>
-          <div class="container">
-            <div class="row">
-                  <div class="col-sm-5 col-md-5">
-                      <div id="editor"></div>
-                      <textarea id="metadatajson" name="metadatajson">{{ metadata }}</textarea>
-                  </div>
-            </div>
-          </div>
+      <div class="row">
+        <div class="col-sm-5 col-md-5">
+          <div id="editor"></div>
+          <textarea id="metadatajson" name="metadatajson">{{ metadata }}</textarea>
         </div>
-
-        <div class="col-md-6">
-          <h4>{{ ("METADATA.json.new generated from files") }}</h4>
-          <pre><code id="metadatajson_new">{{ metadata_new }}</code></pre>
-        </div>
-
-          <div id="delta-panel-visual" style="clear: both;">
-              <p id="visualdiff"></p>
-          </div>
-
-        {% elif not metadata %}
-        <div class="col-md-12">
-          <h4 class="text-danger">{{ ("METADATA.json does not yet exist") }}</h4>
-        </div>
-        {% elif not metadata_new %}
-        <div class="col-md-12">
-          <h4>{{ ("METADATA.json generated from files") }}</h4>
-
-                  <div>
-                      <div id="editor"></div>
-                      <textarea name="metadatajson" id="metadatajson">{{ metadata }}</textarea>
-                  </div>
-        </div>
-        {% endif %}
+      </div>
     </div>
+  </div>
+
+  <div class="col-md-6">
+    <h4>{{ ("METADATA.json.new generated from files") }}</h4>
+    <pre><code id="metadatajson_new">{{ metadata_new }}</code></pre>
+  </div>
+
+  <div id="delta-panel-visual" style="clear: both;">
+    <p id="visualdiff"></p>
+  </div>
+
+  {% elif not metadata %}
+  <div class="col-md-12">
+    <h4 class="text-danger">{{ ("METADATA.json does not yet exist") }}</h4>
+  </div>
+  {% elif not metadata_new %}
+  <div class="col-md-12">
+    <h4>{{ ("METADATA.json generated from files") }}</h4>
+
+    <div>
+      <div id="editor"></div>
+      <textarea name="metadatajson" id="metadatajson">{{ metadata }}</textarea>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+{% if metadata_new and metadata %}
+<script type="text/javascript" src="http://benjamine.github.io/jsondiffpatch/build/bundle-full.min.js"></script>
+<script type="text/javascript" src="http://benjamine.github.io/jsondiffpatch/build/formatters.min.js"></script>
+<link rel="stylesheet" href="http://benjamine.github.io/jsondiffpatch/src/formatters/html.css" type="text/css" />
+{% endif %}
 
 <script>
-$(document).ready(function () {
+  $(document).ready(function () {
 
-  var editor = ace.edit("editor");
-  editor.setTheme("ace/theme/solarized_light");
-  editor.getSession().setMode("ace/mode/html");
-  editor.getSession().setUseSoftTabs(false);
-  editor.getSession().setUseWrapMode(true);
-  editor.setHighlightActiveLine(false);
-  editor.setReadOnly(true);
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/solarized_light");
+    editor.getSession().setMode("ace/mode/html");
+    editor.getSession().setUseSoftTabs(false);
+    editor.getSession().setUseWrapMode(true);
+    editor.setHighlightActiveLine(false);
+    editor.setReadOnly(true);
 
-  var textarea = $('textarea[name="metadatajson"]').hide();
-  editor.getSession().setUseWrapMode(true);
-  editor.getSession().setValue(textarea.val());
+    var textarea = $('textarea[name="metadatajson"]').hide();
+    editor.getSession().setUseWrapMode(true);
+    editor.getSession().setValue(textarea.val());
 
-  // From https://gist.github.com/hostilefork/6325151 & http://stackoverflow.com/questions/11584061/
-  var heightUpdateFunction = function() {
+    // From https://gist.github.com/hostilefork/6325151 & http://stackoverflow.com/questions/11584061/
+    var heightUpdateFunction = function() {
       var newHeight =
-                editor.getSession().getScreenLength()
-                * editor.renderer.lineHeight
-                + editor.renderer.scrollBar.getWidth();
+          editor.getSession().getScreenLength()
+              * editor.renderer.lineHeight
+              + editor.renderer.scrollBar.getWidth();
       $('#editor').height(newHeight.toString() + "px");
       $('#editor-section').height(newHeight.toString() + "px");
       // This call is required for the editor to fix all of its inner structure for adapting to a change in size
       editor.resize();
-  };
+    };
 
-  heightUpdateFunction();
-
-// TODO: the code below depends on external js libs
-// which in turn depend on other libs
-// need to investigate
-//  var left = JSON.parse($('#metadatajson').text());
-//  var right = JSON.parse($('#metadatajson_new').text());
-//
-//  var instance = jsondiffpatch.create({
-//        objectHash: function(obj) {
-//            return '';
-//        }
-//    });
-//
-//  var delta = instance.diff(left, right);
-//
-//  var visualdiff = document.getElementById('visualdiff');
-//  if (visualdiff) {
-//    visualdiff.innerHTML = jsondiffpatch.formatters.html.format(delta, left);
-//
-//    var scripts = visualdiff.querySelectorAll('script');
-//    for (var i = 0; i < scripts.length; i++) {
-//        var s = scripts[i];
-//        /* jshint evil: true */
-//        eval(s.innerHTML);
-//    }
-//  }
-
-
-});
+    heightUpdateFunction();
+  });
 </script>
+
+{% if metadata_new and metadata %}
+<script>
+  $(document).ready(function () {
+    var left = JSON.parse($('#metadatajson').text());
+    var right = JSON.parse($('#metadatajson_new').text());
+
+    var instance = jsondiffpatch.create({
+      objectHash: function(obj) {
+        return '';
+      }
+    });
+
+    var delta = instance.diff(left, right);
+
+    var visualdiff = document.getElementById('visualdiff');
+    if (visualdiff) {
+      visualdiff.innerHTML = jsondiffpatch.formatters.html.format(delta, left);
+
+      var scripts = visualdiff.querySelectorAll('script');
+      for (var i = 0; i < scripts.length; i++) {
+        var s = scripts[i];
+        /* jshint evil: true */
+        eval(s.innerHTML);
+      }
+    }
+  });
+</script>
+{% endif %}
 
 </body>
 </html>
