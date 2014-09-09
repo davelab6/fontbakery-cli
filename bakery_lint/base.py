@@ -60,11 +60,12 @@ class BakeryTestResult(unittest.TestResult):
 
     def __init__(self, stream=None, descriptions=None, verbosity=None,
                  success_list=None, error_list=None, failure_list=None,
-                 fixed_list=None):
+                 fixed_list=None, restart=False):
         self.sl = success_list
         self.el = error_list
         self.fl = failure_list
         self.ff = fixed_list
+        self.restart = restart
         super(BakeryTestResult, self).__init__(self)
 
     def callmethod(self, methodname, test):
@@ -114,9 +115,12 @@ class BakeryTestResult(unittest.TestResult):
 
         test_method = getattr(test, test._testMethodName)
         if hasattr(test_method, 'autofix'):
-            self.callmethod(test_method.autofix_method, test)
-            if hasattr(self.ff, 'append'):
-                self.ff.append(test)
+            if not self.restart:
+                self.callmethod(test_method.autofix_method, test)
+                if hasattr(self.ff, 'append'):
+                    self.ff.append(test)
+                    self.restart = True
+                    test.run(result=self)
         elif hasattr(self.fl, 'append'):
             self.fl.append(test)
 
