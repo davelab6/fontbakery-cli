@@ -78,11 +78,11 @@ class shutilmetaclass(metaclass):
     __originmodule__ = shutil_origin
 
 
-class shutil:
+class shutil(object):
     __metaclass__ = shutilmetaclass
 
 
-class os:
+class os(object):
     __metaclass__ = osmetaclass
 
 
@@ -94,10 +94,6 @@ def run(command, cwd, log):
         :param log: - logging object with .write() method, required
 
     """
-    # print the command on the worker console
-    print("[%s]:%s" % (cwd, command))
-    # log the command
-    log.write('$ %s\n' % command)
     # Start the command
     env = os.environ.copy()
 

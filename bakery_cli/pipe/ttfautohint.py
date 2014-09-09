@@ -47,15 +47,23 @@ class TTFAutoHint(object):
 
         if 'autohinting_sizes' not in pipedata:
             pipedata['autohinting_sizes'] = []
+
+        origsize = op.getsize(filepath)
+        autohintsize = op.getsize(filepath[:-4] + '.autohint.ttf')
+
         pipedata['autohinting_sizes'].append({
             'fontname': op.basename(filepath),
-            'origin': op.getsize(filepath),
-            'processed': op.getsize(filepath[:-4] + '.autohint.ttf')
+            'origin': origsize,
+            'processed': autohintsize
         })
         # compare filesizes TODO print analysis of this :)
         comment = "# look at the size savings of that subset process"
         cmd = "ls -l %s.*ttf %s" % (filepath[:-4], comment)
-        run(cmd, cwd=self.builddir, log=self.bakery.log)
+        self.bakery.logging_cmd(cmd)
+
+        statusmessage = "{0}: {1} bytes\n{2}: {3} bytes\n"
+        self.bakery.logging_raw(statusmessage.format(filepath, origsize, filepath[:-4] + '.autohint.ttf', autohintsize))
+
         shellutil.move(filepath[:-4] + '.autohint.ttf', filepath,
                        log=self.bakery.log)
         return 1

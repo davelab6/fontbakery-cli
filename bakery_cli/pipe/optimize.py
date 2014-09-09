@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+import os
 import os.path as op
 
 from bakery_cli.system import run, shutil
@@ -54,10 +55,15 @@ class Optimize(object):
 
         subset.main(args)
 
+        newsize = os.stat(op.join(self.builddir, filename + '.subset')).st_size
+        origsize = os.stat(op.join(self.builddir, filename)).st_size
+
         # compare filesizes TODO print analysis of this :)
         comment = "# look at the size savings of that subset process"
-        cmd = "ls -l '%s'* %s" % (filename, comment)
-        run(cmd, cwd=self.builddir, log=self.bakery.log)
+        self.bakery.logging_cmd("ls -l '%s'* %s" % (filename, comment))
+
+        statusmessage = "{0}.subset: {1} bytes\n{0}: {2} bytes\n"
+        self.bakery.logging_raw(statusmessage.format(filename, newsize, origsize))
 
         # move ttx files to src
         shutil.move(op.join(self.builddir, filename + '.subset'),
