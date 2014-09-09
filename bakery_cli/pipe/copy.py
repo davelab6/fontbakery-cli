@@ -156,8 +156,6 @@ class CopyLicense(Pipe):
                 shellutil.copy(_in_license, _out_license, log=self.bakery.log)
             except:
                 raise
-        else:
-            self.bakery.logging_err('License file not copied')
         return pipedata
 
 
