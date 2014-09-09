@@ -27,6 +27,7 @@
           <th>Category</th>
           <th>Description</th>
           <th>File</th>
+          <th>Result</th>
           <th>Status</th>
         </tr>
         </thead>
@@ -39,8 +40,9 @@
                 {% for item in sort(tests[font][testType]) %}
                 <tr>
                     <td>{{ item.tags|join(', ') }}</td>
-                    <td><span class="apopover" data-placement="top" data-content="{{ item.name|replace('.','/') }}.py:{{ item.methodName }}()">{{ item.methodDoc }}</span></td>
+                    <td><span class="apopover" data-placement="top" data-content="{{ item.name|replace('.','/') }}.py:{{ item.methodName }}()">{{ item.methodDoc|default('None') }}</span></td>
                     <td>{{ font }}</td>
+                    <td>{{ item.err_msg }}</td>
                     <td>{{ map[testType] }}</td>
                 </tr>
                 {% endfor %}

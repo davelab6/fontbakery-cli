@@ -41,6 +41,20 @@ def metricview(fonts):
     return view.get_contents()
 
 
+def get_metric_view(fonts):
+    from bakery_cli.ttfont import Font
+    view = TextMetricsView()
+    for f in fonts:
+        try:
+            metrics = Font(f)
+        except TTLibError, ex:
+            print("ERROR: %s" % ex)
+            continue
+        view.add_metric(os.path.basename(f), metrics)
+    view.print_metrics()
+    return view
+
+
 def metricfix(fonts):
     from bakery_cli.ttfont import Font
     ymin = 0
