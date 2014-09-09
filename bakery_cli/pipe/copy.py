@@ -99,7 +99,7 @@ class Copy(Pipe):
             p.start()
 
     def execute(self, pipedata):
-        task = self.bakery.logging_task('Copying sources')
+        task = self.bakery.logging_task('Copy sources')
         if self.bakery.forcerun:
             return pipedata
 
