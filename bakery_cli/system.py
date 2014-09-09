@@ -140,8 +140,6 @@ def prun(command, cwd, log=None):
         :param log: loggin object with .write() method
 
     """
-    # print the command on the worker console
-    print("[%s]:%s" % (cwd, command))
     env = os.environ.copy()
     env.update({'PYTHONPATH': os.pathsep.join(sys.path)})
     process = subprocess.Popen(command, shell=True, cwd=cwd,
