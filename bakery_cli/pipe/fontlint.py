@@ -22,6 +22,9 @@ from bakery_lint import run_set
 from bakery_lint.base import BakeryTestCase
 
 
+OUT_YAML = 'METADATA.yaml'
+
+
 class FontLint(object):
 
     def __init__(self, bakery):
@@ -31,13 +34,13 @@ class FontLint(object):
 
     def read_lint_testsresult(self):
         try:
-            _out_yaml = op.join(self.builddir, '.tests.yaml')
+            _out_yaml = op.join(self.builddir, OUT_YAML)
             return yaml.safe_load(open(_out_yaml))
         except (IOError, OSError):
             return {}
 
     def write_lint_results(self, testsresult):
-        _out_yaml = op.join(self.builddir, '.tests.yaml')
+        _out_yaml = op.join(self.builddir, OUT_YAML)
         l = open(_out_yaml, 'w')
         l.write(yaml.safe_dump(testsresult))
         l.close()
@@ -59,7 +62,7 @@ class FontLint(object):
         l.close()
 
     def execute(self, pipedata, prefix=""):
-        _out_yaml = op.join(self.builddir, '.tests.yaml')
+        _out_yaml = op.join(self.builddir, OUT_YAML)
 
         if op.exists(_out_yaml):
             return yaml.safe_load(open(_out_yaml, 'r'))
@@ -71,7 +74,7 @@ class FontLint(object):
         try:
             result = {}
             for font in pipedata['bin_files']:
-                self.run(ttf_path, pipedata)
+                self.run(font, pipedata)
 
             # self.bakery.logging_raw('### Test METADATA.json\n')
             # result['METADATA.json'] = self.run_metadata_tests()

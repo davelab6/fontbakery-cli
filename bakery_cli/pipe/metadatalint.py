@@ -20,6 +20,8 @@ import yaml
 from bakery_lint import run_set
 from bakery_lint.base import BakeryTestCase
 
+OUT_YAML = 'METADATA.yaml'
+
 
 class MetadataLint(object):
 
@@ -30,13 +32,13 @@ class MetadataLint(object):
 
     def read_lint_testsresult(self):
         try:
-            _out_yaml = op.join(self.builddir, '.tests.yaml')
+            _out_yaml = op.join(self.builddir, OUT_YAML)
             return yaml.safe_load(open(_out_yaml))
         except (IOError, OSError):
             return {}
 
     def write_lint_results(self, testsresult):
-        _out_yaml = op.join(self.builddir, '.tests.yaml')
+        _out_yaml = op.join(self.builddir, OUT_YAML)
         l = open(_out_yaml, 'w')
         l.write(yaml.safe_dump(testsresult))
         l.close()

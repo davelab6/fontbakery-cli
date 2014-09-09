@@ -18,14 +18,38 @@ from __future__ import print_function
 import os.path as op
 from markdown import markdown
 from bakery_cli.report.utils import render_template
+import yaml
 
+from bakery_cli.utils import UpstreamDirectory
 
 TAB = 'METADATA.json'
+TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
+
+t = lambda templatefile: op.join(TEMPLATE_DIR, templatefile)
+
+
+def sort(data):
+    a = []
+    for d in data:
+        if 'required' in d['tags']:
+            a.append(d)
+
+    for d in data:
+        if 'note' in d['tags'] and 'required' not in d['tags']:
+            a.append(d)
+
+    for d in data:
+        if 'note' not in d['tags'] and 'required' not in d['tags']:
+            a.append(d)
+
+    return a
 
 
 def generate(config, outfile='metadata.html'):
     if not op.exists(op.join(config['path'], 'METADATA.json')):
         return
+
+    data = yaml.load(open(op.join(config['path'], 'METADATA.yaml')))
 
     destfile = open(op.join(config['path'], outfile), 'w')
 
@@ -35,6 +59,6 @@ def generate(config, outfile='metadata.html'):
         metadata_new = open(op.join(config['path'], 'METADATA.json.new')).read()
     except (IOError, OSError):
         metadata_new = ''
-    print(render_template(outfile, metadata=metadata,
+    print(render_template(outfile, metadata=metadata, tests=data, sort=sort,
                           metadata_new=metadata_new, markdown=markdown),
           file=destfile)
