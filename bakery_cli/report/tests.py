@@ -48,13 +48,12 @@ def sort(data):
 def generate(config):
     from jinja2 import Template
 
-    # data = yaml.load(open(op.join(config['path'], 'METADATA.yaml')))
-
     directory = UpstreamDirectory(config['path'])
-    data = {fp: yaml.load(open(op.join(config['path'],
-                                       '{}.yaml'.format(fp[:-4]))))
-            for fp in directory.BIN}
-
+    data = {}
+    for fp in directory.BIN:
+        path = op.join(config['path'], '{}.yaml'.format(fp[:-4]))
+        if op.exists(path):
+            data[fp] = yaml.load(open(path))
     template = Template(open(t('tests.html')).read())
 
     destfile = open(op.join(config['path'], 'tests.html'), 'w')
