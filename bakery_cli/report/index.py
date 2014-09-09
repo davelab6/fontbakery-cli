@@ -58,8 +58,12 @@ def get_orthography(fontaine):
     return fontaine.get_orthographies(_library=library)
 
 
-def to_google_data_list(tdict):
-    return [[x, tdict[x]] for x in tdict]
+def to_google_data_list(tdict, haxis=0):
+    return sorted([[x, tdict[x] - haxis] for x in tdict])
+
+
+def average_table_size(tdict):
+    return sum([x for x in tdict.values()]) / len(tdict)
 
 
 def generate(config):
@@ -97,5 +101,6 @@ def generate(config):
                           fontaineFonts=fonts.itervalues(),
                           get_orthography=get_orthography,
                           to_google_data_list=to_google_data_list,
+                          average_table_size=average_table_size,
                           hex=hex),
           file=destfile)

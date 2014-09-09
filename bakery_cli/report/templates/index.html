@@ -224,14 +224,21 @@ $(function(){
     {% endfor %}
 
     {% for font in ttftablesizes[1] %}
-    {% set tables = to_google_data_list(ttftablesizes[1][font]) %}
-    var data = google.visualization.arrayToDataTable({{ ([["Table", "#"]] + tables)|safe }});
+    {% set average = average_table_size(ttftablesizes[1][font]) %}
+    {% set tables = to_google_data_list(ttftablesizes[1][font], haxis=average) %}
+    var data = google.visualization.arrayToDataTable({{ ([["Table", "Size"]] + tables)|safe }});
     var chart = new google.visualization.LineChart(document.getElementById('ttftablesizes'));
 
     var options = {
       title: "Table sizes",
       is3D: true,
-      colors: ['#468847', '#3a87ad', '#b94a48', '#c09853'],
+      vAxis: {
+        title: "bytes"
+      },
+      hAxis: {
+        slantedText: true
+      },
+      height: 500
     };
     chart.draw(data, options);
     {% endfor %}
