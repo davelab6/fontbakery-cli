@@ -31,7 +31,7 @@ fontcrunch: False
 # optimize: False   # bakery does not run optimization for fonts
 
 ### Pyftsubset defaults parameters
-pyftsubset: --notdef-outline --name-IDs="*" --hinting
+pyftsubset: --notdef-outline --name-IDs=* --hinting
 # pyftsubset: False # bakery does not run pyftsubset pipe
 
 
