@@ -80,7 +80,7 @@ class BakeryTestResult(unittest.TestResult):
         super(BakeryTestResult, self).addSuccess(test)
 
         if hasattr(test, 'operator'):
-            test.operator.debug('... {} .. OK'.format(test.id()))
+            test.operator.debug('{}(): OK'.format(test.id()))
 
         test_method = getattr(test, test._testMethodName)
         if hasattr(test_method, 'autofix'):
@@ -102,7 +102,7 @@ class BakeryTestResult(unittest.TestResult):
             self.el.append(test)
 
         if hasattr(test, 'operator'):
-            test.operator.debug('... {} .. ERROR'.format(test.id()))
+            test.operator.debug('{}(): ERROR'.format(test.id()))
 
     def addFailure(self, test, err):
         super(BakeryTestResult, self).addFailure(test, err)
@@ -111,7 +111,7 @@ class BakeryTestResult(unittest.TestResult):
         test._err_msg = _err_exception.message
 
         if hasattr(test, 'operator'):
-            test.operator.debug('... {} .. FAIL'.format(test.id()))
+            test.operator.debug('{}(): FAIL'.format(test.id()))
 
         test_method = getattr(test, test._testMethodName)
         if hasattr(test_method, 'autofix'):
