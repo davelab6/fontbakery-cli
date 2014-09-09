@@ -30,7 +30,7 @@ class TTFAutoHint(object):
         if not pipedata.get('ttfautohint', ''):
             return False
 
-        self.bakery.logging_raw('Autohint TTFs (ttfautohint) {}\n'.format(filepath))
+        self.bakery.logging_raw('### Autohint TTFs (ttfautohint) {}\n'.format(filepath))
 
         params = pipedata['ttfautohint']
         filepath = op.join(self.project_root,
