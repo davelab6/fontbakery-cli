@@ -15,6 +15,7 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
+from collections import defaultdict, Counter
 import os.path as op
 import yaml
 
@@ -77,6 +78,18 @@ def get_fonts_table_sizes(fonts):
     return tables, _fonts
 
 
+def get_fonts_table_sizes_grouped(fonts_list):
+    _, fonts = get_fonts_table_sizes(fonts_list)
+    fonts_len = len(fonts)
+    fonts_dict = defaultdict(dict, fonts)
+    counter_dict = Counter()
+    for val in fonts_dict.values():
+        counter_dict.update(val)
+    for k, v in counter_dict.iteritems():
+        counter_dict[k] = v/fonts_len
+    return counter_dict
+
+
 def get_orthography(fontaineFonts):
     library = Library(collections=['subsets'])
     result = []
@@ -92,6 +105,11 @@ def to_google_data_list(tdict, haxis=0):
 
 def font_table_to_google_data_list(tdict):
     return sorted([list(item) for item in tdict.items()])
+
+
+def grouped_fonts_table_to_google_data_list(fonts):
+    res = get_fonts_table_sizes_grouped(fonts)
+    return sorted([list(item) for item in res.items()])
 
 
 def average_table_size(tdict):
@@ -116,6 +134,7 @@ def generate(config):
     fontpaths = [op.join(config['path'], path)
                  for path in directory.BIN]
     ttftablesizes = get_fonts_table_sizes(fontpaths)
+    ttftablesizes_grouped = grouped_fonts_table_to_google_data_list(fontpaths)
 
     buildstate = yaml.load(open(op.join(config['path'],
                                 'build.state.yaml')))
@@ -137,6 +156,7 @@ def generate(config):
                           get_orthography=get_orthography,
                           to_google_data_list=to_google_data_list,
                           font_table_to_google_data_list=font_table_to_google_data_list,
+                          ttftablesizes_grouped=ttftablesizes_grouped,
                           average_table_size=average_table_size,
                           hex=hex, sort=sort),
           file=destfile)
