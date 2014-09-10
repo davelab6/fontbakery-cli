@@ -90,8 +90,12 @@ def to_google_data_list(tdict, haxis=0):
     return sorted([[x, tdict[x] - haxis] for x in tdict])
 
 
+def font_table_to_google_data_list(tdict):
+    return sorted([list(item) for item in tdict.items()])
+
+
 def average_table_size(tdict):
-    return sum([x for x in tdict.values()]) / len(tdict)
+    return sum(tdict.values()) / len(tdict)
 
 
 def generate(config):
@@ -132,6 +136,7 @@ def generate(config):
                           fontaineFonts=fonts,
                           get_orthography=get_orthography,
                           to_google_data_list=to_google_data_list,
+                          font_table_to_google_data_list=font_table_to_google_data_list,
                           average_table_size=average_table_size,
                           hex=hex, sort=sort),
           file=destfile)
