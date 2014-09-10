@@ -46,26 +46,31 @@ class Optimize(object):
             return
         self.bakery.logging_raw('### Optimize TTF {}'.format(filename))
 
-        from fontTools import subset
+        from fontTools.subset import Options, Subsetter, load_font, save_font
 
-        args = [op.join(self.builddir, filename), '*']
-        args += ['--layout-features=*']
-        args += ['--notdef-outline', '--name-IDs=*', '--hinting']
-        self.bakery.logging_cmd('pyftsubset %s' % ' '.join(args))
+        options = Options()
+        options.layout_features = "*"
+        options.name_IDs = "*"
+        options.hinting = True
+        options.notdef_outline = True
 
-        subset.main(args)
+        font = load_font(op.join(self.builddir, filename), options)
+        subsetter = Subsetter(options=options)
+        subsetter.populate(glyphs=font.getGlyphOrder())
+        subsetter.subset(font)
+        save_font(font, op.join(self.builddir, filename + '.opt'), options)
 
-        newsize = os.stat(op.join(self.builddir, filename + '.subset')).st_size
+        newsize = os.stat(op.join(self.builddir, filename + '.opt')).st_size
         origsize = os.stat(op.join(self.builddir, filename)).st_size
 
         # compare filesizes TODO print analysis of this :)
         comment = "# look at the size savings of that subset process"
         self.bakery.logging_cmd("ls -l '%s'* %s" % (filename, comment))
 
-        statusmessage = "{0}.subset: {1} bytes\n{0}: {2} bytes\n"
+        statusmessage = "{0}.opt: {1} bytes\n{0}: {2} bytes\n"
         self.bakery.logging_raw(statusmessage.format(filename, newsize, origsize))
 
         # move ttx files to src
-        shutil.move(op.join(self.builddir, filename + '.subset'),
+        shutil.move(op.join(self.builddir, filename + '.opt'),
                     op.join(self.builddir, filename),
                     log=self.bakery.log)

@@ -37,26 +37,26 @@ class PyFtSubset(object):
         self.bakery = bakery
 
     def execute_pyftsubset(self, pipedata, subsetname, name, glyphs="", args=""):
-        from fontTools import subset
-        argv = [op.join(self.builddir, name), '--unicodes=%s' % ','.join(glyphs.split())]
+        from fontTools.subset import Subsetter, Options, load_font, save_font
 
-        override_argv = []
+        options = Options()
         if pipedata.get('pyftsubset'):
-            override_argv = pipedata['pyftsubset'].split()
+            options.parse_opts(pipedata['pyftsubset'].split())
 
         if pipedata.get('pyftsubset.%s' % subsetname):
-            override_argv = pipedata['pyftsubset.%s' % subsetname].split()
+            options.parse_opts(pipedata['pyftsubset.%s' % subsetname].split())
 
-        argv = argv + override_argv
+        font = load_font(op.join(self.builddir, name), options)
 
-        self.bakery.logging_cmd('pyftsubset %s' % ' '.join(argv))
-        subset.main(argv)
+        subsetter = Subsetter(options=options)
+        subsetter.populate(unicodes=[int(g.replace('U+', ''), 16) for g in glyphs.split()])
+        subsetter.subset(font)
 
-        # need to move result .subset file to avoid overwrite with
-        # next subset
-        shutil.move(op.join(self.builddir, name) + '.subset',
-                    op.join(self.builddir, name)[:-4] + '.' + subsetname,
-                    log=self.bakery.log)
+        target_file = '{0}.{1}'.format(op.join(self.builddir, name)[:-4],
+                                       subsetname)
+        save_font(font, target_file, options)
+
+        self.bakery.logging_raw('Generate {}\n'.format(op.basename(target_file)))
 
     def execute(self, pipedata):
         task = self.bakery.logging_task('Subset TTFs (pyftsubset)')
