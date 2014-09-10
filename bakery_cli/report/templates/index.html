@@ -88,6 +88,8 @@
         {% endfor %}
         <h4>TTF Table Average Sizes</h4>
         <div id="ttftablesizesGrouped"></div>
+        <div id="ttftablesizesAggregated"></div>
+
         <table class="table-striped table-bordered table-condensed tablesorter">
             <tr>
                 <th></th>
@@ -368,14 +370,38 @@ $(function(){
       chart.draw(data, options);
     {% endfor %}
 
-    var data = google.visualization.arrayToDataTable({{ ([["Table", "Size"]] + ttftablesizes_grouped)|safe }});
+    var data = google.visualization.arrayToDataTable({{ ([["Table", "Size"]] + ttftablesizes_mean)|safe }});
     var chart = new google.visualization.LineChart(document.getElementById('ttftablesizesGrouped'));
 
-      var options = {
-        title: "Average Table Sizes",
+    var options = {
+      title: "Average Table Sizes",
+      is3D: true,
+      vAxis: {
+        title: "bytes"
+      },
+      hAxis: {
+        slantedText: true
+      },
+      height: 500
+    };
+    chart.draw(data, options);
+
+    var headings = $.merge( ["Table", "Average"], {{ttftablesizes_grouped.fonts}} );
+    var aggregated_table = [];
+
+    aggregated_table.push(headings);
+
+    $({{ttftablesizes_grouped.tables}}).each(function(i){
+      aggregated_table.push(this)
+    });
+
+    var data = google.visualization.arrayToDataTable(aggregated_table);
+    var chart = new google.visualization.LineChart(document.getElementById('ttftablesizesAggregated'));
+     var options = {
+        title: "Aggregated data",
         is3D: true,
         vAxis: {
-          title: "bytes"
+          title: "Size (bytes)"
         },
         hAxis: {
           slantedText: true

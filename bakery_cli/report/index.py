@@ -15,7 +15,7 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
-from collections import defaultdict, Counter
+from collections import defaultdict, Counter, namedtuple
 import os.path as op
 import yaml
 
@@ -35,17 +35,17 @@ t = lambda templatefile: op.join(TEMPLATE_DIR, templatefile)
 
 def sort(data):
     a = []
-    for d in data:
-        if 'required' in d['tags']:
-            a.append(d)
+    for grouped_dict in data:
+        if 'required' in grouped_dict['tags']:
+            a.append(grouped_dict)
 
-    for d in data:
-        if 'note' in d['tags'] and 'required' not in d['tags']:
-            a.append(d)
+    for grouped_dict in data:
+        if 'note' in grouped_dict['tags'] and 'required' not in grouped_dict['tags']:
+            a.append(grouped_dict)
 
-    for d in data:
-        if 'note' not in d['tags'] and 'required' not in d['tags']:
-            a.append(d)
+    for grouped_dict in data:
+        if 'note' not in grouped_dict['tags'] and 'required' not in grouped_dict['tags']:
+            a.append(grouped_dict)
 
     return a
 
@@ -82,12 +82,22 @@ def get_fonts_table_sizes_grouped(fonts_list):
     _, fonts = get_fonts_table_sizes(fonts_list)
     fonts_len = len(fonts)
     fonts_dict = defaultdict(dict, fonts)
-    counter_dict = Counter()
+    mean_dict = Counter()
     for val in fonts_dict.values():
-        counter_dict.update(val)
-    for k, v in counter_dict.iteritems():
-        counter_dict[k] = v/fonts_len
-    return counter_dict
+        mean_dict.update(val)
+    for k, v in mean_dict.iteritems():
+        mean_dict[k] = v/fonts_len
+    d = {}
+    for font, props in fonts.iteritems():
+        d.setdefault('fonts', []).append(font)
+        for k, v in props.iteritems():
+            d.setdefault(k, []).append(v)
+    grouped_dict = {
+        'fonts': d.pop('fonts'),
+        'tables': [[k, mean_dict[k]]+v for k, v in d.items()]
+    }
+    ftable = namedtuple('FontTable', ['mean', 'grouped'])
+    return ftable(mean_dict, grouped_dict)
 
 
 def get_orthography(fontaineFonts):
@@ -105,11 +115,6 @@ def to_google_data_list(tdict, haxis=0):
 
 def font_table_to_google_data_list(tdict):
     return sorted([list(item) for item in tdict.items()])
-
-
-def grouped_fonts_table_to_google_data_list(fonts):
-    res = get_fonts_table_sizes_grouped(fonts)
-    return sorted([list(item) for item in res.items()])
 
 
 def average_table_size(tdict):
@@ -134,7 +139,10 @@ def generate(config):
     fontpaths = [op.join(config['path'], path)
                  for path in directory.BIN]
     ttftablesizes = get_fonts_table_sizes(fontpaths)
-    ttftablesizes_grouped = grouped_fonts_table_to_google_data_list(fontpaths)
+
+    ftables_data = get_fonts_table_sizes_grouped(fontpaths)
+    ttftablesizes_mean = sorted([list(item) for item in ftables_data.mean.items()])
+    ttftablesizes_grouped = ftables_data.grouped
 
     buildstate = yaml.load(open(op.join(config['path'],
                                 'build.state.yaml')))
@@ -156,6 +164,7 @@ def generate(config):
                           get_orthography=get_orthography,
                           to_google_data_list=to_google_data_list,
                           font_table_to_google_data_list=font_table_to_google_data_list,
+                          ttftablesizes_mean=ttftablesizes_mean,
                           ttftablesizes_grouped=ttftablesizes_grouped,
                           average_table_size=average_table_size,
                           hex=hex, sort=sort),
