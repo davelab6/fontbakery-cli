@@ -82,10 +82,10 @@ def run_bakery(sourcedir):
         b.load_config(config)
 
         b.run()
-    except Exception, ex:
+    except Exception:
         print('FAILED: %s' % sourcedir, file=sys.stderr)
         print(ex, file=sys.stderr)
-        raise
+        sys.exit(1)
 
 
 class NoDaemonProcess(multiprocessing.Process):
