@@ -83,8 +83,9 @@
         </table>
 
         <h4>TTF Table Sizes</h4>
-
-        <div id="ttftablesizes"></div>
+        {% for table in ttftablesizes[0] %}
+          <div id="ttftablesizes-{{loop.index}}"></div>
+        {% endfor %}
 
         <table class="table-striped table-bordered table-condensed tablesorter">
             <tr>
@@ -341,12 +342,13 @@ $(function(){
 
     {% for font in ttftablesizes[1] %}
     {% set average = average_table_size(ttftablesizes[1][font]) %}
-    {% set tables = to_google_data_list(ttftablesizes[1][font], haxis=average) %}
+    {% set tables = font_table_to_google_data_list(ttftablesizes[1][font]) %}
+
     var data = google.visualization.arrayToDataTable({{ ([["Table", "Size"]] + tables)|safe }});
-    var chart = new google.visualization.LineChart(document.getElementById('ttftablesizes'));
+    var chart = new google.visualization.LineChart(document.getElementById('ttftablesizes-{{loop.index}}'));
 
     var options = {
-      title: "Table sizes",
+      title: "Table sizes ({{font}})",
       is3D: true,
       vAxis: {
         gridlines:{count:5},
