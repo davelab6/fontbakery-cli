@@ -50,10 +50,26 @@ class MetaTest(type):
         return newbornclass
 
 
+class TestCaseOperator(object):
+    """ This class contains path to tested target and logging instance """
+
+    def __init__(self, path, logger_instance=None):
+        self.path = path
+        self.logger = logger_instance
+
+    def debug(self, message):
+        if not self.logger:
+            return
+        self.logger.write(message)
+
+
 class BakeryTestCase(unittest.TestCase):
+
     __metaclass__ = MetaTest
     # because we don't want to register this base class as test case
     __abstract__ = True
+
+    operator = TestCaseOperator('.')
 
 
 class BakeryTestResult(unittest.TestResult):
@@ -119,8 +135,9 @@ class BakeryTestResult(unittest.TestResult):
                 self.callmethod(test_method.autofix_method, test)
                 if hasattr(self.ff, 'append'):
                     self.ff.append(test)
-                    self.restart = True
+                    self.restart = True  # mark next test as restarted
                     test.run(result=self)
+                    self.restart = False  # reset restart state
         elif hasattr(self.fl, 'append'):
             self.fl.append(test)
 
@@ -189,19 +206,6 @@ class autofix(object):
         f.autofix_method = self.methodname
         f.autofix_always_run = self.always_run
         return f
-
-
-class TestCaseOperator(object):
-    """ This class contains path to tested target and logging instance """
-
-    def __init__(self, path, logger_instance=None):
-        self.path = path
-        self.logger = logger_instance
-
-    def debug(self, message):
-        if not self.logger:
-            return
-        self.logger.write(message)
 
 
 def make_suite(path, definedTarget, test_method=None, log=None):

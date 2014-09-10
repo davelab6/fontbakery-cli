@@ -15,6 +15,7 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import json
+import os
 import os.path as op
 import yaml
 
@@ -28,6 +29,8 @@ from bakery_cli.scripts import opentype
 from bakery_cli.scripts import gasp
 from bakery_cli.scripts import dsig
 from bakery_cli.scripts import encode_glyphs
+
+from bakery_cli.utils import UpstreamDirectory
 
 
 PYPATH = ''
@@ -103,15 +106,14 @@ def fix_nbsp(testcase):
 
 def fix_metrics(testcase):
     """ Fix vmet table with actual min and max values """
-    targetpath = testcase.operator.path
+    targetpath = os.path.dirname(testcase.operator.path)
     SCRIPTPATH = 'bakery-vmet-fix.py'
 
-    from bakery_lint.metadata import FamilyMetadata
-    family_metadata = FamilyMetadata(json.load(open(targetpath)))
+    directory = UpstreamDirectory(targetpath)
 
     paths = []
-    for f in family_metadata.fonts:
-        path = op.join(op.dirname(targetpath), f.filename)
+    for f in directory.BIN:
+        path = op.join(targetpath, f)
         paths.append(path)
 
     command = "$ {0} {1} --autofix {2}"

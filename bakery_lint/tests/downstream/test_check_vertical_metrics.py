@@ -14,53 +14,68 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+import os
+
 from bakery_lint.base import BakeryTestCase as TestCase, autofix
 from bakery_cli.ttfont import Font
-from bakery_lint.metadata import Metadata
+
+from bakery_cli.utils import UpstreamDirectory
 
 
-class CheckVerticalMetrics(TestCase):
+class CheckVerticalLinegapMetrics(TestCase):
 
-    targets = ['metadata']
+    targets = ['result']
     name = __name__
     tool = 'lint'
-
-    def read_metadata_contents(self):
-        return open(self.operator.path).read()
 
     @autofix('bakery_cli.pipe.autofix.fix_metrics')
     def test_metrics_linegaps_are_zero(self):
         """ Check that linegaps in tables are zero """
-        contents = self.read_metadata_contents()
-        family_metadata = Metadata.get_family_metadata(contents)
+        dirname = os.path.dirname(self.operator.path)
+
+        directory = UpstreamDirectory(dirname)
 
         fonts_gaps_are_not_zero = []
-        for font_metadata in family_metadata.fonts:
-            ttfont = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
+        for filename in directory.BIN:
+            ttfont = Font.get_ttfont(os.path.join(dirname, filename))
             if bool(ttfont.linegaps.os2typo) or bool(ttfont.linegaps.hhea):
-                fonts_gaps_are_not_zero.append(font_metadata.filename)
+                fonts_gaps_are_not_zero.append(filename)
 
         if fonts_gaps_are_not_zero:
             _ = '[%s] have not zero linegaps'
             self.fail(_ % ', '.join(fonts_gaps_are_not_zero))
 
+class CheckVerticalAscentMetrics(TestCase):
+
+    targets = ['result']
+    name = __name__
+    tool = 'lint'
+
     @autofix('bakery_cli.pipe.autofix.fix_metrics')
     def test_metrics_ascents_equal_bbox(self):
         """ Check that ascents values are same as max glyph point """
-        contents = self.read_metadata_contents()
-        family_metadata = Metadata.get_family_metadata(contents)
+        dirname = os.path.dirname(self.operator.path)
+
+        ymax, fonts_ascents_not_bbox = self.get_fonts(dirname)
+
+        if fonts_ascents_not_bbox:
+            _ = '[%s] ascents differ to maximum value: %s'
+            self.fail(_ % (', '.join(fonts_ascents_not_bbox), ymax))
+
+    def get_fonts(self, dirname):
+        directory = UpstreamDirectory(dirname)
 
         fonts_ascents_not_bbox = []
         ymax = 0
 
         _cache = {}
-        for font_metadata in family_metadata.fonts:
-            ttfont = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
+        for filename in directory.get_binaries():
+            ttfont = Font.get_ttfont(os.path.join(dirname, filename))
 
-            ymin_, ymax_ = ttfont.get_bounding()
+            _, ymax_ = ttfont.get_bounding()
             ymax = max(ymax, ymax_)
 
-            _cache[font_metadata.filename] = {
+            _cache[filename] = {
                 'os2typo': ttfont.ascents.os2typo,
                 'os2win': ttfont.ascents.os2win,
                 'hhea': ttfont.ascents.hhea
@@ -69,35 +84,41 @@ class CheckVerticalMetrics(TestCase):
         for filename, data in _cache.items():
             if [data['os2typo'], data['os2win'], data['hhea']] != [ymax] * 3:
                 fonts_ascents_not_bbox.append(filename)
+        return ymax, fonts_ascents_not_bbox
 
-        if fonts_ascents_not_bbox:
-            _ = '[%s] ascents differ to maximum value: %s'
-            self.fail(_ % (', '.join(fonts_ascents_not_bbox), ymax))
+
+class CheckVerticalDescentMetrics(TestCase):
+
+    targets = ['result']
+    name = __name__
+    tool = 'lint'
 
     @autofix('bakery_cli.pipe.autofix.fix_metrics')
     def test_metrics_descents_equal_bbox(self):
         """ Check that descents values are same as min glyph point """
-        contents = self.read_metadata_contents()
-        family_metadata = Metadata.get_family_metadata(contents)
+        dirname = os.path.dirname(self.operator.path)
+
+        directory = UpstreamDirectory(dirname)
 
         fonts_descents_not_bbox = []
         ymin = 0
 
         _cache = {}
-        for font_metadata in family_metadata.fonts:
-            ttfont = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
+        for filename in directory.get_binaries():
+            ttfont = Font.get_ttfont(os.path.join(dirname, filename))
 
-            ymin_, ymax_ = ttfont.get_bounding()
+            ymin_, _ = ttfont.get_bounding()
             ymin = min(ymin, ymin_)
 
-            _cache[font_metadata.filename] = {
+            _cache[filename] = {
                 'os2typo': abs(ttfont.descents.os2typo),
                 'os2win': abs(ttfont.descents.os2win),
                 'hhea': abs(ttfont.descents.hhea)
             }
 
         for filename, data in _cache.items():
-            if [data['os2typo'], data['os2win'], data['hhea']] != [abs(ymin)] * 3:
+            datas = [data['os2typo'], data['os2win'], data['hhea']]
+            if datas != [abs(ymin)] * 3:
                 fonts_descents_not_bbox.append(filename)
 
         if fonts_descents_not_bbox:

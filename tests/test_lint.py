@@ -1244,8 +1244,71 @@ class Test_CheckFSTypeTest(TestCase):
                 assert fix.called
 
 
-class SourceFontFileNameEqualsFamilyStyle(TestCase):
+class Test_CheckVerticalMetricsAutoFixCalled(TestCase):
 
+    def test_fourty(self):
+
+        class FakeAscents(object):
+            os2typo = 1200
+            os2win = 1100
+            hhea = 1100
+
+        class Font(object):
+            ascents = FakeAscents()
+
+            def get_bounding(self):
+                return 100, 1000
+
+        targetTestCase = downstream.CheckVerticalAscentMetrics
+        with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
+            with mock.patch('bakery_cli.utils.UpstreamDirectory.get_binaries') as get_binaries:
+                get_ttfont.return_value = Font()
+                with mock.patch('bakery_cli.pipe.autofix.fix_metrics') as fix:
+
+                    get_binaries.return_value = ['Font-Regular.ttf']
+                    self.failure_run(targetTestCase)
+                    assert fix.called
+
+                with mock.patch('bakery_cli.pipe.autofix.fix_metrics') as fix:
+                    get_ttfont.return_value.ascents.os2typo = 1000
+                    get_ttfont.return_value.ascents.os2win = 1000
+                    get_ttfont.return_value.ascents.hhea = 1000
+                    self.success_run(targetTestCase)
+                    assert not fix.called
+
+    def test_fourty_one(self):
+
+        class FakeDescents(object):
+            os2typo = 1200
+            os2win = 1100
+            hhea = 1100
+
+        class Font(object):
+            descents = FakeDescents()
+
+            def get_bounding(self):
+                return -1000, 1000
+
+        targetTestCase = downstream.CheckVerticalDescentMetrics
+        with mock.patch.object(OriginFont, 'get_ttfont') as get_ttfont:
+            get_ttfont.return_value = Font()
+            with mock.patch('bakery_cli.utils.UpstreamDirectory.get_binaries') as get_binaries:
+                get_binaries.return_value = ['Font-Regular.ttf']
+
+                with mock.patch('bakery_cli.pipe.autofix.fix_metrics') as fix:
+
+                    self.failure_run(targetTestCase)
+                    assert fix.called
+
+                with mock.patch('bakery_cli.pipe.autofix.fix_metrics') as fix:
+                    get_ttfont.return_value.descents.os2typo = 1000
+                    get_ttfont.return_value.descents.os2win = 1000
+                    get_ttfont.return_value.descents.hhea = 1000
+                    self.success_run(targetTestCase)
+                    assert not fix.called
+
+
+class SourceFontFileNameEqualsFamilyStyle(TestCase):
 
     def test_source_ttf_font_filename_equals_familystyle(self):
         targetTestCase = upstream.TestTTFSourceFontFileNameEqualsFamilyStyle
