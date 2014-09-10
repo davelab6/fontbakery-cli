@@ -31,6 +31,42 @@ ROOT = op.abspath(op.join(op.dirname(__file__), '..', '..'))
 SCRAPE_DATAROOT = op.join(ROOT, 'bakery_cli', 'scrapes', 'json')
 
 
+def get_test_subset_function(path):
+    def function(self):
+        if not op.exists(path):
+            self.fail('%s subset does not exist' % path)
+
+        if magic.from_file(path) != 'TrueType font data':
+            _ = '%s does not seem to be truetype font'
+            self.fail(_ % path)
+    function.tags = ['required']
+    return function
+
+
+class MetadataSubsetsListTest(TestCase):
+
+    targets = ['metadata']
+    tool = 'METADATA.json'
+    name = __name__
+
+    @classmethod
+    def __generateTests__(cls):
+        metadata = json.load(open(cls.operator.path))
+        for font in metadata.get('fonts', []):
+            for subset in metadata.get('subsets', []) + ['menu']:
+                path = op.join(op.dirname(cls.operator.path),
+                               font.get('filename')[:-3] + subset)
+
+                subsetid = re.sub(r'\W', '_', subset)
+
+                # cls.operator.debug('cls.test_charset_{0} = get_test_subset_function("{1}")'.format(subsetid, path))
+                # cls.operator.debug('cls.test_charset_{0}.__func__.__doc__ = "{1} is real TrueType file"'.format(subsetid, font.get('filename')[:-3] + subset))
+
+                exec 'cls.test_charset_{0} = get_test_subset_function("{1}")'.format(subsetid, path)
+                exec 'cls.test_charset_{0}.__func__.__doc__ = "{1} is real TrueType file"'.format(subsetid, font.get('filename')[:-3] + subset)
+
+
+
 class MetadataTest(TestCase):
 
     targets = ['metadata']
@@ -344,20 +380,6 @@ class MetadataTest(TestCase):
     def test_metadata_subsets_key_list(self):
         """ METADATA.json subsets key should be list """
         self.assertEqual(type(self.metadata.get('subsets', '')), type([]))
-
-    @tags('required')
-    def test_subsets_files_is_font(self):
-        """ Subset file is a TrueType format """
-        for font in self.metadata.get('fonts', []):
-            for subset in self.metadata.get('subsets', []) + ['menu']:
-                path = op.join(op.dirname(self.operator.path),
-                               font.get('filename')[:-3] + subset)
-                if not op.exists(path):
-                    self.fail('%s subset file does not exist' % subset)
-
-                if magic.from_file(path) != 'TrueType font data':
-                    _ = '%s does not seem to be truetype font data'
-                    self.fail(_ % subset)
 
     @tags('required')
     def test_metadata_fonts_items_dicts(self):
