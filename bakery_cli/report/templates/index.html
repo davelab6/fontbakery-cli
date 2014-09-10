@@ -349,7 +349,13 @@ $(function(){
       title: "Table sizes",
       is3D: true,
       vAxis: {
-        title: "bytes"
+        gridlines:{count:5},
+        minorGridlines: {count:2},
+        viewWindowMode:'pretty',
+        title: "bytes",
+        viewWindow: {
+          min:0.0
+        }
       },
       hAxis: {
         slantedText: true

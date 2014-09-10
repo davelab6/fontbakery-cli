@@ -87,11 +87,11 @@ def get_orthography(fontaineFonts):
 
 
 def to_google_data_list(tdict, haxis=0):
-    return sorted([[x, tdict[x] - haxis] for x in tdict])
+    return sorted([[x, abs(tdict[x] - haxis)] for x in tdict])
 
 
 def average_table_size(tdict):
-    return sum([x for x in tdict.values()]) / len(tdict)
+    return sum(tdict.values()) / len(tdict)
 
 
 def generate(config):
