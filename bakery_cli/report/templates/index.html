@@ -86,7 +86,8 @@
         {% for table in ttftablesizes[0] %}
           <div id="ttftablesizes-{{loop.index}}"></div>
         {% endfor %}
-
+        <h4>TTF Table Average Sizes</h4>
+        <div id="ttftablesizesGrouped"></div>
         <table class="table-striped table-bordered table-condensed tablesorter">
             <tr>
                 <th></th>
@@ -341,31 +342,47 @@ $(function(){
     {% endfor %}
 
     {% for font in ttftablesizes[1] %}
-    {% set average = average_table_size(ttftablesizes[1][font]) %}
-    {% set tables = font_table_to_google_data_list(ttftablesizes[1][font]) %}
+      {% set average = average_table_size(ttftablesizes[1][font]) %}
+      {% set tables = font_table_to_google_data_list(ttftablesizes[1][font]) %}
 
-    var data = google.visualization.arrayToDataTable({{ ([["Table", "Size"]] + tables)|safe }});
-    var chart = new google.visualization.LineChart(document.getElementById('ttftablesizes-{{loop.index}}'));
+      var data = google.visualization.arrayToDataTable({{ ([["Table", "Size"]] + tables)|safe }});
+      var chart = new google.visualization.LineChart(document.getElementById('ttftablesizes-{{loop.index}}'));
 
-    var options = {
-      title: "Table sizes ({{font}})",
-      is3D: true,
-      vAxis: {
-        gridlines:{count:5},
-        minorGridlines: {count:2},
-        viewWindowMode:'pretty',
-        title: "bytes",
-        viewWindow: {
-          min:0.0
-        }
-      },
-      hAxis: {
-        slantedText: true
-      },
-      height: 500
-    };
-    chart.draw(data, options);
+      var options = {
+        title: "Table sizes ({{font}})",
+        is3D: true,
+        vAxis: {
+          gridlines:{count:5},
+          minorGridlines: {count:2},
+          viewWindowMode:'pretty',
+          title: "bytes",
+          viewWindow: {
+            min:0.0
+          }
+        },
+        hAxis: {
+          slantedText: true
+        },
+        height: 500
+      };
+      chart.draw(data, options);
     {% endfor %}
+
+    var data = google.visualization.arrayToDataTable({{ ([["Table", "Size"]] + ttftablesizes_grouped)|safe }});
+    var chart = new google.visualization.LineChart(document.getElementById('ttftablesizesGrouped'));
+
+      var options = {
+        title: "Average Table Sizes",
+        is3D: true,
+        vAxis: {
+          title: "bytes"
+        },
+        hAxis: {
+          slantedText: true
+        },
+        height: 500
+      };
+      chart.draw(data, options);
   }
 </script>
 <style>
