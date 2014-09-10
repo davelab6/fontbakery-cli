@@ -33,12 +33,13 @@ SCRAPE_DATAROOT = op.join(ROOT, 'bakery_cli', 'scrapes', 'json')
 
 def get_test_subset_function(path):
     def function(self):
+
         if not op.exists(path):
-            self.fail('%s subset does not exist' % path)
+            self.fail('%s subset does not exist' % op.basename(path))
 
         if magic.from_file(path) != 'TrueType font data':
             _ = '%s does not seem to be truetype font'
-            self.fail(_ % path)
+            self.fail(_ % op.basename(path))
     function.tags = ['required']
     return function
 
