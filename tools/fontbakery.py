@@ -82,7 +82,7 @@ def run_bakery(sourcedir):
         b.load_config(config)
 
         b.run()
-    except Exception:
+    except Exception, ex:
         print('FAILED: %s' % sourcedir, file=sys.stderr)
         print(ex, file=sys.stderr)
         sys.exit(1)
