@@ -22,7 +22,6 @@ setup(
     version='0.1',
     url='https://github.com/googlefonts/fontbakery-cli/',
     description='fontbakery-cli',
-    long_description=open('README.rst').read(),
     author='Vitaliy Volkov',
     author_email='hash3g@gmail.com',
     packages=["bakery_cli",
