@@ -83,7 +83,7 @@
         </table>
 
         <h4>TTF Table Sizes</h4>
-        <div id="ttftablesizesAggregated"></div>
+        <div id="ttftablesizesDeviation"></div>
 
         <!--{% for table in ttftablesizes[0] %}-->
           <!--<div id="ttftablesizes-{{loop.index}}"></div>-->
@@ -345,22 +345,6 @@ $(function(){
     {% endif %}
     {% endfor %}
 
-    var data = google.visualization.arrayToDataTable({{ ([["Table", "Size"]] + ttftablesizes_mean)|safe }});
-    var chart = new google.visualization.LineChart(document.getElementById('ttftablesizesGrouped'));
-
-    var options = {
-      title: "Average Table Sizes",
-      is3D: true,
-      vAxis: {
-        title: "bytes"
-      },
-      hAxis: {
-        slantedText: true
-      },
-      height: 500
-    };
-    chart.draw(data, options);
-
     var headings = $.merge( ["Table", "Average"], {{ttftablesizes_grouped.fonts}} );
     var aggregated_table = [];
 
@@ -371,19 +355,43 @@ $(function(){
     });
 
     var data = google.visualization.arrayToDataTable(aggregated_table);
-    var chart = new google.visualization.LineChart(document.getElementById('ttftablesizesAggregated'));
-     var options = {
-        title: "Aggregated data",
-        is3D: true,
-        vAxis: {
-          title: "Size (bytes)"
-        },
-        hAxis: {
-          slantedText: true
-        },
-        height: 500
-      };
-      chart.draw(data, options);
+    var chart = new google.visualization.LineChart(document.getElementById('ttftablesizesGrouped'));
+    var options = {
+      title: "Fonts compared to average",
+      is3D: true,
+      vAxis: {
+        title: "Size (bytes)"
+      },
+      hAxis: {
+        slantedText: true
+      },
+      height: 500
+    };
+    chart.draw(data, options);
+
+    var headings = $.merge( ["Table", "Average"], {{ttftablesizes_delta.fonts}} );
+    var deviation_table = [];
+
+    deviation_table.push(headings);
+
+    $({{ttftablesizes_delta.tables}}).each(function(i){
+      deviation_table.push(this)
+    });
+
+    var data = google.visualization.arrayToDataTable(deviation_table);
+    var chart = new google.visualization.LineChart(document.getElementById('ttftablesizesDeviation'));
+    var options = {
+      title: "Deviation from an average",
+      is3D: true,
+      vAxis: {
+        title: "Deviation (bytes)"
+      },
+      hAxis: {
+        slantedText: true
+      },
+      height: 500
+    };
+    chart.draw(data, options);
   }
 </script>
 <style>
