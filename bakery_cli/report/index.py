@@ -121,7 +121,7 @@ def get_fonts_table_sizes_grouped(fonts_list):
     delta_dict = {
         'fonts': tables_delta_dict_for_google_array.pop('fonts'),
         'tables': [
-            [k, tables_mean_dict[k]] + v for k, v in tables_delta_dict_for_google_array.items()
+            [k, ] + v for k, v in tables_delta_dict_for_google_array.items()
         ]
     }
 
