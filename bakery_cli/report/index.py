@@ -80,13 +80,18 @@ def get_fonts_table_sizes(fonts):
 
 def get_fonts_table_sizes_grouped(fonts_list):
     _, fonts = get_fonts_table_sizes(fonts_list)
-    fonts_len = len(fonts)
     fonts_dict = defaultdict(dict, fonts)
-    mean_dict = Counter()
-    for val in fonts_dict.values():
-        mean_dict.update(val)
-    for k, v in mean_dict.iteritems():
-        mean_dict[k] = v/fonts_len
+
+    # fonts may have different tables
+    table_sizes_sums = sum(
+        (Counter(v) for k, v in fonts_dict.iteritems()), Counter()
+    )
+    tables_counts = sum(
+        (Counter(v.keys()) for k,v in fonts_dict.iteritems()), Counter()
+    )
+    mean_dict = {
+        k: table_sizes_sums[k]/tables_counts[k] for k in table_sizes_sums
+    }
     d = {}
     for font, props in fonts.iteritems():
         d.setdefault('fonts', []).append(font)
@@ -96,6 +101,17 @@ def get_fonts_table_sizes_grouped(fonts_list):
         'fonts': d.pop('fonts'),
         'tables': [[k, mean_dict[k]]+v for k, v in d.items()]
     }
+
+    # make all arrays to have same len
+    max_len = len(max(grouped_dict['tables'], key=len))
+    new_items = []
+    for item in grouped_dict["tables"]:
+        new_item = item[:]
+        while len(new_item) < max_len:
+            new_item.append(-1)
+        new_items.append(new_item)
+    grouped_dict["tables"] = new_items
+
     ftable = namedtuple('FontTable', ['mean', 'grouped'])
     return ftable(mean_dict, grouped_dict)
 
