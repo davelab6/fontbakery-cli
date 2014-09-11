@@ -87,19 +87,42 @@ def get_fonts_table_sizes_grouped(fonts_list):
         (Counter(v) for k, v in fonts_dict.iteritems()), Counter()
     )
     tables_counts = sum(
-        (Counter(v.keys()) for k,v in fonts_dict.iteritems()), Counter()
+        (Counter(v.keys()) for k, v in fonts_dict.iteritems()), Counter()
     )
-    mean_dict = {
+    tables_mean_dict = {
         k: table_sizes_sums[k]/tables_counts[k] for k in table_sizes_sums
     }
-    d = {}
-    for font, props in fonts.iteritems():
-        d.setdefault('fonts', []).append(font)
+
+    tables_delta_dict = {}
+    for font, tables in fonts_dict.iteritems():
+        tables_delta_dict[font] = {
+            k: tables_mean_dict[k]-v for k, v in tables.iteritems()
+        }
+
+    tables_delta_dict_for_google_array = {}
+    for font, props in tables_delta_dict.iteritems():
+        tables_delta_dict_for_google_array.setdefault('fonts', []).append(font)
         for k, v in props.iteritems():
-            d.setdefault(k, []).append(v)
+            tables_delta_dict_for_google_array.setdefault(k, []).append(v)
+    
+    tables_dict_for_google_array = {}
+    for font, props in fonts.iteritems():
+        tables_dict_for_google_array.setdefault('fonts', []).append(font)
+        for k, v in props.iteritems():
+            tables_dict_for_google_array.setdefault(k, []).append(v)
+    
     grouped_dict = {
-        'fonts': d.pop('fonts'),
-        'tables': [[k, mean_dict[k]]+v for k, v in d.items()]
+        'fonts': tables_dict_for_google_array.pop('fonts'),
+        'tables': [
+            [k, tables_mean_dict[k]] + v for k, v in tables_dict_for_google_array.items()
+        ]
+    }
+
+    delta_dict = {
+        'fonts': tables_delta_dict_for_google_array.pop('fonts'),
+        'tables': [
+            [k, tables_mean_dict[k]] + v for k, v in tables_delta_dict_for_google_array.items()
+        ]
     }
 
     # make all arrays to have same len
@@ -112,8 +135,8 @@ def get_fonts_table_sizes_grouped(fonts_list):
         new_items.append(new_item)
     grouped_dict["tables"] = new_items
 
-    ftable = namedtuple('FontTable', ['mean', 'grouped'])
-    return ftable(mean_dict, grouped_dict)
+    ftable = namedtuple('FontTable', ['mean', 'grouped', 'delta'])
+    return ftable(tables_mean_dict, grouped_dict, delta_dict)
 
 
 def get_orthography(fontaineFonts):
@@ -157,11 +180,13 @@ def generate(config):
     ttftablesizes = get_fonts_table_sizes(fontpaths)
 
     ftables_data = get_fonts_table_sizes_grouped(fontpaths)
-    ttftablesizes_mean = sorted([list(item) for item in ftables_data.mean.items()])
+    ttftablesizes_mean = sorted(
+        [list(item) for item in ftables_data.mean.items()]
+    )
     ttftablesizes_grouped = ftables_data.grouped
+    ttftablesizes_delta = ftables_data.delta
 
-    buildstate = yaml.load(open(op.join(config['path'],
-                                'build.state.yaml')))
+    buildstate = yaml.load(open(op.join(config['path'], 'build.state.yaml')))
     autohint_sizes = buildstate.get('autohinting_sizes', [])
     vmet = get_metric_view(fontpaths)
 
@@ -182,6 +207,7 @@ def generate(config):
                           font_table_to_google_data_list=font_table_to_google_data_list,
                           ttftablesizes_mean=ttftablesizes_mean,
                           ttftablesizes_grouped=ttftablesizes_grouped,
+                          ttftablesizes_delta=ttftablesizes_delta,
                           average_table_size=average_table_size,
                           hex=hex, sort=sort),
           file=destfile)

@@ -9,6 +9,8 @@
 <body>
     <div class="container">
         <ul class="nav nav-tabs">
+          <li><a href="https://github.com/fontdirectory/yesevaone/tree/gh-pages" target="_blank"><i class="fa fa-github"></i> gh-pages</a></li>
+          <li><a href="https://github.com/fontdirectory/yesevaone/" target="_blank"><i class="fa fa-github-square"></i> Github Page</a></li>
           <li class="active"><a href="index.html">Summary</a></li>
           <li><a href="upstream.html">Upstream Tests</a></li>
           <li><a href="tests.html">Downstream Tests</a></li>
@@ -39,7 +41,7 @@
           {% if blockers %}
             <h3>Blockers</h3>
             <div id="piechartSum"></div>
-            <table class="table table-striped table-bordered table-condensed tablesorter">
+            <table class="table table-striped table-bordered table-condensed tablesorter table-hover">
                 <thead>
                 <tr>
                   <th>Category</th>
@@ -83,14 +85,10 @@
         </table>
 
         <h4>TTF Table Sizes</h4>
-        {% for table in ttftablesizes[0] %}
-          <div id="ttftablesizes-{{loop.index}}"></div>
-        {% endfor %}
-        <h4>TTF Table Average Sizes</h4>
+        <div id="ttftablesizesDeviation"></div>
         <div id="ttftablesizesGrouped"></div>
-        <div id="ttftablesizesAggregated"></div>
 
-        <table class="table-striped table-bordered table-condensed tablesorter">
+        <table class="table-striped table-bordered table-condensed tablesorter table-hover">
             <tr>
                 <th></th>
                 {% for f in ttftablesizes[1] %}
@@ -110,7 +108,7 @@
 
         {% if autohinting_sizes %}
         <h4>ttfautohint filesize impact statistic</h4>
-        <table class="table-striped table-bordered table-condensed tablesorter">
+        <table class="table-striped table-bordered table-condensed tablesorter table-hover">
         {% for t in autohinting_sizes %}
             <tr>
                 <th colspan="2">{{ t['fontname'] }}</th>
@@ -137,7 +135,7 @@
 
         <h4>Font Description</h4>
 
-        <table class="table-striped table-bordered table-condensed tablesorter">
+        <table class="table-striped table-bordered table-condensed tablesorter table-hover">
           <thead>
             <tr>
               <th></th>
@@ -254,7 +252,7 @@
 
         <h4>Font Coverage characters</h4>
 
-        <table class="table table-striped table-bordered table-condensed tablesorter">
+        <table class="table table-striped table-bordered table-condensed tablesorter table-hover">
           <thead>
             <tr>
               <th width='10%'>Font</th>
@@ -343,49 +341,6 @@ $(function(){
     {% endif %}
     {% endfor %}
 
-    {% for font in ttftablesizes[1] %}
-      {% set average = average_table_size(ttftablesizes[1][font]) %}
-      {% set tables = font_table_to_google_data_list(ttftablesizes[1][font]) %}
-
-      var data = google.visualization.arrayToDataTable({{ ([["Table", "Size"]] + tables)|safe }});
-      var chart = new google.visualization.LineChart(document.getElementById('ttftablesizes-{{loop.index}}'));
-
-      var options = {
-        title: "Table sizes ({{font}})",
-        is3D: true,
-        vAxis: {
-          gridlines:{count:5},
-          minorGridlines: {count:2},
-          viewWindowMode:'pretty',
-          title: "bytes",
-          viewWindow: {
-            min:0.0
-          }
-        },
-        hAxis: {
-          slantedText: true
-        },
-        height: 500
-      };
-      chart.draw(data, options);
-    {% endfor %}
-
-    var data = google.visualization.arrayToDataTable({{ ([["Table", "Size"]] + ttftablesizes_mean)|safe }});
-    var chart = new google.visualization.LineChart(document.getElementById('ttftablesizesGrouped'));
-
-    var options = {
-      title: "Average Table Sizes",
-      is3D: true,
-      vAxis: {
-        title: "bytes"
-      },
-      hAxis: {
-        slantedText: true
-      },
-      height: 500
-    };
-    chart.draw(data, options);
-
     var headings = $.merge( ["Table", "Average"], {{ttftablesizes_grouped.fonts}} );
     var aggregated_table = [];
 
@@ -396,19 +351,43 @@ $(function(){
     });
 
     var data = google.visualization.arrayToDataTable(aggregated_table);
-    var chart = new google.visualization.LineChart(document.getElementById('ttftablesizesAggregated'));
-     var options = {
-        title: "Aggregated data",
-        is3D: true,
-        vAxis: {
-          title: "Size (bytes)"
-        },
-        hAxis: {
-          slantedText: true
-        },
-        height: 500
-      };
-      chart.draw(data, options);
+    var chart = new google.visualization.LineChart(document.getElementById('ttftablesizesGrouped'));
+    var options = {
+      title: "Fonts compared to average",
+      is3D: true,
+      vAxis: {
+        title: "Size (bytes)"
+      },
+      hAxis: {
+        slantedText: true
+      },
+      height: 500
+    };
+    chart.draw(data, options);
+
+    var headings = $.merge( ["Table", "Average"], {{ttftablesizes_delta.fonts}} );
+    var deviation_table = [];
+
+    deviation_table.push(headings);
+
+    $({{ttftablesizes_delta.tables}}).each(function(i){
+      deviation_table.push(this)
+    });
+
+    var data = google.visualization.arrayToDataTable(deviation_table);
+    var chart = new google.visualization.LineChart(document.getElementById('ttftablesizesDeviation'));
+    var options = {
+      title: "Deviation from an average",
+      is3D: true,
+      vAxis: {
+        title: "Deviation (bytes)"
+      },
+      hAxis: {
+        slantedText: true
+      },
+      height: 500
+    };
+    chart.draw(data, options);
   }
 </script>
 <style>
