@@ -153,37 +153,6 @@
 </script>
 
 <script>
-  var doLiveDiff = function() {
-    //#TODO(experimental!!!)
-    var left = $('#editor').find('div.ace_content').text();
-    var right = $('#editor_new').find('div.ace_content').text();
-
-    var instance = jsondiffpatch.create({
-      objectHash: function(obj) {
-        return '';
-      }
-    });
-
-    var delta = instance.diff(left, right);
-
-    var visualdiff = document.getElementById('visualdiff');
-//    $(visualdiff).empty();
-    if (visualdiff) {
-      visualdiff.innerHTML = jsondiffpatch.formatters.html.format(delta, left);
-
-      var scripts = visualdiff.querySelectorAll('script');
-      for (var i = 0; i < scripts.length; i++) {
-        var s = scripts[i];
-        /* jshint evil: true */
-        eval(s.innerHTML);
-      }
-    }
-    $(visualdiff).find('div').first().find('pre')
-        .each(function(i){
-          $(this).css("background-color", "transparent").css("border", "0");
-        })
-  };
-
   var doDiff = function() {
     var left = JSON.parse($('#metadatajson').text());
     var right = JSON.parse($('#metadatajson_new').text());
@@ -237,11 +206,7 @@
 
     editor.getSession().setUseWrapMode(true);
     editor.getSession().setValue(textarea.val());
-    editor.getSession().on('change', function(){
-      textarea.val(editor.getSession().getValue());
-      //#TODO(experimental!!!)
-      doLiveDiff();
-    });
+    editor.setReadOnly(true);
   };
   $(document).ready(function () {
     var editor = ace.edit("editor"),
