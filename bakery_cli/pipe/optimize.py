@@ -60,8 +60,8 @@ class Optimize(object):
         subsetter.subset(font)
         save_font(font, op.join(self.builddir, filename + '.opt'), options)
 
-        newsize = os.stat(op.join(self.builddir, filename + '.opt')).st_size
-        origsize = os.stat(op.join(self.builddir, filename)).st_size
+        newsize = op.getsize(op.join(self.builddir, filename + '.opt'))
+        origsize = op.getsize(op.join(self.builddir, filename))
 
         # compare filesizes TODO print analysis of this :)
         comment = "# look at the size savings of that subset process"

@@ -161,7 +161,7 @@ class CopyLicense(Pipe):
 
 class CopyDescription(Pipe):
 
-    filename = 'DESCRIPTION.en_US.html'
+    filename = 'DESCRIPTION.en_us.html'
 
 
 class CopyTxtFiles(Pipe):

@@ -30,5 +30,4 @@ for testfile in os.listdir(os.path.dirname(__file__)):
                 if 'Test' in name:
                     exec 'from bakery_lint.tests.upstream.%s import %s' % (module_name, name)
         except (ImportError, AttributeError, IndexError), ex:
-            print(module_name, ex)
             pass
