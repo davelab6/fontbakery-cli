@@ -365,7 +365,7 @@ $(function(){
     };
     chart.draw(data, options);
 
-    var headings = $.merge( ["Table", "Average"], {{ttftablesizes_delta.fonts}} );
+    var headings = $.merge( ["Table"], {{ttftablesizes_delta.fonts}} );
     var deviation_table = [];
 
     deviation_table.push(headings);
@@ -375,8 +375,10 @@ $(function(){
     });
 
     var data = google.visualization.arrayToDataTable(deviation_table);
-    var chart = new google.visualization.LineChart(document.getElementById('ttftablesizesDeviation'));
+    var chart = new google.visualization.ColumnChart(document.getElementById('ttftablesizesDeviation'));
     var options = {
+
+      bar: {groupWidth: 50},
       title: "Deviation from an average",
       is3D: true,
       vAxis: {
