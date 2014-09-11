@@ -84,20 +84,12 @@ class Bakery(object):
         self.taskset = BakeryTaskSet()
 
         self.pipes = [
-            pipe.Checkout,
             pipe.Copy,
-            pipe.Build,
-            pipe.Rename,
-            pipe.PyFtSubset,
-            pipe.Metadata,
-            pipe.FontLint,
-            pipe.Optimize,
-            pipe.FontCrunch,
-            pipe.MetadataLint,
-            pipe.CopyTxtFiles,
-            pipe.TTFAutoHint,
             pipe.PyFontaine,
-            pipe.Zip
+            pipe.UpstreamLint,
+            pipe.Build,
+            pipe.Metadata,
+            pipe.MetadataLint
         ]
 
     def init_logging(self, logfile):
