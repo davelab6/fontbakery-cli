@@ -48,13 +48,22 @@ def create_bakery_config(bakery_config_dir, data):
     l.close()
 
 
+def find_bakery_config(sourcedir):
+    for bakeryfile in ['bakery.yaml', 'bakery.yml']:
+        try:
+            bakeryyaml = open(op.join(sourcedir, bakeryfile), 'r')
+            return yaml.safe_load(bakeryyaml)
+        except IOError:
+            pass
+    return None
+
+
 def run_bakery(sourcedir):
     sourcedir = op.realpath(sourcedir)
     try:
-        try:
-            bakeryyaml = open(op.join(sourcedir, "bakery.yaml"), 'r')
-            config = yaml.safe_load(bakeryyaml)
-        except IOError:
+
+        config = find_bakery_config(sourcedir)
+        if not config:
             config = yaml.safe_load(open(BAKERY_CONFIGURATION_DEFAULTS))
 
         build_project_dir = op.join(sourcedir, 'builds', 'build')
