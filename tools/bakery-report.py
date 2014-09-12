@@ -19,7 +19,8 @@ from __future__ import print_function
 import argparse
 import os
 
-from bakery_cli.report import tests, index, buildlog, upstream, metadata, bakery, description
+from bakery_cli.report import (tests, index, buildlog, upstream, metadata,
+                               bakery, description, review)
 
 
 if __name__ == '__main__':
@@ -40,4 +41,5 @@ if __name__ == '__main__':
         metadata.generate({'path': os.path.realpath(args.path)})
         description.generate({'path': os.path.realpath(args.path)})
         upstream.generate({'path': os.path.realpath(args.path)})
+        review.generate({'path': os.path.realpath(args.path)})
         bakery.generate({'path': os.path.realpath(args.path)})
