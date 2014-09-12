@@ -33,9 +33,6 @@ from bakery_cli.scripts import encode_glyphs
 from bakery_cli.utils import UpstreamDirectory
 
 
-PYPATH = ''
-
-
 def replace_origfont(testcase):
     targetpath = testcase.operator.path
     command = "$ mv {0}.fix {0}".format(targetpath)
@@ -81,7 +78,7 @@ def fix_opentype_specific_fields(testcase):
     targetpath = testcase.operator.path
     SCRIPTPATH = 'bakery-opentype-fix.py'
 
-    command = "$ {0} {1} {2}".format(PYPATH, SCRIPTPATH, targetpath)
+    command = "$ {0} {1}".format(SCRIPTPATH, targetpath)
     if hasattr(testcase, 'operator'):
         testcase.operator.debug(command)
 
@@ -96,7 +93,7 @@ def fix_nbsp(testcase):
 
     SCRIPTPATH = 'bakery-nbsp-fix.py'
 
-    command = "$ {0} {1} {2}".format(PYPATH, SCRIPTPATH, targetpath)
+    command = "$ {0} {1}".format(SCRIPTPATH, targetpath)
     if hasattr(testcase, 'operator'):
         testcase.operator.debug(command)
     checkAndFix(targetpath)
@@ -116,8 +113,8 @@ def fix_metrics(testcase):
         path = op.join(targetpath, f)
         paths.append(path)
 
-    command = "$ {0} {1} --autofix {2}"
-    command = command.format(PYPATH, SCRIPTPATH, ' '.join(paths))
+    command = "$ {0} --autofix {1}"
+    command = command.format(SCRIPTPATH, ' '.join(paths))
     if hasattr(testcase, 'operator'):
         testcase.operator.debug(command)
 
@@ -126,7 +123,7 @@ def fix_metrics(testcase):
     for path in paths:
         shutil.move(path + '.fix', path, log=testcase.operator.logger)
 
-    command = "$ {0} {1} {2}".format(PYPATH, SCRIPTPATH, ' '.join(paths))
+    command = "$ {0} {1}".format(SCRIPTPATH, ' '.join(paths))
     if hasattr(testcase, 'operator'):
         testcase.operator.debug(command)
         testcase.operator.debug(metricview(paths))
@@ -137,7 +134,7 @@ def fix_name_ascii(testcase):
     targetpath = testcase.operator.path
 
     SCRIPTPATH = 'bakery-ascii-fix.py'
-    command = "$ {0} {1} {2}".format(PYPATH, SCRIPTPATH, targetpath)
+    command = "$ {0} {1}".format(SCRIPTPATH, targetpath)
     if hasattr(testcase, 'operator'):
         testcase.operator.debug(command)
 
@@ -151,7 +148,7 @@ def fix_fstype_to_zero(testcase):
     targetpath = testcase.operator.path
 
     SCRIPTPATH = 'bakery-fstype-fix.py'
-    command = "$ {0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, targetpath)
+    command = "$ {0} --autofix {1}".format(SCRIPTPATH, targetpath)
     if hasattr(testcase, 'operator'):
         testcase.operator.debug(command)
 
@@ -163,7 +160,7 @@ def fix_fstype_to_zero(testcase):
 def fix_encode_glyphs(testcase):
     targetpath = testcase.operator.path
     SCRIPTPATH = 'bakery-encode-glyphs-fix.py'
-    command = "$ {0} {1} --autofix {2}".format(PYPATH, SCRIPTPATH, targetpath)
+    command = "$ {0} --autofix {1}".format(SCRIPTPATH, targetpath)
     if hasattr(testcase, 'operator'):
         testcase.operator.debug(command)
 
