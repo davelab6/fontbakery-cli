@@ -45,7 +45,7 @@ class Optimize(object):
         if 'optimize' in pipedata and not pipedata['optimize']:
             return
         self.bakery.logging_raw('### Optimize TTF {}'.format(filename))
-
+        # copied from https://code.google.com/p/noto/source/browse/nototools/subset.py
         from fontTools.subset import Options, Subsetter, load_font, save_font
 
         options = Options()
