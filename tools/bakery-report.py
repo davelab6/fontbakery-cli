@@ -30,20 +30,15 @@ if __name__ == '__main__':
                ' Please install jinja2 before using'))
 
     parser = argparse.ArgumentParser()
+    parser.add_argument('-r', '--result', type=int, default=0)
     parser.add_argument('path')
 
     args = parser.parse_args()
 
-    try:
+    if args.result == 0:
         tests.generate({'path': os.path.realpath(args.path)})
         index.generate({'path': os.path.realpath(args.path)})
         metadata.generate({'path': os.path.realpath(args.path)})
         description.generate({'path': os.path.realpath(args.path)})
         upstream.generate({'path': os.path.realpath(args.path)})
         bakery.generate({'path': os.path.realpath(args.path)})
-    except:
-        raise
-        buildlog.generate({'path': os.path.realpath(args.path)},
-                          'index.html')
-    else:
-        buildlog.generate({'path': os.path.realpath(args.path)})

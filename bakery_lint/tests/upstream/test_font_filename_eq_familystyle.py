@@ -35,7 +35,7 @@ class TestTTFSourceFontFileNameEqualsFamilyStyle(TestCase):
             style_name = 'Regular'
 
         expectedname = '{0}-{1}'.format(ttfont.familyname.replace(' ', ''),
-                                        style_name)
+                                        style_name.replace(' ', ''))
         actualname, extension = os.path.splitext(self.operator.path)
 
         self.expectedfilename = '{0}{1}'.format(expectedname, extension)

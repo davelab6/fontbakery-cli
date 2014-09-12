@@ -41,4 +41,4 @@ class Metadata(object):
             raise
 
     def ansiprint(self, message, color):
-        self.bakery.logging_raw(message + '\n')
+        self.bakery.logging_raw(message.decode('ascii') + '\n')

@@ -145,6 +145,7 @@ class CheckFullNameEqualCanonicalName(TestCase):
         contents = self.read_metadata_contents()
         fm = Metadata.get_family_metadata(contents)
 
+        is_canonical = False
         for font_metadata in fm.fonts:
             font = Font.get_ttfont_from_metadata(self.operator.path, font_metadata)
 
