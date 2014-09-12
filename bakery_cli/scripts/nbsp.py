@@ -26,6 +26,7 @@
 #   check nbsp exists, if not, create it
 #   check nbsp has same advanceWidth as space, if not, set it
 #   write the new font
+from __future__ import print_function
 
 import os
 import sys
@@ -35,8 +36,8 @@ from fontTools import ttLib
 def openFont(filename):
     try:
         font = ttLib.TTFont(filename)
-    except ttLib.TTLibError, ex:
-        print >> sys.stderr, "ERROR: %s" % ex
+    except ttLib.TTLibError:
+        print("Unable to open {}".format(filename), file=sys.stderr)
         return None
     if font.sfntVersion == 'OTTO':
         sys.exit("Error: Need TTF font, got CFF")
@@ -103,15 +104,21 @@ def checkAndFix(filename):
     if not nbsp:
         print("No nbsp glyph")
         nbsp = addGlyph(font, 0x00A0, 'nbsp')
+
     spaceWidth = getWidth(font, space)
     print("spaceWidth is    " + str(spaceWidth))
     nbspWidth = getWidth(font, nbsp)
     print("nbspWidth is     " + str(nbspWidth))
-    if spaceWidth != nbspWidth:
-        setWidth(font, nbsp, spaceWidth)
+    if spaceWidth != nbspWidth or nbspWidth < 0:
+        width = max(abs(spaceWidth), abs(nbspWidth))
+        setWidth(font, nbsp, width)
+        setWidth(font, space, width)
         writeFont(font, filename)
-        print("nbspWidth is now " + str(nbspWidth))
-    print("Nothing to do")
+
+        message = "{0}.fix made with spaceWidth and nbspWidth of {1}"
+        print(message.format(os.path.basename(filename), width))
+    else:
+        print("Nothing to do")
     return
 
 
