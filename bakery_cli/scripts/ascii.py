@@ -33,8 +33,12 @@ def fix_name_table(fontfile):
               file=sys.stderr)
         return
 
-    for name_record in font['name'].names:
-        title = Font.bin2unistring(name_record)
-        name_record.string = normalizestr(title.decode('utf-8'))
+    for name in font['name'].names:
+        title = Font.bin2unistring(name)
+        title = normalizestr(title)
+        if name.platformID == 3:
+            name.string = title.encode('utf-16-be')
+        else:
+            name.string = title
 
     font.save(fontfile + '.fix')

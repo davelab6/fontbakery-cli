@@ -30,7 +30,8 @@ class CheckNamesAreASCIIOnly(TestCase):
         """ NAME and CFF tables must not contain non-ascii characters """
         font = Font.get_ttfont(self.operator.path)
 
-        for name_record in font.names:
-            string = Font.bin2unistring(name_record)
-            expected = normalizestr(string.decode('utf8'))
-            self.assertEqual(expected, string)
+        for name in font.names:
+            string = Font.bin2unistring(name)
+            expected = normalizestr(string)
+            self.assertEqual(string, expected)
+

@@ -305,10 +305,10 @@ class Font(BaseFont):
     @staticmethod
     def bin2unistring(record):
         if b'\000' in record.string:
-            string = record.string.decode('utf-16-be')
-            return string.encode('utf-8')
-        else:
-            return record.string
+            return record.string.decode('utf-16-be')
+        elif not isinstance(record.string, unicode):
+            return unicode(record.string, 'unicode_escape')
+        return record.string
 
     def get_glyf_length(self):
         """ Length of "glyf" table
