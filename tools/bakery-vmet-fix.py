@@ -88,7 +88,7 @@ if (options.ascents or options.descents or options.linegaps
     for f in fonts:
         try:
             metrics = Font(f)
-        except TTLibError, ex:
+        except TTLibError as ex:
             print('Error: %s' % ex)
             continue
 

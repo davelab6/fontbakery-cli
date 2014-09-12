@@ -38,7 +38,7 @@
 
         {% for font in tests %}
             <div id="piechart{{ loop.index }}"></div>
-            {%- for testType, icon in testTypes.iteritems() | sort %}
+            {%- for testType, icon in testTypes.items() | sort %}
                 {% for item in sort(tests[font][testType]) %}
                 <tr>
                     <td>{{ item.tags|join(', ') }}</td>

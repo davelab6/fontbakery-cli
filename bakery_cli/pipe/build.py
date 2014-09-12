@@ -48,7 +48,7 @@ class Build(object):
                         op.join(self.builddir, ttfpath),
                         log=self.bakery.log)
                 os.remove(op.join(self.builddir, path))
-            except Exception, ex:
+            except Exception as ex:
                 self.bakery.logging_err(ex.message)
                 raise
 
@@ -151,7 +151,7 @@ class Build(object):
                 convert(op.join(self.builddir, filepath),
                         op.join(self.builddir, ttfpath), log=self.bakery.log)
                 self.start_processes(op.basename(ttfpath), pipedata)
-            except Exception, ex:
+            except Exception as ex:
                 self.bakery.logging_err(ex.message)
                 raise
 

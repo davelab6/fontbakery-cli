@@ -22,7 +22,13 @@ from __future__ import print_function
 
 import collections
 import os
-import StringIO
+
+import sys
+
+if sys.version_info.major >= 3:
+    from io import StringIO
+else:
+    from StringIO import StringIO
 
 from fontTools.ttLib import TTLibError
 
@@ -33,7 +39,7 @@ def metricview(fonts):
     for f in fonts:
         try:
             metrics = Font(f)
-        except TTLibError, ex:
+        except TTLibError as ex:
             print("ERROR: %s" % ex)
             continue
         view.add_metric(os.path.basename(f), metrics)
@@ -47,7 +53,7 @@ def get_metric_view(fonts):
     for f in fonts:
         try:
             metrics = Font(f)
-        except TTLibError, ex:
+        except TTLibError as ex:
             print("ERROR: %s" % ex)
             continue
         view.add_metric(os.path.basename(f), metrics)
@@ -77,7 +83,7 @@ def metricfix(fonts):
 class TextMetricsView(object):
 
     def __init__(self):
-        self.outstream = StringIO.StringIO()
+        self.outstream = StringIO()
 
         self._its_metrics_header = ['Parameter          ']
         # first column has a length of largest parameter

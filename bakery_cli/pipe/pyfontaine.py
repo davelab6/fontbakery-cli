@@ -47,7 +47,7 @@ def targettask(pyfontaine, pipedata, task):
         fp.write(result.output)
         pyfontaine.bakery.logging_raw('end of pyfontaine process\n')
         pyfontaine.bakery.logging_task_done(task)
-    except Exception, ex:
+    except Exception as ex:
         pyfontaine.bakery.logging_raw('pyfontaine error: {}'.format(ex))
         pyfontaine.bakery.logging_raw('pyfontaine process has been failed\n')
         pyfontaine.bakery.logging_task_done(task, failed=True)

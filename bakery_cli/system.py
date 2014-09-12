@@ -62,7 +62,7 @@ class metaclass(type):
             try:
                 result = getattr(cls.__originmodule__, value)(*args, **kwargs)
                 return result
-            except Exception, e:
+            except Exception as e:
                 if log:
                     log.write('Error: %s\n' % e.message)
                 raise e

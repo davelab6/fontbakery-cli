@@ -23,7 +23,7 @@ def fix_style_names(fontpath):
     from bakery_cli.ttfont import Font
     try:
         font = Font(fontpath)
-    except TTLibError, ex:
+    except TTLibError as ex:
         print("ERROR: %s" % ex)
         return
     # font['name'].fsType = 0
@@ -34,7 +34,7 @@ def show_stylenames(fontpath):
     from bakery_cli.ttfont import Font
     try:
         font = Font(fontpath)
-    except TTLibError, ex:
+    except TTLibError as ex:
         print("ERROR: %s" % ex)
         return
     print(font['name'].names[2].string)

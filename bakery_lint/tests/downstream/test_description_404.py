@@ -34,5 +34,5 @@ class TestDescription404Links(TestCase):
                 response = requests.head(link)
                 self.assertEqual(response.status_code, requests.codes.ok,
                                  msg='%s is broken' % link)
-            except requests.exceptions.RequestException, ex:
+            except requests.exceptions.RequestException as ex:
                 self.fail('%s raises exception [%r]' % (link, ex))

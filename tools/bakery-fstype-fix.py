@@ -39,7 +39,7 @@ if args.autofix:
 else:
     try:
         font = Font(args.filename)
-    except TTLibError, ex:
+    except TTLibError as ex:
         print("ERROR: %s" % ex, file=sys.stderr)
         exit(1)
     print(font.OS2_fsType)

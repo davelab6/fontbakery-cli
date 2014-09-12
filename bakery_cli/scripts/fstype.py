@@ -24,7 +24,7 @@ def reset_fstype(fontpath):
     from bakery_cli.ttfont import Font
     try:
         font = Font(fontpath)
-    except TTLibError, ex:
+    except TTLibError as ex:
         print("ERROR: %s" % ex, file=sys.stderr)
         return
     font['OS/2'].fsType = 0

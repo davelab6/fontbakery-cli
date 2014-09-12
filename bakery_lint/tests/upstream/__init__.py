@@ -29,5 +29,5 @@ for testfile in os.listdir(os.path.dirname(__file__)):
             for name, obj in inspect.getmembers(module):
                 if 'Test' in name:
                     exec 'from bakery_lint.tests.upstream.%s import %s' % (module_name, name)
-        except (ImportError, AttributeError, IndexError), ex:
+        except (ImportError, AttributeError, IndexError) as ex:
             pass

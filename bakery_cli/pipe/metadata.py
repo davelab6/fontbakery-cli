@@ -35,10 +35,10 @@ class Metadata(object):
             genmetadata.ansiprint = self.ansiprint
             genmetadata.run(self.builddir)
             self.bakery.logging_task_done(task)
-        except Exception, e:
+        except Exception as  e:
             self.bakery.logging_err(e.message)
             self.bakery.logging_task_done(task, failed=True)
             raise
 
     def ansiprint(self, message, color):
-        self.bakery.logging_raw(u'{}\n'.format(message.decode('ascii')))
+        self.bakery.logging_raw(u'{}\n'.format(message))

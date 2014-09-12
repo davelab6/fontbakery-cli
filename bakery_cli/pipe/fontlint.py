@@ -100,12 +100,12 @@ def repr_testcase(dumper, data):
             try:
                 doc = ' '.join(doc.split())
                 return doc.decode('utf-8', 'ignore')
-            except Exception, ex:
+            except Exception as ex:
                 return '%s' % ex
 
     try:
         err_msg = getattr(data, '_err_msg', '').decode('utf-8', 'ignore')
-    except Exception, ex:
+    except Exception as ex:
         err_msg = '%s' % ex
 
     testMethod = getattr(data, data._testMethodName)
