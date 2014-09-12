@@ -16,6 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from bakery_lint.base import BakeryTestCase as TestCase, autofix
 from bakery_cli.ttfont import Font
+from bakery_cli.utils import normalizestr
 
 
 class CheckNamesAreASCIIOnly(TestCase):
@@ -31,7 +32,5 @@ class CheckNamesAreASCIIOnly(TestCase):
 
         for name_record in font.names:
             string = Font.bin2unistring(name_record)
-            try:
-                string.encode('ascii')
-            except UnicodeEncodeError:
-                self.fail("%s contain non-ascii chars" % name_record.nameID)
+            expected = normalizestr(string.decode('utf8'))
+            self.assertEqual(expected, string)

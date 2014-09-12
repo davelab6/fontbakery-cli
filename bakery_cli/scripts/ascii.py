@@ -14,19 +14,27 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+from __future__ import print_function
+
+import os
 import sys
 
 from fontTools.ttLib import TTLibError
 
 from bakery_cli.ttfont import Font
+from bakery_cli.utils import normalizestr
 
 
 def fix_name_table(fontfile):
     try:
         font = Font(fontfile)
-    except TTLibError, ex:
-        print >> sys.stderr, "ERROR: %s" % ex
+    except TTLibError:
+        print("Unable to open {}".format(os.path.basename(fontfile)),
+              file=sys.stderr)
         return
+
     for name_record in font['name'].names:
-        name_record.string = Font.bin2unistring(name_record.string)
+        title = Font.bin2unistring(name_record)
+        name_record.string = normalizestr(title.decode('utf-8'))
+
     font.save(fontfile + '.fix')

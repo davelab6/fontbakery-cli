@@ -18,7 +18,13 @@ import lxml.etree
 import os
 import os.path as op
 import re
+import unicodedata
 
+
+def normalizestr(string):
+    string = string.replace(u'©', '(c)')
+    string = string.replace(u'®', '(r)')
+    return unicodedata.normalize('NFKD', string).encode('ascii', 'ignore')
 
 
 class RedisFd(object):
