@@ -76,20 +76,8 @@ def run_bakery(sourcedir):
         create_bakery_config(build_project_dir, config)
 
         b = Bakery('', sourcedir, 'builds', 'build')
-
-        b.pipes = [
-            pipe.Copy,
-            pipe.PyFontaine,
-            pipe.UpstreamLint,
-            pipe.Build,
-            pipe.Metadata,
-            pipe.MetadataLint
-        ]
-
-
         config = op.join(build_project_dir, 'bakery.yaml')
         b.load_config(config)
-
         b.run()
     except Exception, ex:
         print('FAILED: %s' % sourcedir, file=sys.stderr)

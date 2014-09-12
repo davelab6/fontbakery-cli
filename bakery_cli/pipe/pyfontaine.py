@@ -24,8 +24,7 @@ from fontaine.builder import Builder, Director
 from bakery_cli.utils import UpstreamDirectory
 
 
-def targettask(pyfontaine, pipedata):
-    pyfontaine.bakery.logging_raw('starting pyfontaine process\n')
+def targettask(pyfontaine, pipedata, task):
     try:
         library = Library(collections=['subsets'])
         director = Director(_library=library)
@@ -47,9 +46,11 @@ def targettask(pyfontaine, pipedata):
         result = Builder.text_(director.construct_tree(fonts))
         fp.write(result.output)
         pyfontaine.bakery.logging_raw('end of pyfontaine process\n')
+        pyfontaine.bakery.logging_task_done(task)
     except Exception, ex:
         pyfontaine.bakery.logging_raw('pyfontaine error: {}'.format(ex))
         pyfontaine.bakery.logging_raw('pyfontaine process has been failed\n')
+        pyfontaine.bakery.logging_task_done(task, failed=True)
 
 
 class PyFontaine(object):
@@ -60,8 +61,9 @@ class PyFontaine(object):
         self.bakery = bakery
 
     def execute(self, pipedata):
+        task = self.bakery.logging_task('pyfontaine')
         if self.bakery.forcerun:
             return
 
-        p = multiprocessing.Process(target=targettask, args=(self, pipedata))
+        p = multiprocessing.Process(target=targettask, args=(self, pipedata, task))
         p.start()
