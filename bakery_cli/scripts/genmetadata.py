@@ -554,36 +554,33 @@ def ansiprint(string, color):
 
 def writeDescHtml(familydir):
     filename = "DESCRIPTION.en_us.html"
-    fullPath = os.path.join(familydir, filename)
-    try:
-        f = io.open(fullPath)
-        string = filename + " exists - check it is okay: "
-        color = "green"
-        ansiprint(string, color)
-        print(f.read())
+    if os.path.exists(os.path.join(familydir, filename)):
+        ansiprint('{} exists', 'green')
         return
-    except:
-        foundRegular = False
-        files = os.listdir(familydir)
-        for f in files:
-            if f.endswith("Regular.ttf"):
-                foundRegular = True
-                filepath = os.path.join(familydir, f)
-                ftfont = fontToolsOpenFont(filepath)
-                fontDesc = fontToolsGetDesc(ftfont)
-                break
-        if not foundRegular:
-            string = "No Regular found! REMEMBER! Create a " + filename
-            color = "red"
-            ansiprint(string, color)
-            fontDesc = "TODO"
-        descHtml = u"<p>" + fontDesc.decode('utf-8') + u"</p>"
-        with io.open(os.path.join(familydir, filename), 'w', encoding="utf-8") as f:
-            f.write(descHtml)
-        string = "Created " + filename + " with:"
-        color = "green"
+
+    foundRegular = False
+    files = os.listdir(familydir)
+    for f in files:
+        if f.endswith("Regular.ttf"):
+            foundRegular = True
+            filepath = os.path.join(familydir, f)
+            ftfont = fontToolsOpenFont(filepath)
+            fontDesc = fontToolsGetDesc(ftfont)
+            break
+
+    if not foundRegular:
+        string = "No Regular found! REMEMBER! Create a " + filename
+        color = "red"
         ansiprint(string, color)
-        ansiprint(descHtml, color)
+        fontDesc = "TODO"
+
+    descHtml = u"<p>" + fontDesc.decode('utf-8') + u"</p>"
+    with io.open(os.path.join(familydir, filename), 'w', encoding="utf-8") as f:
+        f.write(descHtml)
+    string = "Created " + filename + " with:"
+    color = "green"
+    ansiprint(string, color)
+    ansiprint(descHtml, color)
 
 
 def run(familydir):
