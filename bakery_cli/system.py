@@ -27,7 +27,7 @@ class stdoutlog(object):
     @staticmethod
     def write(msg, prefix=None):
         if prefix:
-            msg = u'%s %s' % (prefix, msg)
+            msg = u'%s%s' % (prefix, msg)
         print(msg)
 
 

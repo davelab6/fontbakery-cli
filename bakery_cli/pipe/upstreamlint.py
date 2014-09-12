@@ -34,18 +34,22 @@ class UpstreamLint(object):
         if self.bakery.forcerun:
             return
 
+
         result = {}
         upstreamdir = op.join(self.builddir, 'sources')
 
+        self.bakery.logging_cmd('bakery-lint.py upstream-repo sources')
         result['Project'] = run_set(upstreamdir, 'upstream-repo',
                                     log=self.bakery.log)
         directory = UpstreamDirectory(upstreamdir)
 
         for font in directory.ALL_FONTS:
             if font[-4:] in '.ttx':
+                self.bakery.logging_cmd('bakery-lint.py upstream-ttx {}'.format(font))
                 result[font] = run_set(op.join(upstreamdir, font),
                                        'upstream-ttx', log=self.bakery.log)
             else:
+                self.bakery.logging_cmd('bakery-lint.py upstream {}'.format(font))
                 result[font] = run_set(op.join(upstreamdir, font),
                                        'upstream', log=self.bakery.log)
 

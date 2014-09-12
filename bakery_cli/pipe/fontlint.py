@@ -54,6 +54,8 @@ class FontLint(object):
             return
 
         self.bakery.logging_raw('### Test %s\n' % ttf_path)
+
+        self.bakery.logging_cmd('bakery-lint.py result {}'.format(ttf_path))
         result = run_set(op.join(self.builddir, ttf_path), 'result',
                          log=self.bakery.log)
 
