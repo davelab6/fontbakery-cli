@@ -121,7 +121,10 @@ def fix_metrics(testcase):
     metricfix(paths)
 
     for path in paths:
-        shutil.move(path + '.fix', path, log=testcase.operator.logger)
+        try:
+            shutil.move(path + '.fix', path, log=testcase.operator.logger)
+        except IOError:
+            pass
 
     command = "$ {0} {1}".format(SCRIPTPATH, ' '.join(paths))
     if hasattr(testcase, 'operator'):
@@ -166,9 +169,9 @@ def fix_encode_glyphs(testcase):
 
     encode_glyphs.add_spua_by_glyph_id_mapping_to_cmap(
         testcase.ttx, targetpath, testcase.unencoded_glyphs)
+
     if testcase.unencoded_glyphs:
-        shutil.move(targetpath + '.fix', targetpath,
-                    log=testcase.operator.logger)
+        replace_origfont(testcase)
 
 
 def rename(testcase):
