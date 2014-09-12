@@ -35,8 +35,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    print('Result: ', args.result)
-    if args.result == 0:
+    if int(args.result) == 0:
         tests.generate({'path': os.path.realpath(args.path)})
         index.generate({'path': os.path.realpath(args.path)})
         metadata.generate({'path': os.path.realpath(args.path)})
