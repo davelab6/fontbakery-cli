@@ -379,8 +379,8 @@ $(function(){
       var data = google.visualization.arrayToDataTable(deviation_table);
       var chart = new google.visualization.ColumnChart(document.getElementById('ttftablesizesDeviation'));
       var options = {
-
-        bar: {groupWidth: 50},
+        isStacked: true,
+        bar: {groupWidth: "75%"},
         title: "Deviation from an average",
         is3D: true,
         vAxis: {
