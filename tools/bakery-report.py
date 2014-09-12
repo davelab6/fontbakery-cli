@@ -34,7 +34,6 @@ if __name__ == '__main__':
     parser.add_argument('path')
 
     args = parser.parse_args()
-
     if int(args.result) == 0:
         tests.generate({'path': os.path.realpath(args.path)})
         index.generate({'path': os.path.realpath(args.path)})

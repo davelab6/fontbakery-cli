@@ -54,6 +54,10 @@ def generate(config):
         path = op.join(config['path'], '{}.yaml'.format(fp[:-4]))
         if op.exists(path):
             data[fp] = yaml.load(open(path))
+
+    if not data:
+        return
+
     template = Template(open(t('tests.html')).read())
 
     destfile = open(op.join(config['path'], 'tests.html'), 'w')

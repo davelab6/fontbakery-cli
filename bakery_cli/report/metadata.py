@@ -49,7 +49,10 @@ def generate(config, outfile='metadata.html'):
     if not op.exists(op.join(config['path'], 'METADATA.json')):
         return
 
-    data = yaml.load(open(op.join(config['path'], 'METADATA.yaml')))
+    try:
+        data = yaml.load(open(op.join(config['path'], 'METADATA.yaml')))
+    except IOError:
+        data = {}
 
     destfile = open(op.join(config['path'], outfile), 'w')
 

@@ -27,6 +27,10 @@ def generate(config, outfile='buildlog.html'):
 
     destfile = open(op.join(config['path'], outfile), 'w')
 
-    log = open(op.join(config['path'], 'build.log')).read()
+    try:
+        log = open(op.join(config['path'], 'buildlog.txt')).read()
+    except IOError:
+        return
+
     print(render_template('buildlog.html', log=log, markdown=markdown),
           file=destfile)
