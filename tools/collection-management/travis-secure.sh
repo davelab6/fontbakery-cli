@@ -26,12 +26,42 @@ while test $# -gt 0; do
             fi
             shift
             ;;
+        -t | --token)
+            shift
+            if test $# -gt 0; then
+                token=$1
+            else
+                echo "no email specified"
+                exit 1
+            fi
+            shift
+            ;;
     esac
 done
 
-data=`curl -u $githubUserName -d '{"scopes":["public_repo"],"note":"CI: fontbakery-cli"}' -s "https://api.github.com/authorizations"`
-token=`python -c "import json,sys;print(json.loads('''${data}''')['token'])"`
-if [ $? -eq 0 ]; then
-    echo travis encrypt GIT_NAME="${githubUserName}" GIT_EMAIL="${githubUserEmail}" GH_TOKEN="${token}" --add --no-interactive -x
+if [ -z $githubUserName ]; then
+    >&2 echo "$0: specify --user argument"
+    exit 1
 fi
 
+if [ -z $githubUserEmail ]; then
+    >&2 echo "$0: specify --email argument"
+    exit 1
+fi
+
+if [ -z $token ]; then
+    data=`curl -u $githubUserName -d '{"scopes":["public_repo"],"note":"CI: fontbakery-cli"}' -s "https://api.github.com/authorizations"`
+    token=`python -c "import json,sys;print(json.loads('''${data}''')['token'])"`
+    if [ $? -eq 0 ]; then
+        travis login --github-token ${token}
+        echo Copy this token for next using:
+        echo
+        echo "       ${token}"
+        echo
+    fi
+fi
+
+if [ $token ]; then
+    echo travis encrypt GIT_NAME="${githubUserName}" GIT_EMAIL="${githubUserEmail}" GH_TOKEN="${token}" --add --no-interactive -x
+    travis encrypt GIT_NAME="${githubUserName}" GIT_EMAIL="${githubUserEmail}" GH_TOKEN="${token}" --add --no-interactive -x
+fi

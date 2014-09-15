@@ -50,7 +50,8 @@ setup(
              'tools/bakery-report.py',
              'tools/bakery-gasp.py',
              'tools/bakery-dsig.py',
-             'tools/bakery-encode-glyphs-fix.py',],
+             'tools/bakery-encode-glyphs-fix.py',
+             'tools/collection-management/travis-secure.sh'],
     zip_safe=False,
     classifiers=[
         'Environment :: Console',

@@ -3,23 +3,11 @@
 
 # FontBakery CLI
 
-FontBakery CLI can build UFO, SFD, or TTX font projects. You can set it up with Travis and Github Pages so that each update to your Github repo is built and tested, and the binary font files and test results are available on the web. 
+FontBakery CLI can build UFO, SFD, or TTX font projects. You can set it up with Travis and Github Pages so that each update to your Github repo is built and tested, and the binary font files and test results are available on the web.
 
 1. Enable your repo in Travis
-2. Generate a `$token` so travis can push the builds back to Github, replacing `$githubUserName` and `$githubRepoName`:
-```sh
-$ curl -u $githubUserName \
-   -d '{"scopes":["public_repo"],"note":"CI: $githubRepoName"}' \
-   https://api.github.com/authorizations
-```
-3. Install the `travis` command with gem and use it to convert the `$token` into a `$key`:
-```
-$ gem install travis
-$ travis login --github-token $token
-$ travis encrypt 'GIT_NAME="Your Name" \
-    GIT_EMAIL=you@example.com GH_TOKEN=$token' --add
-```
-4. Make a `.travis.yml` as follows
+
+2. Make a `.travis.yml` as follows
 ```
 language: python
 before_install:
@@ -29,17 +17,34 @@ before_install:
 - cp /usr/lib/python2.7/dist-packages/fontforge.* "$HOME/virtualenv/python2.7.8/lib/python2.7/site-packages"
 install:
 - pip install git+https://github.com/behdad/fontTools.git
+- pip install git+https://github.com/googlefonts/fontcrunch.git
 - pip install git+https://github.com/googlefonts/fontbakery-cli.git
 - pip install jinja2
-script: PATH=/home/travis/virtualenv/python2.7.8/bin/:$PATH fontbakery.py .
+before_script:
+- mkdir -p builds/build
+script: PATH=/home/travis/virtualenv/python2.7.8/bin/:$PATH fontbakery.py . | tee builds/build/build.log
 branches:
   only:
   - master
 after_script:
-- rm -rf builds/build/sources builds/build/build.state.yaml
 - PATH=/home/travis/virtualenv/python2.7.8/bin/:$PATH bakery-report.py builds/build
+- rm -rf builds/build/sources
+- rm -rf builds/build/build.state.yaml
 - PATH=/home/travis/virtualenv/python2.7.8/bin/:$PATH travis-deploy.py
-env:
-  global:
-    secure: $key
+```
+
+3. Install the `travis-secure.sh` command from `fontbakery-cli`:
+
+```
+$ gem install travis  # first install travis
+$ travis-secure.sh -u guthubusername -e your@email
+```
+
+DO NOT USE `travis-secure.sh` WITHOUT `--token` FOR `git submodule foreach`
+
+It will ask you every time to enter password. I suggest you to use additional
+ argument `--token`. That will avoid authentication for github and travis.
+
+```
+$ git submodule foreach "travis-secure.sh -u guthubusername -e your@email -t TOKEN"
 ```
