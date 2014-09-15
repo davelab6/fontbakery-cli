@@ -290,7 +290,7 @@
         </table>
 
         <h4>Font Coverage characters</h4>
-        {% set fonts_names, fonts_info = get_orthography(fontaineFonts) %}
+        {% set fonts_names, averages, fonts_info = get_orthography(fontaineFonts) %}
         <table class="table table-striped table-bordered table-condensed tablesorter table-hover">
           <thead>
             <tr>
@@ -298,6 +298,7 @@
               {% for name in fonts_names %}
                 <th>{{ name }}</th>
               {% endfor %}
+              <th>Average</th>
             </tr>
           </thead>
           <tbody>
@@ -316,6 +317,7 @@
                   </div>
                 </td>
               {% endfor %}
+              <td>{{ averages.get(subset) }}%</td>
             </tr>
           {% endfor %}
           </tbody>

@@ -141,7 +141,7 @@ def get_fonts_table_sizes_grouped(fonts_list):
 
 
 def get_orthography(fontaineFonts):
-    def_dct = defaultdict(list)
+    fonts_dict = defaultdict(list)
     library = Library(collections=['subsets'])
     fonts_names = []
     for font, fontaine in fontaineFonts:
@@ -149,8 +149,11 @@ def get_orthography(fontaineFonts):
         for charmap, support, coverage, missing_chars in fontaine.get_orthographies(_library=library):
             font_info = dict(name=font, support=support,
                              coverage=coverage, missing_chars=missing_chars)
-            def_dct[charmap.common_name].append(font_info)
-    return sorted(fonts_names), OrderedDict(sorted(def_dct.items()))
+            fonts_dict[charmap.common_name].append(font_info)
+    averages = {}
+    for subset, fonts in fonts_dict.items():
+        averages[subset] = sum([font['coverage'] for font in fonts]) / len(fonts)
+    return sorted(fonts_names), averages, OrderedDict(sorted(fonts_dict.items()))
 
 
 def to_google_data_list(tdict, haxis=0):
