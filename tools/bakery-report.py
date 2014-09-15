@@ -43,3 +43,4 @@ if __name__ == '__main__':
         upstream.generate({'path': os.path.realpath(args.path)})
         review.generate({'path': os.path.realpath(args.path)})
         bakery.generate({'path': os.path.realpath(args.path)})
+        buildlog.generate({'path': os.path.realpath(args.path)})
