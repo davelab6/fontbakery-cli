@@ -18,7 +18,7 @@ from __future__ import print_function
 import os.path as op
 import yaml
 
-
+from bakery_cli.report.utils import build_repo_url
 from bakery_cli.utils import UpstreamDirectory
 
 
@@ -57,5 +57,6 @@ def generate(config):
     destfile = open(op.join(config['path'], 'upstream.html'), 'w')
 
     upstream = yaml.load(open(upstreamdatafile))
-    print(template.render(sort=sort, tests=upstream).encode('utf8'),
+    print(template.render(sort=sort, tests=upstream,
+                          build_repo_url=build_repo_url).encode('utf8'),
           file=destfile)

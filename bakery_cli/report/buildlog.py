@@ -18,7 +18,7 @@ from __future__ import print_function
 import os.path as op
 from markdown import markdown
 from bakery_cli.report.utils import render_template
-
+from bakery_cli.report.utils import build_repo_url
 
 TAB = 'BuildLog'
 
@@ -32,5 +32,6 @@ def generate(config, outfile='buildlog.html'):
     except IOError:
         return
 
-    print(render_template('buildlog.html', log=log, markdown=markdown),
+    print(render_template('buildlog.html', log=log,
+                          build_repo_url=build_repo_url, markdown=markdown),
           file=destfile)

@@ -17,7 +17,7 @@
 from __future__ import print_function
 import os.path as op
 
-from bakery_cli.report.utils import render_template
+from bakery_cli.report.utils import render_template, build_repo_url
 
 
 TAB = 'Bakery'
@@ -30,5 +30,6 @@ def generate(config):
     destfile = open(op.join(config['path'], 'bakery-yaml.html'), 'w')
 
     data = open(op.join(config['path'], 'bakery.yaml')).read()
-    print(render_template('bakery-yaml.html', data=data).encode('utf8'),
+    print(render_template('bakery-yaml.html', data=data,
+                          build_repo_url=build_repo_url,).encode('utf8'),
           file=destfile)

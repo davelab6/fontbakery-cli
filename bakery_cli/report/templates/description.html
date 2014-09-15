@@ -11,6 +11,8 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.7/js/jquery.tablesorter.min.js"></script>
 </head>
 <body>
+    {% set repo_gh_pages = build_repo_url('tree','gh-pages') %}
+    {% set repo_url = build_repo_url() %}
     <div class="container">
         <ul class="nav nav-tabs">
           <li><a href="https://github.com/fontdirectory/yesevaone/tree/gh-pages" target="_blank"><i class="fa fa-github"></i> gh-pages</a></li>

@@ -20,6 +20,7 @@ import os.path as op
 from markdown import markdown
 
 from bakery_cli.report.utils import render_template
+from bakery_cli.report.utils import build_repo_url
 from bakery_cli.utils import UpstreamDirectory
 
 from fontaine.cmap import Library
@@ -53,5 +54,6 @@ def generate(config, outfile='review.html'):
         faces.append({'name': font, 'basename': basename, 'path': font})
     destfile = open(op.join(config['path'], 'review.html'), 'w')
     print(render_template(outfile, fonts=faces, markdown=markdown,
+                          build_repo_url=build_repo_url,
                           get_orthography=get_orthography, fontaineFonts=fonts),
           file=destfile)

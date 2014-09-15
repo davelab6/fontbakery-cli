@@ -7,10 +7,12 @@
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
 </head>
 <body>
+    {% set repo_gh_pages = build_repo_url('tree','gh-pages') %}
+    {% set repo_url = build_repo_url() %}
     <div class="container">
         <ul class="nav nav-tabs">
-          <li><a href="https://github.com/fontdirectory/yesevaone/tree/gh-pages" target="_blank"><i class="fa fa-github"></i> gh-pages</a></li>
-          <li><a href="https://github.com/fontdirectory/yesevaone/" target="_blank"><i class="fa fa-github-square"></i> Github Page</a></li>
+          <li><a href="{{repo_gh_pages}}" target="_blank"><i class="fa fa-github"></i> gh-pages</a></li>
+          <li><a href="{{repo_url}}" target="_blank"><i class="fa fa-github-square"></i> Github Page</a></li>
           <li class="active"><a href="index.html">Summary</a></li>
           <li><a href="review.html">Review</a></li>
           <li><a href="upstream.html">Upstream Tests</a></li>
@@ -380,17 +382,20 @@ $(function(){
       var data = google.visualization.arrayToDataTable(deviation_table);
       var chart = new google.visualization.ColumnChart(document.getElementById('ttftablesizesDeviation'));
       var options = {
-        isStacked: true,
-        bar: {groupWidth: "75%"},
+//        isStacked: true,
+        bar: {groupWidth: "68%"},
         title: "Deviation from an average",
         is3D: true,
         vAxis: {
           title: "Deviation (bytes)"
+//          gridlines: {color: '#333', count: 10}
         },
         hAxis: {
-          slantedText: true
+          slantedText: true,
+          gridlines: {color: '#333', count: 10}
         },
-        height: 500
+        height: 500,
+        width: 1200
       };
       chart.draw(data, options);
     }

@@ -20,6 +20,7 @@ import os.path as op
 import yaml
 
 from bakery_cli.utils import UpstreamDirectory
+from bakery_cli.report.utils import build_repo_url
 
 
 TAB = 'Tests'
@@ -62,5 +63,6 @@ def generate(config):
 
     destfile = open(op.join(config['path'], 'tests.html'), 'w')
 
-    print(template.render(tests=data, sort=sort).encode('utf8'),
+    print(template.render(tests=data, sort=sort,
+                          build_repo_url=build_repo_url).encode('utf8'),
           file=destfile)

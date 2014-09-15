@@ -18,6 +18,7 @@ from __future__ import print_function
 import os.path as op
 from markdown import markdown
 from bakery_cli.report.utils import render_template
+from bakery_cli.report.utils import build_repo_url
 import yaml
 
 from bakery_cli.utils import UpstreamDirectory
@@ -63,5 +64,6 @@ def generate(config, outfile='metadata.html'):
     except (IOError, OSError):
         metadata_new = ''
     print(render_template(outfile, metadata=metadata, tests=data, sort=sort,
+                          build_repo_url=build_repo_url,
                           metadata_new=metadata_new, markdown=markdown),
           file=destfile)

@@ -22,6 +22,7 @@ import yaml
 from bakery_cli.scripts.vmet import metricview, get_metric_view
 from bakery_cli.utils import UpstreamDirectory
 from bakery_cli.report.utils import render_template
+from bakery_cli.report.utils import build_repo_url
 
 from fontaine.cmap import Library
 from fontaine.font import FontFactory
@@ -209,5 +210,6 @@ def generate(config):
                           ttftablesizes_grouped=ttftablesizes_grouped,
                           ttftablesizes_delta=ttftablesizes_delta,
                           average_table_size=average_table_size,
+                          build_repo_url=build_repo_url,
                           hex=hex, sort=sort),
           file=destfile)

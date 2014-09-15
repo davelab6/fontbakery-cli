@@ -17,6 +17,7 @@
 from __future__ import print_function
 import os.path as op
 from markdown import markdown
+from bakery_cli.report.utils import build_repo_url
 
 
 TAB = 'Description'
@@ -33,5 +34,5 @@ def generate(config, outfile='description.html'):
     template = Template(open(t(outfile)).read())
     destfile = open(op.join(config['path'], outfile), 'w')
     data = open(source_file).read()
-    print(template.render(data=data,
+    print(template.render(data=data, build_repo_url=build_repo_url,
                           markdown=markdown).encode('utf8'), file=destfile)
