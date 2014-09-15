@@ -29,24 +29,13 @@ class FontCrunch(object):
         self.builddir = bakery.build_dir
         self.bakery = bakery
 
-    def _quadopt_optimize(self, bez_dir):
-        pattern = '*.bez'
-        for root, dirs, files in os.walk(bez_dir):
-            for filename in fnmatch.filter(files, pattern):
-                fn = os.path.join(root, filename)
-                print('Optimize: {}'.format(fn))
-                fontcrunch.optimize(fn, fn + 'opt')
-
     def run(self, filename, pipedata):
         if not pipedata.get('fontcrunch'):
             return  # run fontcrunch only if user set flag in config
         filename = os.path.join(self.builddir, filename)
         self.bakery.logging_raw('### Foncrunch {}\n'.format(filename))
-        bez_dir = os.path.join(self.builddir, 'bez')
-        os.chdir(self.builddir)
-        fontcrunch.generate(filename)
-        self._quadopt_optimize(bez_dir)
-        fontcrunch.repack(filename, '{}.crunched'.format(filename))
+
+        fontcrunch.optimize(filename, '{}.crunched'.format(filename))
         shutil.move('{}.crunched'.format(filename), filename)
         return 1
 
@@ -57,7 +46,6 @@ class FontCrunch(object):
         if self.bakery.forcerun:
             return
 
-        bez_dir = os.path.join(self.builddir, 'bez')
         try:
             for filename in [os.path.join(self.builddir, x) \
                              for x in pipedata['bin_files']]:
@@ -66,5 +54,3 @@ class FontCrunch(object):
         except:
             self.bakery.logging_task_done(task, failed=True)
             raise
-        finally:
-            shutil.rmtree(bez_dir)
