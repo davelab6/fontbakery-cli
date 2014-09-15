@@ -293,37 +293,39 @@
 
         <h4>Font Coverage characters</h4>
         {% set fonts_names, averages, fonts_info = get_orthography(fontaineFonts) %}
-        <table class="table table-striped table-bordered table-condensed tablesorter table-hover">
-          <thead>
-            <tr>
-              <th>Subset</th>
-              {% for name in fonts_names %}
-                <th>{{ name }}</th>
-              {% endfor %}
-              <th>Average</th>
-            </tr>
-          </thead>
-          <tbody>
-          {% for subset, info in fonts_info.items() %}
-            <tr>
-              <td>{{ subset }}</td>
-              {% for font_info in info %}
-                <td data-toggle="modal" data-target="#myModal" class="{{ font_info.support | replace('full','success') | replace('partial','info') | replace('fragmentary','warning') | replace('unsupported','error') }}"><span class="coverageStats">{{ font_info.coverage }}%</span></td>
-                <td data-subset="{{ subset }}" data-fontname="{{ font_info.name }}" class="hidden">
-                  <div>
-                    {% if font_info.coverage != 100 and font_info.missing_chars %}
-                      {% for item in font_info.missing_chars %}
-                        {{ '&#{};'.format(item)|safe }}
-                      {% endfor %}
-                    {% endif %}
-                  </div>
-                </td>
-              {% endfor %}
-              <td>{{ averages.get(subset) }}%</td>
-            </tr>
-          {% endfor %}
-          </tbody>
-        </table>
+        <div class="table-responsive">
+          <table class="table table-bordered table-condensed tablesorter table-hover">
+            <thead>
+              <tr>
+                <th>Subset</th>
+                {% for name in fonts_names %}
+                  <th>{{ name }}</th>
+                {% endfor %}
+                <th>Average</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for subset, info in fonts_info.items() %}
+              <tr>
+                <td>{{ subset }}</td>
+                {% for font_info in info %}
+                  <td data-toggle="modal" data-target="#myModal" class="{{ font_info.support | replace('full','success') | replace('partial','info') | replace('fragmentary','warning') | replace('unsupported','error') }}"><span class="coverageStats">{{ font_info.coverage }}%</span></td>
+                  <td data-subset="{{ subset }}" data-fontname="{{ font_info.name }}" class="hidden">
+                    <div>
+                      {% if font_info.coverage != 100 and font_info.missing_chars %}
+                        {% for item in font_info.missing_chars %}
+                          {{ '&#{};'.format(item)|safe }}
+                        {% endfor %}
+                      {% endif %}
+                    </div>
+                  </td>
+                {% endfor %}
+                <td>{{ averages.get(subset) }}%</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
     </div>
 
   <!-- Modal -->
