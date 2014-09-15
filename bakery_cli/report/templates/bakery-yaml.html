@@ -12,7 +12,9 @@
 <body>
     {% set repo_gh_pages = build_repo_url('tree','gh-pages') %}
     {% set repo_url = build_repo_url() %}
-    <div class="container">
+    {% set view_url = build_repo_url('blob', 'master', 'bakery.yaml') %}
+    {% set edit_url = build_repo_url('edit', 'master', 'bakery.yaml') %}
+    <div class="container-fluid">
         <ul class="nav nav-tabs">
           <li><a href="https://github.com/fontdirectory/yesevaone/tree/gh-pages" target="_blank"><i class="fa fa-github"></i> gh-pages</a></li>
           <li><a href="https://github.com/fontdirectory/yesevaone/" target="_blank"><i class="fa fa-github-square"></i> Github Page</a></li>
@@ -27,6 +29,10 @@
         </ul>
         <div id="editor"></div>
         <textarea name="bakery-yaml" id="bakery-yaml">{{ data }}</textarea>
+        <p class="navbar-text navbar-left">
+          <span><a href="{{view_url}}" class="navbar-link">View</a></span>
+          <span><a href="{{edit_url}}" class="navbar-link">Edit</a></span>
+        </p>
     </div>
 <script>
 $(document).ready(function () {
