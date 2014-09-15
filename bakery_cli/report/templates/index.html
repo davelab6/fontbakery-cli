@@ -127,15 +127,17 @@
         <div id="ttftablesizesDeviation"></div>
         <div id="ttftablesizesGrouped"></div>
 
-        <table class="table-striped table-bordered table-condensed tablesorter table-hover">
+        <table class="table table-striped table-bordered table-condensed tablesorter table-hover">
+            <thead>
             <tr>
                 <th></th>
                 {% for f in ttftablesizes[1] %}
                 <th>{{ f }}</th>
                 {% endfor %}
             </tr>
+            </thead>
 
-            {% for table in ttftablesizes[0] %}{# loop for list of available tables #}
+            {% for table in ttftablesizes[0] %}
             <tr>
                 <td>{{ table }}</td>
                 {% for f in ttftablesizes[1] %}
