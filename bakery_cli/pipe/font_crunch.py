@@ -17,7 +17,6 @@
 import fnmatch
 import os
 
-import quadopt
 from fontcrunch import fontcrunch
 
 from bakery_cli.system import shutil
@@ -36,7 +35,7 @@ class FontCrunch(object):
             for filename in fnmatch.filter(files, pattern):
                 fn = os.path.join(root, filename)
                 print('Optimize: {}'.format(fn))
-                quadopt.optimize_run(fn, fn + 'opt')
+                fontcrunch.optimize(fn, fn + 'opt')
 
     def run(self, filename, pipedata):
         if not pipedata.get('fontcrunch'):
