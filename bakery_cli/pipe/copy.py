@@ -45,7 +45,7 @@ class Pipe(object):
                 args = [op.join(self.project_root, self.filename),
                         self.builddir]
                 copy_single_file(op.join(self.project_root, self.filename),
-                                 self.builddir, self.bakery.log)
+                                 self.builddir, self.bakery.logger)
             except:
                 raise
 
@@ -153,7 +153,7 @@ class CopyLicense(Pipe):
             _out_license = op.join(self.builddir, license_file_out)
 
             try:
-                shellutil.copy(_in_license, _out_license, log=self.bakery.log)
+                shellutil.copy(_in_license, _out_license, log=self.bakery.logger)
             except:
                 raise
         return pipedata

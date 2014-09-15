@@ -73,4 +73,4 @@ class Optimize(object):
         # move ttx files to src
         shutil.move(op.join(self.builddir, filename + '.opt'),
                     op.join(self.builddir, filename),
-                    log=self.bakery.log)
+                    log=self.bakery.logger)

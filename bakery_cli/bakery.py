@@ -14,13 +14,13 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+import logging
 import os
 import os.path as op
 import yaml
 
 from bakery_cli import pipe
-from bakery_cli.system import shutil, stdoutlog
-from bakery_cli.utils import RedisFd
+from bakery_cli.system import shutil
 
 
 class BakeryTaskSet(object):
@@ -71,8 +71,6 @@ class Bakery(object):
         '/home/user/out'
     """
 
-    log = stdoutlog
-
     def __init__(self, root, project_dir, builds_dir='', build_dir='build'):
         self.rootpath = op.abspath(root)
 
@@ -92,10 +90,21 @@ class Bakery(object):
             pipe.MetadataLint
         ]
 
-    def init_logging(self, logfile):
-        if not os.path.exists(self.builds_dir):
-            os.makedirs(self.builds_dir)
-        self.log = RedisFd(op.join(self.builds_dir, logfile), 'w')
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.DEBUG)
+
+        # create console handler and set level to debug
+        ch = logging.StreamHandler()
+        ch.setLevel(logging.DEBUG)
+
+        # create formatter
+        formatter = logging.Formatter('%(message)s')
+
+        # add formatter to ch
+        ch.setFormatter(formatter)
+
+        # add ch to logger
+        self.logger.addHandler(ch)
 
     def init_taskset(self, taskset):
         """ Defines object to use TaskSet interface. Default: BakeryTaskSet
@@ -116,8 +125,8 @@ class Bakery(object):
                 configfile = open(config, 'r')
             except OSError:
                 configfile = open(BAKERY_CONFIGURATION_DEFAULTS, 'r')
-                self.log.write(('Cannot read configuration file.'
-                                        ' Using defaults'))
+                self.logger.error(('Cannot read configuration file.'
+                                   ' Using defaults'))
             self.config = yaml.safe_load(configfile)
 
     def save_build_state(self):
@@ -197,19 +206,19 @@ class Bakery(object):
             return
 
         prefix = "### (%s of %s) " % (self._counter, self.total_tasks)
-        self.log.write(message.strip() + '\n', prefix=prefix)
         self.incr_task_counter()
 
+        self.logger.info((prefix + message.strip()).strip())
         return self.taskset.create_task(prefix + message)
 
     def logging_task_done(self, task, failed=False):
         self.taskset.close_task(task, failed=failed)
 
     def logging_cmd(self, message):
-        self.log.write(message.strip() + '\n', prefix="$ ")
+        self.logger.info('$ ' + message.strip())
 
     def logging_raw(self, message):
-        self.log.write(message)
+        self.logger.info(message.strip())
 
     def logging_err(self, message):
-        self.log.write(message.strip() + '\n', prefix="Error: ")
+        self.logger.info('Error: ' + message.strip())

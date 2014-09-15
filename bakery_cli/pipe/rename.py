@@ -50,7 +50,7 @@ class Rename(object):
                         rename_executed = True
                     try:
                         shutil.move(path, op.join(op.dirname(path), psname),
-                                    log=self.bakery.log)
+                                    log=self.bakery.logger)
                     except:
                         if task:
                             self.bakery.logging_task_done(task, failed=True)

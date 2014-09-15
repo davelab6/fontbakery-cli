@@ -17,21 +17,19 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 
 from __future__ import print_function
+import logging
+
 import fontforge
 
 
-class log:
-
-    @staticmethod
-    def write(msg):
-        print(msg)
+log = logging.getLogger(__name__)
 
 
 def convert(sourceFont, ttf, otf=None, log=log):
     try:
         font = fontforge.open(sourceFont)
     except:
-        log.write("Error: Could not open font (%s)" % sourceFont)
+        log.info("Error: Could not open font (%s)" % sourceFont)
         return
 
     font.selection.all()
@@ -40,20 +38,20 @@ def convert(sourceFont, ttf, otf=None, log=log):
     try:
         font.removeOverlap()
     except:
-        log.write("Error: Could not remove overlaps")
+        log.info("Error: Could not remove overlaps")
 
     if otf:
         try:
             font.generate(otf)
-            log.write("OK: Generated OpenType-CFF (%s)" % otf)
+            log.info("OK: Generated OpenType-CFF (%s)" % otf)
         except:
-            log.write("Error: Could not generate OpenType-CFF (%s)" % otf)
+            log.info("Error: Could not generate OpenType-CFF (%s)" % otf)
 
     # Convert curves to quadratic (TrueType)
     try:
         font.layers["Fore"].is_quadratic = True
     except:
-        log.write("Error: Could not convert to quadratic TrueType curves")
+        log.info("Error: Could not convert to quadratic TrueType curves")
         return
 
     # Simplify
@@ -62,19 +60,19 @@ def convert(sourceFont, ttf, otf=None, log=log):
                           'removesingletonpoints',
                           'mergelines'))
     except:
-        log.write("Error: Could not simplify")
+        log.info("Error: Could not simplify")
 
     # Correct Directions
     try:
         font.correctDirection()
     except:
-        log.write("Error: Could not correct directions")
+        log.info("Error: Could not correct directions")
 
     # Generate with DSIG and OpenType tables
     try:
         flags = ('dummy-dsig', 'opentype')
         font.generate(ttf, flags=flags)
-        log.write("Success: Generated OpenType-TTF (%s)" % ttf)
+        log.info("Success: Generated OpenType-TTF (%s)" % ttf)
     except:
-        log.write("Error: Could not generate OpenType-TTF (%s)" % ttf)
+        log.info("Error: Could not generate OpenType-TTF (%s)" % ttf)
         return

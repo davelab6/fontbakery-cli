@@ -22,15 +22,6 @@ import subprocess
 import sys
 
 
-class stdoutlog(object):
-
-    @staticmethod
-    def write(msg, prefix=None):
-        if prefix:
-            msg = u'%s%s' % (prefix, msg)
-        print(msg)
-
-
 __all__ = ['os', 'shutil', 'run', 'prun']
 
 
@@ -58,13 +49,13 @@ class metaclass(type):
         def func(*args, **kwargs):
             log = kwargs.pop('log', None)
             if log:
-                log.write('$ ' + shell_cmd_repr(value, args) + '\n')
+                log.debug('$ ' + shell_cmd_repr(value, args))
             try:
                 result = getattr(cls.__originmodule__, value)(*args, **kwargs)
                 return result
             except Exception as e:
                 if log:
-                    log.write('Error: %s\n' % e.message)
+                    log.debug('Error: %s' % e.message)
                 raise e
 
         return func
@@ -108,13 +99,11 @@ def run(command, cwd, log):
         stderr = process.stderr.readline()
         # Log output
         if stdout.strip():
-            log.write(stdout)
+            log.debug(stdout)
         # Log error
         if stderr:
-            # print the error on the worker console
-            print(stderr, end='')
             # log error
-            log.write(stderr, prefix='Error: ')
+            log.error('Error: ' + stderr)
         # If no output and process no longer running, stop
         if not stdout and not stderr and process.poll() is not None:
             break
@@ -122,7 +111,7 @@ def run(command, cwd, log):
     if process.returncode:
         msg = 'Fatal: Exited with return code %s \n' % process.returncode
         # Log the exit status
-        log.write(msg)
+        log.error(msg)
         # Raise an error on the worker
         raise StandardError(msg)
 
@@ -143,12 +132,12 @@ def prun(command, cwd, log=None):
                                stderr=subprocess.STDOUT,
                                close_fds=True, env=env)
     if log:
-        log.write('$ %s\n' % command)
+        log.info('$ %s\n' % command)
 
     stdout = ''
     for line in iter(process.stdout.readline, ''):
         if log:
-            log.write(line)
+            log.debug(line)
         stdout += line
         process.stdout.flush()
     return stdout

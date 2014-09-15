@@ -46,7 +46,7 @@ class Build(object):
             try:
                 convert(op.join(self.builddir, path),
                         op.join(self.builddir, ttfpath),
-                        log=self.bakery.log)
+                        log=self.bakery.logger)
                 os.remove(op.join(self.builddir, path))
             except Exception as ex:
                 self.bakery.logging_err(ex.message)
@@ -61,7 +61,7 @@ class Build(object):
             s = op.join(self.builddir, a[:-4] + '.ttf')
 
             try:
-                shellutil.move(s, d, log=self.bakery.log)
+                shellutil.move(s, d, log=self.bakery.logger)
                 result.append(op.basename(a)[:-4] + '.ttf')
             except:
                 pass
@@ -149,7 +149,7 @@ class Build(object):
 
             try:
                 convert(op.join(self.builddir, filepath),
-                        op.join(self.builddir, ttfpath), log=self.bakery.log)
+                        op.join(self.builddir, ttfpath), log=self.bakery.logger)
                 self.start_processes(op.basename(ttfpath), pipedata)
             except Exception as ex:
                 self.bakery.logging_err(ex.message)

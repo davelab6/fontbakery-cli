@@ -15,10 +15,10 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 import importlib
+import logging
 import unittest
 
 from itertools import chain
-from bakery_cli.system import stdoutlog
 
 
 class TestRegistry(object):
@@ -56,12 +56,12 @@ class TestCaseOperator(object):
 
     def __init__(self, path, logger_instance=None):
         self.path = path
-        self.logger = logger_instance or stdoutlog
+        self.logger = logger_instance or logging.getLogger(__name__)
 
     def debug(self, message):
         if not self.logger:
             return
-        self.logger.write(message)
+        self.logger.info(message)
 
 
 class BakeryTestCase(unittest.TestCase):

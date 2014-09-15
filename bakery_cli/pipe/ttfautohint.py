@@ -40,7 +40,7 @@ class TTFAutoHint(object):
                                                 name=filepath[:-4],
                                                 source=filepath)
         try:
-            run(cmd, cwd=self.builddir, log=self.bakery.log)
+            run(cmd, cwd=self.builddir, log=self.bakery.logger)
         except:
             return False
 
@@ -64,7 +64,7 @@ class TTFAutoHint(object):
         self.bakery.logging_raw(statusmessage.format(filepath, origsize, filepath[:-4] + '.autohint.ttf', autohintsize))
 
         shellutil.move(filepath[:-4] + '.autohint.ttf', filepath,
-                       log=self.bakery.log)
+                       log=self.bakery.logger)
         return 1
 
     def execute(self, pipedata, prefix=""):
