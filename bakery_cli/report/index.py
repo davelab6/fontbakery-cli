@@ -15,7 +15,7 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
-from collections import defaultdict, Counter, namedtuple
+from collections import defaultdict, Counter, namedtuple, OrderedDict
 import os.path as op
 import yaml
 
@@ -141,12 +141,16 @@ def get_fonts_table_sizes_grouped(fonts_list):
 
 
 def get_orthography(fontaineFonts):
+    def_dct = defaultdict(list)
     library = Library(collections=['subsets'])
-    result = []
+    fonts_names = []
     for font, fontaine in fontaineFonts:
-        for f1, f2, f3, f4 in fontaine.get_orthographies(_library=library):
-            result.append([font, f1, f2, f3, f4])
-    return sorted(result, key=lambda x: x[3], reverse=True)
+        fonts_names.append(font)
+        for charmap, support, coverage, missing_chars in fontaine.get_orthographies(_library=library):
+            font_info = dict(name=font, support=support,
+                             coverage=coverage, missing_chars=missing_chars)
+            def_dct[charmap.common_name].append(font_info)
+    return sorted(fonts_names), OrderedDict(sorted(def_dct.items()))
 
 
 def to_google_data_list(tdict, haxis=0):
