@@ -60,7 +60,7 @@
                           <tr class="apopover" data-placement="top" data-content="{{ blocker.name|replace('.','/') }}.py:{{ blocker.methodName }}()">
                             <td>{{ blocker['tags']|join(', ') }}</td>
                             <td>{{ blocker['methodDoc']|default('None') }}</td>
-                            <td>{{ blocker.name }}</td>
+                            <td>{{font}}</td>
                             <td>{{ blocker['err_msg'] }}</td>
                             <td>{{ map[testType] }}</td>
                           </tr>
