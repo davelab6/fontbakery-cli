@@ -8,6 +8,7 @@ FontBakery CLI can build UFO, SFD, or TTX font projects. You can set it up with 
 1. Enable your repo in Travis
 
 2. Make a `.travis.yml` as follows
+
 ```
 language: python
 before_install:
@@ -33,7 +34,7 @@ after_script:
 - PATH=/home/travis/virtualenv/python2.7.8/bin/:$PATH travis-deploy.py
 ```
 
-3. Install the `travis-secure.sh` command from `fontbakery-cli`:
+3. Run `travis-secure.sh` command from `fontbakery-cli`:
 
 ```
 $ gem install travis  # first install travis
