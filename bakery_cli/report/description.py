@@ -27,7 +27,7 @@ t = lambda templatefile: op.join(TEMPLATE_DIR, templatefile)
 
 
 def generate(config, outfile='description.html'):
-    source_file = op.join(config['path'], 'DESCRIPTION.en_US.html')
+    source_file = op.join(config['path'], 'DESCRIPTION.en_us.html')
     if not op.exists(source_file):
         return
     from jinja2 import Template
