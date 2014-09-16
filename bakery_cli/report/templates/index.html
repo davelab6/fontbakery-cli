@@ -80,7 +80,7 @@
           {% if blockers %}
             <h3>Blockers</h3>
             <div id="piechartSum"></div>
-            <table class="table table-striped table-bordered table-condensed tablesorter table-hover">
+            <table id="blockersTable" class="table table-striped table-bordered table-condensed tablesorter table-hover">
                 <thead>
                 <tr>
                   <th>Category</th>
@@ -107,7 +107,7 @@
           {% endif %}
         {% endfor %}
         <h4>Vertical metrics</h4>
-        <table class="table-striped table-bordered table-condensed tablesorter">
+        <table id="vmetTable" class="table-striped table-bordered table-condensed tablesorter">
           <thead>
           <tr>
             <th></th>
@@ -127,7 +127,7 @@
         <div id="ttftablesizesDeviation"></div>
         <div id="ttftablesizesGrouped"></div>
 
-        <table class="table table-striped table-bordered table-condensed tablesorter table-hover">
+        <table id="ttfTableSizesTable" class="table table-striped table-bordered table-condensed tablesorter table-hover">
             <thead>
             <tr>
                 <th></th>
@@ -176,7 +176,7 @@
 
         <h4>Font Description</h4>
 
-        <table class="table-striped table-bordered table-condensed tablesorter table-hover">
+        <table id="fontDescrTable" class="table-striped table-bordered table-condensed tablesorter table-hover">
           <thead>
             <tr>
               <th></th>
@@ -294,7 +294,7 @@
         <h4>Font Coverage characters</h4>
         {% set fonts_names, averages, fonts_info = get_orthography(fontaineFonts) %}
         <div class="table-responsive">
-          <table class="table table-bordered table-condensed tablesorter table-hover">
+          <table id="fontCoverageTable" class="table table-bordered table-condensed tablesorter table-hover">
             <thead>
               <tr>
                 <th>Subset</th>
@@ -350,26 +350,6 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.7/js/jquery.tablesorter.min.js"></script>
-<script>
-function toggleMissing() {
-  var btn = $(this);
-  btn.next('div').toggle('hide', function() {
-    if ($(this).is(':hidden')) {
-        btn.text('Show');
-      } else {
-        btn.text('Hide');
-      }
-    });
-}
-
-$(function(){
-    $('.tablesorter').tablesorter();
-    $('.apopover').each(function (index, item) {
-        $(item).popover();
-    });
-    $('button[toggle]').on('click', toggleMissing);
-});
-</script>
 <script type="text/javascript" src="http://www.google.com/jsapi"></script>
 <script type="text/javascript">
   google.load("visualization", "1", {packages:["corechart"]});
@@ -462,6 +442,21 @@ $(function(){
 <script>
   $(document)
       .ready(function() {
+        // use default sorting for tables when the document is loaded
+        // and exclude some tables that need special default sorting
+        var blockersTable = $("#blockersTable");
+        $('.tablesorter').not(blockersTable).tablesorter();
+
+        // redefine default sorting for table
+        $(blockersTable).tablesorter({sortList: [[$(blockersTable).find('tr:first th:contains("Status")').index(), 0]]} );
+
+        // add popup to cols
+        $('.apopover').each(function (index, item) {
+          $(item).popover();
+        });
+
+        // colorize column with average coverage value
+        // in Font Coverage characters table
         $("td.coverageAverage").each(function(i){
           var td_col_average = $(this),
               td_class = td_col_average.parent('tr').find("[data-toggle='modal']").attr('class');
@@ -469,6 +464,8 @@ $(function(){
         });
       })
       .on("click", "span.coverageStats", function() {
+        // show modal window on click in td
+        // in Font Coverage characters table
         var myModal = $("#myModal");
         var hidden_td = $(this).closest('td').next(),
             missing_chars = hidden_td.html(),
