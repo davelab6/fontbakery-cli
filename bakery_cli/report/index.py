@@ -83,35 +83,61 @@ def get_fonts_table_sizes_grouped(fonts_list):
     _, fonts = get_fonts_table_sizes(fonts_list)
     fonts_dict = defaultdict(dict, fonts)
 
-    # fonts may have different tables
+    # Fonts may have different tables!!!
+
+    # across all fonts calculate sum of each table
     table_sizes_sums = sum(
         (Counter(v) for k, v in fonts_dict.iteritems()), Counter()
     )
+
+    # count amount of each table across all fonts
     tables_counts = sum(
         (Counter(v.keys()) for k, v in fonts_dict.iteritems()), Counter()
     )
+
+    # count average for each table, take value from 'table_sizes_sums'
+    # and divide by corresponding value from  'tables_counts',
+    # eg table_sizes_sums['glyf'] / tables_counts['glyf']
     tables_mean_dict = {
         k: table_sizes_sums[k]/tables_counts[k] for k in table_sizes_sums
     }
 
+    # calculate deviation (delta) from an average
+    # for each font and each table in font find delta
     tables_delta_dict = {}
     for font, tables in fonts_dict.iteritems():
         tables_delta_dict[font] = {
             k: tables_mean_dict[k]-v for k, v in tables.iteritems()
         }
 
+    # gather all existent tables from all fonts
+    all_possible_tables = set()
+    for font, tables in tables_delta_dict.items():
+        for table in tables:
+            if table not in all_possible_tables:
+                all_possible_tables.add(table)
+
+    # if some font does not have a table that others have,
+    # just set the deviation to 0
+    for font, tables in tables_delta_dict.items():
+        for item in all_possible_tables:
+            tables.setdefault(item, 0)
+        tables_delta_dict[font] = tables
+
+    # make the deviation dict ready for google chart as array
     tables_delta_dict_for_google_array = {}
     for font, props in tables_delta_dict.iteritems():
         tables_delta_dict_for_google_array.setdefault('fonts', []).append(font)
         for k, v in props.iteritems():
             tables_delta_dict_for_google_array.setdefault(k, []).append(v)
-    
+
+    # prepare all tables dict as array for google chart
     tables_dict_for_google_array = {}
     for font, props in fonts.iteritems():
         tables_dict_for_google_array.setdefault('fonts', []).append(font)
         for k, v in props.iteritems():
             tables_dict_for_google_array.setdefault(k, []).append(v)
-    
+
     grouped_dict = {
         'fonts': tables_dict_for_google_array.pop('fonts'),
         'tables': [
