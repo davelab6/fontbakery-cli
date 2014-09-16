@@ -19,7 +19,7 @@ from __future__ import print_function
 import argparse
 import os
 
-from bakery_cli.report import (tests, index, buildlog, upstream, metadata,
+from bakery_cli.report import (tests, index, buildlog, checks, metadata,
                                bakery, description, review)
 
 
@@ -41,7 +41,7 @@ if __name__ == '__main__':
         index.generate(conf)
         metadata.generate(conf)
         description.generate(conf)
-        upstream.generate(conf)
+        checks.generate(conf)
         review.generate(conf)
         bakery.generate(conf)
         buildlog.generate(conf)

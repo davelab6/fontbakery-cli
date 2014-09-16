@@ -19,10 +19,9 @@ import os.path as op
 import yaml
 
 from bakery_cli.report import utils as report_utils
-from bakery_cli.utils import UpstreamDirectory
 
 
-TAB = 'Upstream'
+TAB = 'Pre-Build Checks'
 TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
 
 t = lambda templatefile: op.join(TEMPLATE_DIR, templatefile)
