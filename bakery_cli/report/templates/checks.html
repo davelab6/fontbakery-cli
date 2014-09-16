@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pre-Build Checks</title>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
+  <style>
+    .popover {
+      max-width: 1980px;
+      font-family: Courier;
+    }
+  </style>
+</head>
+<body>
+{% set repo_gh_pages = build_repo_url('tree','gh-pages') %}
+{% set repo_url = build_repo_url() %}
+<div class="container-fluid">
+  <ul class="nav nav-tabs">
+    <li><a href="{{repo_gh_pages}}" target="_blank"><i class="fa fa-github"></i> gh-pages</a></li>
+    <li><a href="{{repo_url}}" target="_blank"><i class="fa fa-github-square"></i> Github Page</a></li>
+    <li><a href="index.html">Summary</a></li>
+    <li><a href="review.html">Review</a></li>
+    <li class="active"><a href="checks.html">Pre-Build Checks</a></li>
+    <li><a href="tests.html">Downstream Tests</a></li>
+    <li><a href="buildlog.html">Build Log</a></li>
+    <li><a href="metadata.html">METADATA.json</a></li>
+    <li><a href="bakery-yaml.html">bakery.yaml</a></li>
+    <li><a href="description.html">Description</a></li>
+  </ul>
+
+  <h3>Pre-Build Checks</h3>
+  <table class="table table-striped table-bordered table-condensed tablesorter">
+    <thead>
+    <tr>
+      <th>Category</th>
+      <th>Description</th>
+      <th>File</th>
+      <th>Result</th>
+      <th>Status</th>
+    </tr>
+    </thead>
+    {% set map = {'success': 'OK', 'failure': 'FAIL', 'error': 'ERROR', 'fixed': 'FIXED'} %}
+    {% set testTypes = { 'error': 'danger', 'failure': 'error', 'success': 'success', 'fixed': 'info'} %}
+    {% for font in tests %}
+      {%- for testType, icon in testTypes.iteritems() | sort %}
+        {% for item in sort(tests[font][testType]) %}
+          <tr>
+            <td>{{ ', '.join(item.tags) }}</td>
+            <td><span class="apopover" data-placement="top" data-content="{{ item.name|replace('.','/') }}.py:{{ item.methodName }}()">{{ item.methodDoc|default('None') }}</span></td>
+            <td>{{ font }}</td>
+            <td>{{ item.err_msg }}</td>
+            <td>{{ map[testType] }}</td>
+          </tr>
+        {% endfor %}
+      {%- endfor %}
+    {% else %}
+      <h1>There is no data to display</h1>
+    {% endfor %}
+  </table>
+</div>
+<!-- Footer -->
+<footer class="footer">
+  <div class="container-fluid">
+    <ul class="footer-links">
+      <li><a href='https://github.com/googlefonts/fontbakery-cli/edit/master/bakery_cli/report/templates/{{ current_page }}'>Edit this page's template</a></li>
+      <li><a href='https://github.com/googlefonts/fontbakery-cli/'>Made with Font Bakery</a> (<a href='http://www.gnu.org/philosophy/free-sw.html'>libre software</a> available under the terms of the <a href='https://github.com/googlefonts/fontbakery-cli/blob/master/LICENSE.txt'>Apache 2.0 license</a>.)</li>
+      <li>Please <a href='https://github.com/googlefonts/fontbakery-cli/issues/new'>report bugs</a>, suggest features, and contribute on <a href='https://github.com/googlefonts/fontbakery-cli/'>GitHub <i class='icon-github'></i></a></li>
+      {% if app_version %}
+        <li>{{ app_version.commit }}, {{ app_version.date }}</li>
+      {% endif %}
+    </ul>
+  </div>
+</footer>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.7/js/jquery.tablesorter.min.js"></script>
+<script>
+  $(function(){
+    // apopover class used on dashboard
+    $('.apopover').each(function (index, item) {
+      $(item).popover();
+    });
+    $('.tablesorter').tablesorter();
+  })
+</script>
+</body>
+</html>

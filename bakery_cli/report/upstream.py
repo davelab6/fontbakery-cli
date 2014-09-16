@@ -45,7 +45,7 @@ def sort(data):
     return a
 
 
-def generate(config, outfile='upstream.html'):
+def generate(config, outfile='checks.html'):
     upstreamdatafile = op.join(config['path'], 'upstream.yaml')
     if not op.exists(upstreamdatafile):
         return
