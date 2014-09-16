@@ -17,11 +17,9 @@
 from __future__ import print_function
 import os.path as op
 from markdown import markdown
-from bakery_cli.report.utils import render_template
-from bakery_cli.report.utils import build_repo_url
 import yaml
 
-from bakery_cli.utils import UpstreamDirectory
+from bakery_cli.report import utils as report_utils
 
 TAB = 'METADATA.json'
 TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
@@ -63,7 +61,9 @@ def generate(config, outfile='metadata.html'):
         metadata_new = open(op.join(config['path'], 'METADATA.json.new')).read()
     except (IOError, OSError):
         metadata_new = ''
-    print(render_template(outfile, metadata=metadata, tests=data, sort=sort,
-                          build_repo_url=build_repo_url,
-                          metadata_new=metadata_new, markdown=markdown),
-          file=destfile)
+    app_version = report_utils.git_info(config)
+    print(report_utils.render_template(
+        outfile, metadata=metadata, tests=data, sort=sort,
+        app_version=app_version, build_repo_url=report_utils.build_repo_url,
+        current_page=outfile, metadata_new=metadata_new,
+        markdown=markdown), file=destfile)

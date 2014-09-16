@@ -19,9 +19,8 @@ from __future__ import print_function
 import os.path as op
 import yaml
 
+from bakery_cli.report import utils as report_utils
 from bakery_cli.utils import UpstreamDirectory
-from bakery_cli.report.utils import build_repo_url
-
 
 TAB = 'Tests'
 TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
@@ -46,7 +45,7 @@ def sort(data):
     return a
 
 
-def generate(config):
+def generate(config, outfile='tests.html'):
     from jinja2 import Template
 
     directory = UpstreamDirectory(config['path'])
@@ -59,10 +58,10 @@ def generate(config):
     if not data:
         return
 
-    template = Template(open(t('tests.html')).read())
+    template = Template(open(t(outfile)).read())
 
-    destfile = open(op.join(config['path'], 'tests.html'), 'w')
-
-    print(template.render(tests=data, sort=sort,
-                          build_repo_url=build_repo_url).encode('utf8'),
-          file=destfile)
+    destfile = open(op.join(config['path'], outfile), 'w')
+    app_version = report_utils.git_info(config)
+    print(template.render(
+        tests=data, sort=sort, current_page=outfile, app_version=app_version,
+        build_repo_url=report_utils.build_repo_url).encode('utf8'), file=destfile)

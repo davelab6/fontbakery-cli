@@ -36,11 +36,12 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     if int(args.result) == 0:
-        tests.generate({'path': os.path.realpath(args.path)})
-        index.generate({'path': os.path.realpath(args.path)})
-        metadata.generate({'path': os.path.realpath(args.path)})
-        description.generate({'path': os.path.realpath(args.path)})
-        upstream.generate({'path': os.path.realpath(args.path)})
-        review.generate({'path': os.path.realpath(args.path)})
-        bakery.generate({'path': os.path.realpath(args.path)})
-        buildlog.generate({'path': os.path.realpath(args.path)})
+        conf = {'path': os.path.realpath(args.path)}
+        tests.generate(conf)
+        index.generate(conf)
+        metadata.generate(conf)
+        description.generate(conf)
+        upstream.generate(conf)
+        review.generate(conf)
+        bakery.generate(conf)
+        buildlog.generate(conf)

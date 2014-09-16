@@ -19,13 +19,13 @@ from collections import defaultdict, Counter, namedtuple, OrderedDict
 import os.path as op
 import yaml
 
-from bakery_cli.scripts.vmet import metricview, get_metric_view
-from bakery_cli.utils import UpstreamDirectory
-from bakery_cli.report.utils import render_template
-from bakery_cli.report.utils import build_repo_url
-
 from fontaine.cmap import Library
 from fontaine.font import FontFactory
+
+from bakery_cli.scripts.vmet import metricview, get_metric_view
+from bakery_cli.utils import UpstreamDirectory
+
+from bakery_cli.report import utils as report_utils
 
 
 TAB = 'Index'
@@ -194,7 +194,7 @@ def average_table_size(tdict):
     return sum(tdict.values()) / len(tdict)
 
 
-def generate(config):
+def generate(config, outfile='index.html'):
     directory = UpstreamDirectory(config['path'])
 
     faces = []
@@ -205,7 +205,7 @@ def generate(config):
         basename = op.basename(font)[:-4]
         faces.append({'name': font, 'basename': basename, 'path': font})
 
-    destfile = open(op.join(config['path'], 'index.html'), 'w')
+    destfile = open(op.join(config['path'], outfile), 'w')
     data = yaml.load(open(op.join(config['path'], 'METADATA.yaml')))
     basenames = [op.basename(font['path']) for font in faces]
 
@@ -226,23 +226,19 @@ def generate(config):
 
     fonts = [(path, FontFactory.openfont(op.join(config['path'], path)))
              for path in directory.BIN]
-
-    print(render_template('index.html', fonts=faces, tests=data,
-                          basenames=basenames,
-                          filter_with_tag=filter_with_tag,
-                          filter_by_results_with_tag=filter_by_results_with_tag,
-                          vmet=vmet._its_metrics,
-                          vhead=vmet._its_metrics_header,
-                          autohinting_sizes=autohint_sizes,
-                          ttftablesizes=ttftablesizes,
-                          fontaineFonts=fonts,
-                          get_orthography=get_orthography,
-                          to_google_data_list=to_google_data_list,
-                          font_table_to_google_data_list=font_table_to_google_data_list,
-                          ttftablesizes_mean=ttftablesizes_mean,
-                          ttftablesizes_grouped=ttftablesizes_grouped,
-                          ttftablesizes_delta=ttftablesizes_delta,
-                          average_table_size=average_table_size,
-                          build_repo_url=build_repo_url,
-                          hex=hex, sort=sort),
-          file=destfile)
+    app_version = report_utils.git_info(config)
+    print(report_utils.render_template(
+        outfile, current_page=outfile, fonts=faces, tests=data,
+        basenames=basenames, filter_with_tag=filter_with_tag,
+        filter_by_results_with_tag=filter_by_results_with_tag,
+        vmet=vmet._its_metrics, vhead=vmet._its_metrics_header,
+        autohinting_sizes=autohint_sizes, ttftablesizes=ttftablesizes,
+        fontaineFonts=fonts, get_orthography=get_orthography,
+        to_google_data_list=to_google_data_list,
+        font_table_to_google_data_list=font_table_to_google_data_list,
+        ttftablesizes_mean=ttftablesizes_mean,
+        ttftablesizes_grouped=ttftablesizes_grouped,
+        ttftablesizes_delta=ttftablesizes_delta,
+        average_table_size=average_table_size,
+        build_repo_url=report_utils.build_repo_url, hex=hex, sort=sort,
+        app_version=app_version), file=destfile)

@@ -17,19 +17,20 @@
 from __future__ import print_function
 import os.path as op
 
-from bakery_cli.report.utils import render_template, build_repo_url
+from bakery_cli.report import utils as report_utils
 
 
 TAB = 'Bakery'
 
 
-def generate(config):
+def generate(config, outfile='bakery-yaml.html'):
     if not op.exists(op.join(config['path'], 'bakery.yaml')):
         return
 
-    destfile = open(op.join(config['path'], 'bakery-yaml.html'), 'w')
+    destfile = open(op.join(config['path'], outfile), 'w')
 
     data = open(op.join(config['path'], 'bakery.yaml')).read()
-    print(render_template('bakery-yaml.html', data=data,
-                          build_repo_url=build_repo_url,).encode('utf8'),
-          file=destfile)
+    app_version = report_utils.git_info(config)
+    print(report_utils.render_template(
+        outfile, data=data, app_version=app_version, current_page=outfile,
+        build_repo_url=report_utils.build_repo_url,).encode('utf8'), file=destfile)
