@@ -24,10 +24,10 @@
     <li><a href="buildlog.html">Build Log</a></li>
     <li><a href="metadata.html">METADATA.json</a></li>
     <li><a href="bakery-yaml.html">bakery.yaml</a></li>
-    <li class="active"><a href="description.html">Description</a></li>
+    <li class="active"><a href="{{ current_page }}">Description</a></li>
   </ul>
   <div class="col-sm-5 col-md-5">
-    <textarea name="description" id="descriptionta">{{ data|safe }}</textarea>
+    <textarea name="description" id="description">{{ data|safe }}</textarea>
     <div id="editor"></div>
   </div>
   <div class="col-sm-5 col-md-5">

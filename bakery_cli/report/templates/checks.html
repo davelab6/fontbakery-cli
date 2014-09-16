@@ -21,14 +21,13 @@
     <li><a href="{{repo_url}}" target="_blank"><i class="fa fa-github-square"></i> Github Page</a></li>
     <li><a href="index.html">Summary</a></li>
     <li><a href="review.html">Review</a></li>
-    <li class="active"><a href="checks.html">Pre-Build Checks</a></li>
+    <li class="active"><a href="{{ current_page }}">Pre-Build Checks</a></li>
     <li><a href="tests.html">Tests</a></li>
     <li><a href="buildlog.html">Build Log</a></li>
     <li><a href="metadata.html">METADATA.json</a></li>
     <li><a href="bakery-yaml.html">bakery.yaml</a></li>
     <li><a href="description.html">Description</a></li>
   </ul>
-
   <h3>Pre-Build Checks</h3>
   <table class="table table-striped table-bordered table-condensed tablesorter">
     <thead>
@@ -76,13 +75,15 @@
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.7/js/jquery.tablesorter.min.js"></script>
 <script>
-  $(function(){
+  $(document).ready(function() {
     // apopover class used on dashboard
     $('.apopover').each(function (index, item) {
       $(item).popover();
     });
-    $('.tablesorter').tablesorter();
-  })
+    $('.tablesorter').each(function(i){
+      $(this).tablesorter({sortList: [[$(this).find('tr:first th:contains("Status")').index(), 0]]});
+    });
+  });
 </script>
 </body>
 </html>
