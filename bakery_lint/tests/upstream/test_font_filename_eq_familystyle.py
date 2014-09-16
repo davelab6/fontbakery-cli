@@ -28,6 +28,7 @@ class TestTTFSourceFontFileNameEqualsFamilyStyle(TestCase):
 
     @autofix('bakery_cli.pipe.autofix.rename')
     def test_source_ttf_font_filename_equals_familystyle(self):
+        """ Source TTF Font filename equals family style """
         ttfont = Font.get_ttfont(self.operator.path)
 
         style_name = ttfont.stylename
