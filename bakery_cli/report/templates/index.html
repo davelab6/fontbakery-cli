@@ -320,7 +320,7 @@
                     </div>
                   </td>
                 {% endfor %}
-                <td>{{ averages.get(subset) }}%</td>
+                <td class="coverageAverage">{{ averages.get(subset) }}%</td>
               </tr>
             {% endfor %}
             </tbody>
@@ -460,15 +460,23 @@ $(function(){
   }
 </script>
 <script>
-  $(document).on("click", "span.coverageStats", function() {
-    var myModal = $("#myModal");
-    var hidden_td = $(this).closest('td').next(),
-        missing_chars = hidden_td.html(),
-        subset = hidden_td.attr("data-subset"),
-        font = hidden_td.attr("data-fontname");
-    $("#myModalInfo").html("<h5>"+font+"</h5><small>"+subset+"</small>");
-    $(".modal-body").html(missing_chars);
-  });
+  $(document)
+      .ready(function() {
+        $("td.coverageAverage").each(function(i){
+          var td_col_average = $(this),
+              td_class = td_col_average.parent('tr').find("[data-toggle='modal']").attr('class');
+          td_col_average.addClass(td_class)
+        });
+      })
+      .on("click", "span.coverageStats", function() {
+        var myModal = $("#myModal");
+        var hidden_td = $(this).closest('td').next(),
+            missing_chars = hidden_td.html(),
+            subset = hidden_td.attr("data-subset"),
+            font = hidden_td.attr("data-fontname");
+        $("#myModalInfo").html("<h5>"+font+"</h5><small>"+subset+"</small>");
+        $(".modal-body").html(missing_chars);
+      });
 </script>
 <style>
     .popover {
