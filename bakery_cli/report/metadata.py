@@ -53,6 +53,19 @@ def generate(config, outfile='metadata.html'):
     except IOError:
         data = {}
 
+    tests_summary_filepath = op.join(config['path'], 'tests.yaml')
+    if op.exists(tests_summary_filepath):
+        tests_summary = yaml.load(open(tests_summary_filepath))
+
+    summary = {
+        'success': len(data.get('METADATA.json', {}).get('success', [])),
+        'error': len(data.get('METADATA.json', {}).get('error', [])),
+        'failure': len(data.get('METADATA.json', {}).get('failure', []))
+    }
+    tests_summary.update({'METADATA.json': summary})
+    with open(tests_summary_filepath, 'w') as l:
+        l.write(yaml.safe_dump(tests_summary))
+
     destfile = open(op.join(config['path'], outfile), 'w')
 
     metadata = open(op.join(config['path'], 'METADATA.json')).read()

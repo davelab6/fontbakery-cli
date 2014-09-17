@@ -47,14 +47,29 @@ def sort(data):
 
 def generate(config, outfile='tests.html'):
     directory = UpstreamDirectory(config['path'])
+
+    tests = {}
+
     data = {}
     for fp in directory.BIN:
         path = op.join(config['path'], '{}.yaml'.format(fp[:-4]))
         if op.exists(path):
             data[fp] = yaml.load(open(path))
+            tests[fp] = {'success': len(data[fp].get('success', [])),
+                         'error': len(data[fp].get('error', [])),
+                         'failure': len(data[fp].get('failure', []))}
 
     if not data:
         return
+
+    tests_summary = {}
+    tests_summary_filepath = op.join(config['path'], 'tests.yaml')
+    if op.exists(tests_summary_filepath):
+        tests_summary = yaml.load(open(tests_summary_filepath))
+    tests_summary.update(tests)
+
+    with open(tests_summary_filepath, 'w') as l:
+        l.write(yaml.safe_dump(tests_summary))
 
     destfile = open(op.join(config['path'], outfile), 'w')
     app_version = report_utils.git_info(config)
