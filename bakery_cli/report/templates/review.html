@@ -8,63 +8,193 @@
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
   <script src="http://nodebox.github.io/opentype.js/opentype.min.js" type="text/javascript" ></script>
+  <script src="//fonts.googleapis.com/measure" type="text/javascript"></script>
+<style type="text/css">
+
+    /*
+    Web Fonts tab styles
+    ####################################################################################
+    */
+
+  .main-panel {
+    color: #222;
+    margin: 0;
+    background: #fff;
+
+    font: 13px/1.2 Arial,sans-serif;
+    background: none repeat scroll 0 0 #fff;
+    padding-right: 20px;
+  }
+
+  .main-panel h1,
+  .main-panel h2,
+  .main-panel h3,
+  .main-panel h4,
+  .main-panel h5,
+  .main-panel h6 {
+    font-weight: normal;
+    margin-bottom: 1em;
+    font-family: Arial, sans-serif;
+  }
+
+  .main-panel h1 {
+    font-size: 36px;
+  }
+
+  .main-panel h2 {
+    font-size: 24px;
+  }
+
+  .main-panel h3 {
+    font-size: 16px;
+  }
+
+  .main-panel h4 {
+    font-size: 13px;
+  }
+
+  p {
+    margin-bottom: 1em;
+    line-height: 1.4em;
+  }
+
+  .sample {
+    padding-bottom: 2em;
+    overflow: hidden;
+  }
+
+  .sample>div {
+    float: left;
+    border: 1px solid #ccc;
+    text-align: center;
+    width: 1.25em;
+    height: 2em;
+    margin-right: -1px;
+    margin-bottom: -1px;
+    font-size: 3.2em;
+  }
+
+  .sample>div .defaultCharacter {
+    color: #ccc;
+    font-family: arial, sans-serif;
+    font-size: .4em;
+    display: block;
+  }
+
+  .fontcard {
+    border: 1px solid #bbb;
+    margin: 0 3px 10px 0;
+    background: #fff;
+    position: relative;
+    -moz-box-shadow: 0 1px 1px #e1e1e1; -webkit-box-shadow: 0 1px 1px #eee; -o-box-shadow: 0 1px 1px #eee; box-shadow: 0 1px 1px #eee;
+    position: relative;
+  }
+
+  .fontcard .fontname {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+
+  .fontcard .fontname .styles {
+    display: inline;
+  }
+
+  .fontcard .fontadd {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-size: 11px !important;
+  }
+
+  .fontcard .familylinks {
+    position: absolute;
+    bottom: 10px;
+    right: 175px;
+  }
+
+  .fontcard .familylinks li {
+    display: inline;
+  }
+
+  .superspecimen {
+    padding: 20px 0 80px 20px;
+    max-width: 700px;
+    min-height: 800px;
+  }
+
+  .superspecimen .superheader {
+    margin-bottom: 20px;
+  }
+
+  .superspecimen .openlink {
+    float: right;
+    margin-top: 5px;
+  }
+
+  .superspecimen h1, .superspecimen h2, .superspecimen h3 {
+    font-size: 16px;
+    font-weight: bold;
+    font-family: arial;
+    margin-bottom: 3px;
+  }
+
+  .superspecimen h2, .superspecimen h3 {
+    font-size: 13px;
+  }
+
+  .superspecimen h3 {
+    margin-bottom: 20px;
+  }
+
+  .superspecimen .fontcard {
+    padding: 20px;
+    overflow: hidden;
+    margin-top: 15px;
+  }
+
+  .superspecimen .supersample {
+    font-size: 64px;
+    line-height: 1.1em;
+    margin-bottom: 20px;
+  }
+
+  .superspecimen .styles {
+    margin-bottom: 20px;
+    font-size: 32px;
+    white-space: nowrap;
+  }
+
+  .superspecimen .styles p {
+    margin-bottom: 10px;
+  }
+
+  .superspecimen .identifier {
+    font-size: 11px;
+    color: #777;
+    font-family: arial;
+    display: block;
+  }
+
+  .missing-glyph {
+    color: #C0C0C0;
+    font-family: sans-serif;
+  }
+
+  .hide {
+    display: none !important;
+  }
+
+  .visibility-hidden {
+    visibility: hidden !important;
+  }
+  </style>
+
   <style>
     /*
     Original source: http://nodebox.github.io/opentype.js/site.css
     These styles were modified.
     */
-    /*body {*/
-      /*font: 13px Helvetica, arial, freesans, sans-serif;*/
-      /*line-height: 1.4;*/
-      /*min-width: 1020px;*/
-      /*color: #333;*/
-      /*background-color: #fff;*/
-      /*margin: 0 0 50px 0;*/
-      /*padding: 0;*/
-    /*}*/
-
-    /*.header {*/
-      /*background: #eee;*/
-      /*color: #555;*/
-      /*border-bottom: 1px solid #ddd;*/
-      /*height: 40px;*/
-      /*margin-bottom: 20px;*/
-      /*line-height: 40px;*/
-    /*}*/
-
-    /*.header h1 {*/
-      /*line-height: 40px;*/
-      /*display: inline-block;*/
-      /*margin: 0 20px 0 0;*/
-      /*padding: 0;*/
-      /*font-size: 18px;*/
-    /*}*/
-
-    /*.header nav {*/
-      /*display: inline-block;*/
-      /*line-height: 40px;*/
-      /*margin: 0;*/
-      /*padding: 0;*/
-    /*}*/
-
-    /*.header nav a {*/
-      /*display: inline-block;*/
-      /*margin: 0 10px 0 0;*/
-      /*padding: 0 5px;*/
-      /*color: #44d;*/
-      /*font-weight: bold;*/
-    /*}*/
-
-    /*.header nav a:hover {*/
-      /*background: #ddd;*/
-    /*}*/
-
-    /*.container {*/
-      /*width: 940px;*/
-      /*margin-left: auto;*/
-      /*margin-right: auto;*/
-    /*}*/
-
     .explain {
       color: #222;
       font-size: 16px;
@@ -268,6 +398,24 @@
     span.offcurve { color: red; }
   </style>
 
+  <style type="text/css">
+    /*Web Fonts Tab styles*/
+    /* Google Fonts logo styling*/
+    .projectLogo {
+      font-family: "Open Sans", arial, sans-serif;
+      font-size: 32px;
+      font-weight: 300;
+      color: #63666a !important;  /*need to force since a:link rule is more specific*/
+      line-height: 1.375;
+      text-decoration: none;
+    }
+    .projectLogo img {
+      margin: -1px 0 -4px;
+      vertical-align: middle;
+    }
+  </style>
+
+
   <style>
     p.face-example {
       line-height: 1.4em;
@@ -320,45 +468,50 @@
       </ul>
       <ul class="tab-content">
         <li class="tab-pane fade active in" id="subtab1">
-          <div>
-            <p>
-              {% for font in fonts %}
-            <h4>{{ font.name }}</h4>
 
-            <style>
-              @font-face {font-family: {{ font.basename }}; src: url({{ font.path }});}
-              .face{{ loop.index }} {font-family: {{ font.basename }}; font-size: 24pt;}
-            </style>
+          <div class="main-panel">
+            <div class="superspecimen">
+              <div itemprop="text" class="fontcard" id="font-card-container">
+                <p>
+                  {% for font in fonts %}
+                    <h4>{{ font.name }}</h4>
 
-            <div class="face{{ loop.index }}">
-              Grumpy wizards make toxic brew for the evil Queen and Jack
+                    <style>
+                      @font-face {font-family: {{ font.basename }}; src: url({{ font.path }});}
+                      .face{{ loop.index }} {font-family: {{ font.basename }}; font-size: 24pt;}
+                    </style>
+
+                    <div class="face{{ loop.index }}">
+                      Grumpy wizards make toxic brew for the evil Queen and Jack
+                    </div>
+                {% endfor %}
+                </p>
+                <p class="face1 face-example">
+                  One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections. The bedding was hardly able to cover it and seemed ready to slide off any moment. His many legs, pitifully thin compared with the size of the rest of him, waved about helplessly as he looked.
+                <p>
+                <div>
+                  <p><button id="toggleMissingGlyphs">Show missing glyphs</button></p>
+                  <div id="glyphContainer" class="sample Exo-normal-400">
+                    {% for font, charmap, support, coverage, missingchars in get_orthography(fontaineFonts) %}
+                      {% for g in charmap.glyphs %}
+                        {% set enc_glyph = '&#{};'.format(g)|safe %}
+                        {% if g in missingchars %}
+                          <div style="display: none;">
+                            <span class="defaultCharacter">{{ enc_glyph }}</span>
+                            <span class="missing-glyph">X</span>
+                          </div>
+                        {% else %}
+                          <div>
+                            <span class="defaultCharacter">{{ enc_glyph }}</span>
+                            <span>{{ enc_glyph }}</span>
+                          </div>
+                        {% endif %}
+                      {% endfor %}
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
             </div>
-            {% endfor %}
-            </p>
-            <p class="face1 face-example">
-              One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections. The bedding was hardly able to cover it and seemed ready to slide off any moment. His many legs, pitifully thin compared with the size of the rest of him, waved about helplessly as he looked.
-            <p>
-            <p><button id="toggleMissingGlyphs" class="btn btn-success" toggle="toggle">Show missing glyphs</button></p>
-            <table id="fontsGlyphs" class="table table-bordered table-hover">
-              {% for font, charmap, support, coverage, missingchars in get_orthography(fontaineFonts) %}
-              {% set counter = 0 %}
-              {% for g in charmap.glyphs %}
-              {% if counter == 0 %}
-              <tr>
-                {% endif %}
-                {% if g in missingchars %}
-                <td class="hidden error"><span>{{ '&#{};'.format(g)|safe }}</span></td>
-                {% else %}
-                <td><span>{{ '&#{};'.format(g)|safe }}</span></td>
-                {% endif %}
-                {% set counter = counter + 1 %}
-                {% if counter == 10 %}
-              </tr>
-              {% set counter = 0 %}
-              {% endif %}
-              {% endfor %}
-              {% endfor %}
-            </table>
           </div>
         </li>
 
@@ -415,42 +568,36 @@
   </div>
 </footer>
 
-<script>
+<script type="text/javascript">
   // Web Fonts tab
-  var hidden_cls = "hidden",
-      shown_cls = "shown";
-
-  function toggleMissingGlyphs() {
-    var btn = $(this);
-    btn.text(function(i, text){
-      return text === "Show missing glyphs" ? "Hide missing glyphs" : "Show missing glyphs";
-    });
-    $("#fontsGlyphs").find("td").each(function(i) {
-      if ($(this).hasClass(hidden_cls)) {
-        $(this).removeClass(hidden_cls).addClass(shown_cls);
-      }
-      else if ($(this).hasClass(shown_cls)) {
-        $(this).removeClass(shown_cls).addClass(hidden_cls);
-      }
-    });
-  }
-
   $(document).ready(function() {
-    var btn = $("#toggleMissingGlyphs");
-    if ($("td."+hidden_cls+", td."+shown_cls).length == 0) {
-      $(btn)
-          .prop('disabled', true)
-          .text('There are no missing glyphs')
-          .removeClass('btn-success');
-    }
-    else {
-      $(btn).prop('disabled', false);
-    }
     $("ul.subtabs a").click(function (e) {
       e.preventDefault();
       $(this).tab('show');
     });
-    $(btn).on('click', toggleMissingGlyphs);
+
+    $("#toggleMissingGlyphs").on('click', function(){
+      try {
+        var glyphSpans = document.getElementById("glyphContainer").
+            getElementsByTagName("span");
+        for(var i=0; i < glyphSpans.length; i++) {
+          var glyphSpan = glyphSpans[i];
+          if(glyphSpan.getAttribute("class") == "missing-glyph") {
+            if(glyphSpan.parentNode.style.display == "none") {
+              glyphSpan.parentNode.style.display = "block";
+            } else {
+              glyphSpan.parentNode.style.display = "none";
+            }
+          }
+        }
+        if(this.innerHTML == "Hide missing glyphs") {
+          this.innerHTML = "Show missing glyphs";
+        } else {
+          this.innerHTML = "Hide missing glyphs";
+        }
+      } catch(e){}
+
+    });
   });
 </script>
 
