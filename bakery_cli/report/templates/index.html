@@ -184,27 +184,36 @@
           <h4>ttfautohint filesize impact statistic</h4>
           <div class="flex-container">
             <table class="table-striped table-bordered table-condensed tablesorter table-hover">
-              {% for t in autohinting_sizes %}
-                <tr>
-                  <th colspan="2">{{ t['fontname'] }}</th>
-                </tr>
-                <tr>
-                  <td>Before</td>
+              <tr>
+                <th></th>
+                {% for t in autohinting_sizes %}
+                  <th>{{ t['fontname'] }}</th>
+                {% endfor %}
+              </tr>
+              <tr>
+                <td>Before</td>
+                {% for t in autohinting_sizes %}
                   <td>{{ t['origin'] }}</td>
-                </tr>
-                <tr>
-                  <td>After</td>
+                {% endfor %}
+              </tr>
+              <tr>
+                <td>After</td>
+                {% for t in autohinting_sizes %}
                   <td>{{ t['processed'] }}</td>
-                </tr>
-                <tr>
-                  <td>Increase</td>
+                {% endfor %}
+              </tr>
+              <tr>
+                <td>Increase</td>
+                {% for t in autohinting_sizes %}
                   <td>{{ t['processed'] - t['origin'] }}</td>
-                </tr>
-                <tr>
-                  <td>Change</td>
+                {% endfor %}
+              </tr>
+              <tr>
+                <td>Change</td>
+                {% for t in autohinting_sizes %}
                   <td>{{ '{:.3f}x'.format(t['processed'] / t['origin']) }}</td>
-                </tr>
-              {% endfor %}
+                {% endfor %}
+              </tr>
             </table>
           </div>
         {% endif %}
