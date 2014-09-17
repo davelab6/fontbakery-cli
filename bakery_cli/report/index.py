@@ -16,13 +16,14 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
 from collections import defaultdict, Counter, namedtuple, OrderedDict
+import os
 import os.path as op
 import yaml
 
 from fontaine.cmap import Library
 from fontaine.font import FontFactory
 
-from bakery_cli.scripts.vmet import metricview, get_metric_view
+from bakery_cli.scripts.vmet import get_metric_view
 from bakery_cli.utils import UpstreamDirectory
 
 from bakery_cli.report import utils as report_utils
@@ -197,7 +198,11 @@ def average_table_size(tdict):
 def generate(config, outfile='index.html'):
     if config.get('failed'):
         destfile = open(op.join(config['path'], outfile), 'w')
-        print(report_utils.render_template('failedbuild.html'), file=destfile)
+
+        slug = os.environ.get('TRAVIS_REPO_SLUG', 'fontdirectory/dummy')
+        link = 'https://travis-ci.org/{}'.format(slug)
+        print(report_utils.render_template('failedbuild.html', link=link),
+              file=destfile)
         return
 
     directory = UpstreamDirectory(config['path'])

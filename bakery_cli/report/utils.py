@@ -19,7 +19,7 @@ def render_template(templatename, *args, **kwargs):
 
 
 def build_repo_url(*chunks):
-    repo_slug = os.environ.get('TRAVIS_REPO_SLUG', 'dummy')
+    repo_slug = os.environ.get('TRAVIS_REPO_SLUG', 'fontdirectory/dummy')
     if not repo_slug:
         raise ValueError('"TRAVIS_REPO_SLUG" is nod defined in environment')
     return op.join(GH, repo_slug, *chunks)
