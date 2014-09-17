@@ -159,7 +159,7 @@ def get_fonts_table_sizes_grouped(fonts_list):
     for item in grouped_dict["tables"]:
         new_item = item[:]
         while len(new_item) < max_len:
-            new_item.append(-1)
+            new_item.append(0)
         new_items.append(new_item)
     grouped_dict["tables"] = new_items
 
