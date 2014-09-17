@@ -338,18 +338,8 @@
     </div>
 
     <!-- Footer -->
-    <footer class="footer">
-      <div class="container-fluid">
-        <ul class="footer-links">
-          <li><a href='https://github.com/googlefonts/fontbakery-cli/edit/master/bakery_cli/report/templates/{{ current_page }}'>Edit this page's template</a></li>
-          <li><a href='https://github.com/googlefonts/fontbakery-cli/'>Made with Font Bakery</a> (<a href='http://www.gnu.org/philosophy/free-sw.html'>libre software</a> available under the terms of the <a href='https://github.com/googlefonts/fontbakery-cli/blob/master/LICENSE.txt'>Apache 2.0 license</a>.)</li>
-          <li>Please <a href='https://github.com/googlefonts/fontbakery-cli/issues/new'>report bugs</a>, suggest features, and contribute on <a href='https://github.com/googlefonts/fontbakery-cli/'>GitHub <i class='icon-github'></i></a></li>
-          {% if app_version %}
-            <li>{{ app_version.commit }}, {{ app_version.date }}</li>
-          {% endif %}
-        </ul>
-      </div>
-    </footer>
+    {% from "macros.html" import report_footer with context %}
+    {{ report_footer() }}
 
   <!-- Modal -->
   <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

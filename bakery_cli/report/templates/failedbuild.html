@@ -12,5 +12,7 @@
       {{ report_navigation(activeitem='index', failed=True) }}
         <div>Sorry, build failed. <a href="{{ link }}">See Travis for details</a>.</div>
     </div>
+{% from "macros.html" import report_footer with context %}
+{{ report_footer() }}
 </body>
 </html>
