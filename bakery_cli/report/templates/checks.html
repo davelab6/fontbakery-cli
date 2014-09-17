@@ -30,6 +30,7 @@
     {% set map = {'success': 'OK', 'failure': 'FAIL', 'error': 'ERROR', 'fixed': 'FIXED'} %}
     {% set testTypes = { 'error': 'danger', 'failure': 'error', 'success': 'success', 'fixed': 'info'} %}
     {% for font in tests %}
+      <div id="piechart{{ loop.index }}"></div>
       {%- for testType, icon in testTypes.iteritems() | sort %}
         {% for item in sort(tests[font][testType]) %}
           <tr>
@@ -62,6 +63,39 @@
       $(this).tablesorter({sortList: [[$(this).find('tr:first th:contains("Status")').index(), 0]]});
     });
   });
+</script>
+<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+<script type="text/javascript">
+  google.load("visualization", "1", {packages:["corechart"]});
+  google.setOnLoadCallback(drawChart);
+  function drawChart() {
+    {% set chartsum = {"success": 0, "failure": 0, "fixed": 0, "error": 0} %}
+    {%- for font in tests.keys() %}
+      var data = google.visualization.arrayToDataTable([
+        ['Tests', '#'],
+        ['Success {{ tests[font]['success']|length }}', {{ tests[font]['success']|length }}],
+        ['Fixed {{ tests[font]['fixed']|length }}', {{ tests[font]['fixed']|length }}],
+        ['Failed {{ tests[font]['failure']|length }}', {{ tests[font]['failure']|length }}],
+        ['Error {{ tests[font]['error']|length }}', {{ tests[font]['error']|length }}]
+      ]);
+
+      var options = {
+        title: "{{ font }}",
+        is3D: true,
+        colors: ['#468847', '#3a87ad', '#b94a48', '#c09853'],
+      };
+
+      var chart = new google.visualization.PieChart(document.getElementById('piechart{{ loop.index }}'));
+      chart.draw(data, options);
+
+      {% set chartsum = {
+        "success": chartsum.success + tests[font]['success']|length,
+        "error": chartsum.error + tests[font]['error']|length,
+        "failure": chartsum.failure + tests[font]['failure']|length,
+        "fixed": chartsum.fixed + tests[font]['fixed']|length}
+      %}
+    {% endfor %}
+  }
 </script>
 </body>
 </html>
