@@ -31,11 +31,11 @@ if __name__ == '__main__':
                ' Please install jinja2 before using'))
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-r', '--result', type=int, default=0)
     parser.add_argument('path')
 
     args = parser.parse_args()
-    if int(args.result) == 0:
+
+    if int(os.environ.get('TRAVIS_TEST_RESULT', 0)) == 0:
         conf = {'path': args.path}
         tests.generate(conf)
         index.generate(conf)
