@@ -18,7 +18,7 @@
         width: inherit;
     }
 
-    span.coverageStats {
+    span.coverageStats, td.coverageAverage {
       cursor: pointer;
     }
 
@@ -329,7 +329,7 @@
                     </div>
                   </td>
                 {% endfor %}
-                <td class="coverageAverage">{{ averages.get(subset) }}%</td>
+                <td data-toggle="modal" data-target="#myModal" class="coverageAverage">{{ averages.get(subset) }}%</td>
               </tr>
             {% endfor %}
             </tbody>
@@ -478,13 +478,24 @@
       .on("click", "span.coverageStats", function() {
         // show modal window on click in td
         // in Font Coverage characters table
-        var myModal = $("#myModal");
         var hidden_td = $(this).closest('td').next(),
             missing_chars = hidden_td.html(),
             subset = hidden_td.attr("data-subset"),
             font = hidden_td.attr("data-fontname");
         $("#myModalInfo").html("<h5>"+font+"</h5><small>"+subset+"</small>");
         $(".modal-body").html(missing_chars);
+      })
+      .on("click", "td.coverageAverage", function() {
+        var parent_tr = $(this).parent('tr'),
+            subset = $(parent_tr).find('td.hidden:first').attr("data-subset"),
+            modal_body = $(".modal-body");
+        modal_body.empty();
+        $("#myModalInfo").html("<h5>"+subset+"</h5>");
+        $(parent_tr).find('td.hidden').each(function(i){
+          var font = $(this).attr("data-fontname"),
+              missing_chars = $(this).html();
+          modal_body.append("<strong>"+font+"</strong>"+missing_chars+"<hr>")
+        });
       });
 </script>
 </body>
