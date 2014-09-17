@@ -17,6 +17,8 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
 import argparse
+import glob
+import shutil
 import os
 
 from bakery_cli.report import (tests, index, buildlog, checks, metadata,
@@ -45,6 +47,27 @@ if __name__ == '__main__':
         review.generate(conf)
         bakery.generate(conf)
         buildlog.generate(conf)
+
+        if os.path.exists(os.path.join(conf['path'], 'FONTLOG.txt')):
+
+            if not bool(glob.glob(os.path.join(conf['path'], 'README*'))):
+                src = os.path.join(conf['path'], 'FONTLOG.txt')
+                dst = os.path.join(conf['path'], 'README.md')
+                shutil.move(src, dst)
+
+        contents = ''
+        if os.path.exists(os.path.join(conf['path'], 'README.md')):
+            with open(os.path.join(conf['path'], 'README.md')) as l:
+                contents = l.read()
+
+        reposlug = os.environ.get('TRAVIS_REPO_SLUG', 'dummy/repo')
+        travis_http = 'https://travis-ci.org/{}'.format(reposlug)
+        travis = '[![Build Status]({0}.svg?branch=master)]({0})'
+
+        contents = travis.format(travis_http) + '\n\n' + contents
+        with open(os.path.join(conf['path'], 'README.md'), 'w') as l:
+            l.write(contents)
+
     else:
         conf = {'path': args.path, 'failed': True}
         index.generate(conf)
