@@ -46,8 +46,6 @@ def sort(data):
 
 
 def generate(config, outfile='tests.html'):
-    from jinja2 import Template
-
     directory = UpstreamDirectory(config['path'])
     data = {}
     for fp in directory.BIN:
@@ -58,10 +56,8 @@ def generate(config, outfile='tests.html'):
     if not data:
         return
 
-    template = Template(open(t(outfile)).read())
-
     destfile = open(op.join(config['path'], outfile), 'w')
     app_version = report_utils.git_info(config)
-    print(template.render(
+    print(report_utils.render_template(outfile,
         tests=data, sort=sort, current_page=outfile, app_version=app_version,
-        build_repo_url=report_utils.build_repo_url).encode('utf8'), file=destfile)
+        build_repo_url=report_utils.build_repo_url), file=destfile)

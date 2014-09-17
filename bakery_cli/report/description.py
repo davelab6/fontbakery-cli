@@ -31,12 +31,11 @@ def generate(config, outfile='description.html'):
     source_file = op.join(config['path'], 'DESCRIPTION.en_us.html')
     if not op.exists(source_file):
         return
-    from jinja2 import Template
-    template = Template(open(t(outfile)).read())
     destfile = open(op.join(config['path'], outfile), 'w')
+
     data = open(source_file).read()
     app_version = report_utils.git_info(config)
-    print(template.render(
+    print(report_utils.render_template(outfile,
         app_version=app_version, data=data, current_page=outfile,
         build_repo_url=report_utils.build_repo_url,
-        markdown=markdown).encode('utf8'), file=destfile)
+        markdown=markdown), file=destfile)

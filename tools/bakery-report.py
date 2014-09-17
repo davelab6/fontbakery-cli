@@ -36,7 +36,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     if int(args.result) == 0:
-        conf = {'path': os.path.realpath(args.path)}
+        conf = {'path': args.path}
         tests.generate(conf)
         index.generate(conf)
         metadata.generate(conf)
@@ -45,3 +45,7 @@ if __name__ == '__main__':
         review.generate(conf)
         bakery.generate(conf)
         buildlog.generate(conf)
+    else:
+        conf = {'path': args.path, 'failed': True}
+        index.generate(conf)
+

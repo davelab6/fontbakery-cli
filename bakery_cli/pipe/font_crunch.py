@@ -33,7 +33,7 @@ class FontCrunch(object):
         if not pipedata.get('fontcrunch'):
             return  # run fontcrunch only if user set flag in config
         filename = os.path.join(self.builddir, filename)
-        self.bakery.logging_raw('### Foncrunch {}\n'.format(filename))
+        self.bakery.logging_raw('### Fontcrunch {}\n'.format(filename))
 
         fontcrunch.optimize(filename, '{}.crunched'.format(filename))
         shutil.move('{}.crunched'.format(filename), filename)
@@ -42,7 +42,7 @@ class FontCrunch(object):
     def execute(self, pipedata):
         if not pipedata.get('fontcrunch'):
             return  # run fontcrunch only if user set flag in config
-        task = self.bakery.logging_task('Foncrunching TTF')
+        task = self.bakery.logging_task('Fontcrunch TTF')
         if self.bakery.forcerun:
             return
 

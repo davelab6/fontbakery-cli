@@ -195,6 +195,11 @@ def average_table_size(tdict):
 
 
 def generate(config, outfile='index.html'):
+    if config.get('failed'):
+        destfile = open(op.join(config['path'], outfile), 'w')
+        print(report_utils.render_template('failedbuild.html'), file=destfile)
+        return
+
     directory = UpstreamDirectory(config['path'])
 
     faces = []
@@ -227,18 +232,26 @@ def generate(config, outfile='index.html'):
     fonts = [(path, FontFactory.openfont(op.join(config['path'], path)))
              for path in directory.BIN]
     app_version = report_utils.git_info(config)
-    print(report_utils.render_template(
-        outfile, current_page=outfile, fonts=faces, tests=data,
-        basenames=basenames, filter_with_tag=filter_with_tag,
-        filter_by_results_with_tag=filter_by_results_with_tag,
-        vmet=vmet._its_metrics, vhead=vmet._its_metrics_header,
-        autohinting_sizes=autohint_sizes, ttftablesizes=ttftablesizes,
-        fontaineFonts=fonts, get_orthography=get_orthography,
-        to_google_data_list=to_google_data_list,
-        font_table_to_google_data_list=font_table_to_google_data_list,
-        ttftablesizes_mean=ttftablesizes_mean,
-        ttftablesizes_grouped=ttftablesizes_grouped,
-        ttftablesizes_delta=ttftablesizes_delta,
-        average_table_size=average_table_size,
-        build_repo_url=report_utils.build_repo_url, hex=hex, sort=sort,
-        app_version=app_version), file=destfile)
+    print(report_utils.render_template(outfile, current_page=outfile,
+                                       fonts=faces, tests=data,
+                                       basenames=basenames,
+                                       filter_with_tag=filter_with_tag,
+                                       filter_by_results_with_tag=filter_by_results_with_tag,
+                                       vmet=vmet._its_metrics,
+                                       vhead=vmet._its_metrics_header,
+                                       autohinting_sizes=autohint_sizes,
+                                       ttftablesizes=ttftablesizes,
+                                       fontaineFonts=fonts,
+                                       get_orthography=get_orthography,
+                                       to_google_data_list=to_google_data_list,
+                                       font_table_to_google_data_list=font_table_to_google_data_list,
+                                       ttftablesizes_mean=ttftablesizes_mean,
+                                       ttftablesizes_grouped=ttftablesizes_grouped,
+                                       ttftablesizes_delta=ttftablesizes_delta,
+                                       average_table_size=average_table_size,
+                                       build_repo_url=report_utils.build_repo_url,
+                                       hex=hex,
+                                       sort=sort,
+                                       app_version=app_version,
+                                       failed_build=config.get('failed')),
+          file=destfile)

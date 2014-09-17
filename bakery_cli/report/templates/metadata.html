@@ -11,21 +11,9 @@
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.7/js/jquery.tablesorter.min.js" type="text/javascript" ></script>
 </head>
 <body>
-{% set repo_gh_pages = build_repo_url('tree','gh-pages') %}
-{% set repo_url = build_repo_url() %}
 <div class="container-fluid">
-  <ul class="nav nav-tabs">
-    <li><a href="{{repo_gh_pages}}" target="_blank"><i class="fa fa-github"></i> gh-pages</a></li>
-    <li><a href="{{repo_url}}" target="_blank"><i class="fa fa-github-square"></i> Github Page</a></li>
-    <li><a href="index.html">Summary</a></li>
-    <li><a href="review.html">Review</a></li>
-    <li><a href="checks.html">Pre-Build Checks</a></li>
-    <li><a href="tests.html">Tests</a></li>
-    <li><a href="buildlog.html">Build Log</a></li>
-    <li class="active"><a href="{{ current_page }}">METADATA.json</a></li>
-    <li><a href="bakery-yaml.html">bakery.yaml</a></li>
-    <li><a href="description.html">Description</a></li>
-  </ul>
+  {% from "macros.html" import report_navigation with context %}
+  {{ report_navigation(activeitem='metadata') }}
 
   {% if metadata %}
     <h3>METADATA Tests</h3>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Summary</title>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
+</head>
+<body>
+    <div class="container-fluid">
+      {% from "macros.html" import report_navigation with context %}
+      {{ report_navigation(activeitem='index', failed=True) }}
+        <div>Sorry, build failed. <a href="">See Travis for details</a>.</div>
+    </div>
+</body>
+</html>

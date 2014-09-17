@@ -4,21 +4,28 @@ import os
 import sys
 import subprocess
 
+from jinja2 import Environment, FileSystemLoader
+
+
 GH = 'https://github.com'
 TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
 
+jinjaenv = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
+
 
 def render_template(templatename, *args, **kwargs):
-    from jinja2 import Template
-    template = Template(open(op.join(TEMPLATE_DIR, templatename)).read())
+    template = jinjaenv.get_template(templatename)
     return template.render(*args, **kwargs).encode('utf8')
 
 
 def build_repo_url(*chunks):
-    repo_slug = os.environ.get('TRAVIS_REPO_SLUG', None)
+    repo_slug = os.environ.get('TRAVIS_REPO_SLUG', 'dummy')
     if not repo_slug:
         raise ValueError('"TRAVIS_REPO_SLUG" is nod defined in environment')
     return op.join(GH, repo_slug, *chunks)
+
+
+jinjaenv.globals['build_repo_url'] = build_repo_url
 
 
 def prun(command, cwd, log=None):

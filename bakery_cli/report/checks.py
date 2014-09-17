@@ -49,14 +49,10 @@ def generate(config, outfile='checks.html'):
     if not op.exists(upstreamdatafile):
         return
 
-    from jinja2 import Template
-
-    template = Template(open(t(outfile)).read())
-
     destfile = open(op.join(config['path'], outfile), 'w')
 
     upstream = yaml.load(open(upstreamdatafile))
     app_version = report_utils.git_info(config)
-    print(template.render(
+    print(report_utils.render_template(outfile,
         sort=sort, tests=upstream, current_page=outfile, app_version=app_version,
-        build_repo_url=report_utils.build_repo_url).encode('utf8'), file=destfile)
+        build_repo_url=report_utils.build_repo_url), file=destfile)
