@@ -46,43 +46,52 @@
       </table>
   {% endif %}
 
+  {% set create_url = build_repo_url('new', 'master', filename='METADATA.json') %}
+  {% set view_url = build_repo_url('blob', 'master', 'METADATA.json') %}
+  {% set edit_url = build_repo_url('edit', 'master', 'METADATA.json') %}
   {% if metadata_new and metadata %}
-  <h3 class="text-center">JSON Diff of the Two Files</h3>
-  <div class="col-md-6">
-    <h4>{{ ("METADATA.json imported from upstream repo") }}</h4>
-    <div class="container">
-      <div class="row">
-        <div class="col-sm-5 col-md-5">
-          <div id="editor"></div>
-          <textarea id="metadatajson" name="metadatajson">{{ metadata }}</textarea>
+    <h3 class="text-center">JSON Diff of the Two Files</h3>
+    <div class="col-md-6">
+      <h4>{{ ("METADATA.json imported from upstream repo") }}</h4>
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-5 col-md-5">
+            <div id="editor"></div>
+            <textarea id="metadatajson" name="metadatajson">{{ metadata }}</textarea>
+          </div>
         </div>
       </div>
+      <p class="navbar-text navbar-left">
+        <span><a href="{{view_url}}" class="navbar-link">View</a></span>
+        <span><a href="{{edit_url}}" class="navbar-link">Edit</a></span>
+      </p>
     </div>
-  </div>
 
-  <div class="col-md-6">
-    <h4>{{ ("METADATA.json.new generated from files") }}</h4>
-    <div id="editor_new"></div>
-    <textarea id="metadatajson_new" name="metadatajson_new">{{ metadata_new }}</textarea>
-  </div>
+    <div class="col-md-6">
+      <h4>{{ ("METADATA.json.new generated from files") }}</h4>
+      <div id="editor_new"></div>
+      <textarea id="metadatajson_new" name="metadatajson_new">{{ metadata_new }}</textarea>
+    </div>
 
-  <div id="delta-panel-visual" style="clear: both;">
-    <p id="visualdiff"></p>
-  </div>
+    <div id="delta-panel-visual" style="clear: both;">
+      <p id="visualdiff"></p>
+    </div>
 
   {% elif not metadata %}
-  <div class="col-md-12">
-    <h4 class="text-danger">{{ ("METADATA.json does not yet exist") }}</h4>
-  </div>
-  {% elif not metadata_new %}
-  <div class="col-md-12">
-    <h4>{{ ("METADATA.json generated from files") }}</h4>
-
-    <div>
-      <div id="editor"></div>
-      <textarea name="metadatajson" id="metadatajson">{{ metadata }}</textarea>
+    <div class="col-md-12">
+      <h4 class="text-danger">{{ ("METADATA.json does not yet exist") }}</h4>
     </div>
-  </div>
+    <p class="navbar-text navbar-left">
+      <a href="{{ create_url }}" class="btn btn-primary btn-large"><i class="fa fa-github"></i> Create</a>
+    </p>
+  {% elif not metadata_new %}
+    <div class="col-md-12">
+      <h4>{{ ("METADATA.json generated from files") }}</h4>
+      <div>
+        <div id="editor"></div>
+        <textarea name="metadatajson" id="metadatajson">{{ metadata }}</textarea>
+      </div>
+    </div>
   {% endif %}
 </div>
 <!-- Footer -->
@@ -199,7 +208,7 @@
 
     editor.getSession().setUseWrapMode(true);
     editor.getSession().setValue(textarea.val());
-    editor.setReadOnly(true);
+    //editor.setReadOnly(true);
   };
   $(document).ready(function () {
     var editor = ace.edit("editor"),

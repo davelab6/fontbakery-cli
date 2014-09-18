@@ -6,8 +6,14 @@ import subprocess
 
 from jinja2 import Environment, FileSystemLoader
 
+try:
+    import urllib.parse as urllib_parse
+except ImportError:
+    from urllib import urlencode as urllib_parse
+
 
 GH = 'https://github.com'
+GH_RAW = 'https://raw.githubusercontent.com/'
 TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
 
 jinjaenv = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
@@ -18,14 +24,23 @@ def render_template(templatename, *args, **kwargs):
     return template.render(*args, **kwargs).encode('utf8')
 
 
-def build_repo_url(*chunks):
+def _build_repo_url(base_url, *chunks, **kwargs):
     repo_slug = os.environ.get('TRAVIS_REPO_SLUG', 'fontdirectory/dummy')
-    if not repo_slug:
-        raise ValueError('"TRAVIS_REPO_SLUG" is nod defined in environment')
-    return op.join(GH, repo_slug, *chunks)
+    if kwargs:
+        return '{}?{}'.format(op.join(base_url, repo_slug, *chunks), urllib_parse(kwargs))
+    return op.join(base_url, repo_slug, *chunks)
+
+
+def build_repo_url(*chunks, **kwargs):
+    return _build_repo_url(GH, *chunks, **kwargs)
+
+
+def build_raw_repo_url(*chunks, **kwargs):
+    return _build_repo_url(GH_RAW, *chunks, **kwargs)
 
 
 jinjaenv.globals['build_repo_url'] = build_repo_url
+jinjaenv.globals['build_raw_repo_url'] = build_raw_repo_url
 
 
 def prun(command, cwd, log=None):

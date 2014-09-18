@@ -7,6 +7,8 @@ before_install:
 install:
   - export LD_LIBRARY_PATH=/usr/local/lib
   - pip install python-coveralls
+  - pip install Jinja2
+  - pip install Scrapy
   - "pip install git+https://github.com/behdad/fonttools.git"
   - "pip install git+https://github.com/googlefonts/fontcrunch.git"
   - "pip install git+https://github.com/googlefonts/fontbakery-cli.git"

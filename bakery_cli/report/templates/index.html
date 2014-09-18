@@ -7,6 +7,33 @@
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />
   <style>
     /* All tables should only be as wide as they need to be */
+    /*.flex-container {*/
+        /*height: 100%;*/
+        /*padding: 0;*/
+        /*margin: 0;*/
+        /*display: -webkit-box;*/
+        /*display: -moz-box;*/
+        /*display: -ms-flexbox;*/
+        /*display: -webkit-flex;*/
+        /*display: flex;*/
+        /*align-items: center;*/
+        /*justify-content: center;*/
+    /*}*/
+
+    .flex-container {
+      /* We first create a flex layout context */
+      display: flex;
+
+      /* Then we define the flow direction and if we allow the items to wrap
+       * Remember this is the same as:
+       * flex-direction: row;
+       * flex-wrap: wrap;
+       */
+      flex-flow: row wrap;
+
+      /* Then we define how is distributed the remaining space */
+      justify-content: space-around;
+    }
 
     .popover {
         max-width: 1980px;
@@ -81,7 +108,7 @@
           {% if blockers %}
             <h3>Blockers</h3>
             <div id="piechartSum"></div>
-            <div class="table-responsive">
+            <div class="flex-container">
               <table id="blockersTable" class="table table-striped table-bordered table-condensed tablesorter table-hover">
                 <thead>
                 <tr>
@@ -110,9 +137,9 @@
           {% endif %}
         {% endfor %}
 
-        <h4>Vertical metrics</h4>
-        <div class="table-responsive">
+        <div class="flex-container">
           <table id="vmetTable" class="table table-striped table-bordered table-condensed tablesorter">
+            <caption><h4>Vertical metrics</h4></caption>
             <thead>
             <tr>
               <th></th>
@@ -131,7 +158,7 @@
         <h4>TTF Table Sizes</h4>
         <div id="ttftablesizesDeviation"></div>
         <div id="ttftablesizesGrouped"></div>
-        <div class="table-responsive">
+        <div class="flex-container">
           <table id="ttfTableSizesTable" class="table table-striped table-bordered table-condensed tablesorter table-hover">
             <thead>
             <tr>
@@ -155,35 +182,44 @@
 
         {% if autohinting_sizes %}
           <h4>ttfautohint filesize impact statistic</h4>
-          <div class="table-responsive">
+          <div class="flex-container">
             <table class="table-striped table-bordered table-condensed tablesorter table-hover">
-              {% for t in autohinting_sizes %}
-                <tr>
-                  <th colspan="2">{{ t['fontname'] }}</th>
-                </tr>
-                <tr>
-                  <td>Before</td>
+              <tr>
+                <th></th>
+                {% for t in autohinting_sizes %}
+                  <th>{{ t['fontname'] }}</th>
+                {% endfor %}
+              </tr>
+              <tr>
+                <td>Before</td>
+                {% for t in autohinting_sizes %}
                   <td>{{ t['origin'] }}</td>
-                </tr>
-                <tr>
-                  <td>After</td>
+                {% endfor %}
+              </tr>
+              <tr>
+                <td>After</td>
+                {% for t in autohinting_sizes %}
                   <td>{{ t['processed'] }}</td>
-                </tr>
-                <tr>
-                  <td>Increase</td>
+                {% endfor %}
+              </tr>
+              <tr>
+                <td>Increase</td>
+                {% for t in autohinting_sizes %}
                   <td>{{ t['processed'] - t['origin'] }}</td>
-                </tr>
-                <tr>
-                  <td>Change</td>
+                {% endfor %}
+              </tr>
+              <tr>
+                <td>Change</td>
+                {% for t in autohinting_sizes %}
                   <td>{{ '{:.3f}x'.format(t['processed'] / t['origin']) }}</td>
-                </tr>
-              {% endfor %}
+                {% endfor %}
+              </tr>
             </table>
           </div>
         {% endif %}
 
         <h4>Font Description</h4>
-        <div class="table-responsive">
+        <div class="flex-container">
         <table id="fontDescrTable" class="table table-striped table-bordered table-condensed tablesorter table-hover">
           <thead>
             <tr>
@@ -302,7 +338,7 @@
 
         <h4>Font Coverage characters</h4>
         {% set fonts_names, averages, fonts_info = get_orthography(fontaineFonts) %}
-        <div class="table-responsive">
+        <div class="flex-container">
           <table id="fontCoverageTable" class="table table-bordered table-condensed tablesorter table-hover">
             <thead>
               <tr>
