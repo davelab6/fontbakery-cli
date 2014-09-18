@@ -75,27 +75,64 @@
       background-color: #c4e3f3 !important;
     }
   </style>
+  <style>
+    {% for font in fonts %}
+      @font-face {
+        font-family: {{ font.basename }};
+        src: url({{ font.path }});
+      }
+      .face{{ loop.index }} {
+        font-family: {{ font.basename }};
+        font-size: 24pt;
+      }
+      .face-normal{{ loop.index }} {
+        font-family: {{ font.basename }};
+        font-style: normal;
+        font-size: 24pt;
+      }
+      .face-italic{{ loop.index }} {
+        font-family: {{ font.basename }};
+        font-style: italic;
+        font-size: 24pt;
+      }
+    {% endfor %}
+  </style>
 </head>
 <body>
     <div class="container-fluid">
         {% from "macros.html" import report_navigation with context %}
         {{ report_navigation(activeitem='summary') }}
-
         {% set map = {'success': 'OK', 'failure': 'FAIL', 'error': 'ERROR', 'fixed': 'FIXED'} %}
         {% set testTypes = { 'error': 'danger', 'failure': 'error', 'success': 'success', 'fixed': 'info'} %}
 
+        <table id="fontsTable" class="table table-striped table-bordered table-condensed tablesorter table-hover">
+        <thead>
+        <tr>
+          <th>Filename</th>
+          <th>Weight</th>
+          <th>Roman</th>
+          <th>Italic</th>
+        </tr>
+        </thead>
+        <tbody>
         {% for font in fonts %}
-          <h4>{{ font.name }}</h4>
-
-          <style>
-              @font-face {font-family: {{ font.basename }}; src: url({{ font.path }});}
-              .face{{ loop.index }} {font-family: {{ font.basename }}; font-size: 24pt;}
-          </style>
-
-          <div class="face{{ loop.index }}">
-            Grumpy wizards make toxic brew for the evil Queen and Jack
-          </div>
+          <tr>
+            <td>{{ font.name }}</td>
+            <td>{{ font.OS2_usWeightClass }}</td>
+            <td>
+              <div class="face-normal{{ loop.index }}">
+                Grumpy wizards make toxic brew for the evil Queen and Jack
+              </div>
+            </td>
+            <td>
+              <div class="face-italic{{ loop.index }}">
+                Grumpy wizards make toxic brew for the evil Queen and Jack
+              </div>
+            </td>
+          </tr>
         {% endfor %}
+        </tbody>
+        </table>
 
         {% for font in tests.keys() %}
           {% set blockers = filter_by_results_with_tag(tests[font], 'required', 'error', 'fixed', 'failure') %}
