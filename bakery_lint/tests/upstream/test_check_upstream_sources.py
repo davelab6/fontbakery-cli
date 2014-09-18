@@ -36,7 +36,9 @@ class ProjectUpstreamTestCase(TestCase):
     @tags('note')
     def test_bakery_yaml_exists(self):
         """ Repository does contain bakery.yaml configuration file """
-        self.assertTrue(os.path.exists(os.path.join(self.operator.path, 'bakery.yaml')),
+        f = os.path.exists(os.path.join(self.operator.path, 'bakery.yaml'))
+        f = f or os.path.exists(os.path.join(self.operator.path, 'bakery.yml'))
+        self.assertTrue(f,
                         msg=('File `bakery.yaml` does not exist in root '
                              'of upstream repository'))
 
