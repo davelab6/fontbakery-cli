@@ -40,4 +40,4 @@ class TestTTFSourceFontFileNameEqualsFamilyStyle(TestCase):
         actualname, extension = os.path.splitext(self.operator.path)
 
         self.expectedfilename = '{0}{1}'.format(expectedname, extension)
-        self.assertEqual(actualname, expectedname)
+        self.assertEqual(os.path.basename(actualname), expectedname)
