@@ -33,7 +33,7 @@ class TestGlyphNameDoesNotContainsDisallowedChars(TestCase):
         for _, glyphName in enumerate(font.ttfont.getGlyphOrder()):
             if glyphName == '.notdef':
                 continue
-            if not re.match('(^[.0-9])[a-zA-Z_][a-zA-Z_0-9]{,30}', glyphName):
+            if not re.match(r'(?![.0-9])[a-zA-Z_][a-zA-Z_0-9]{,30}', glyphName):
                 self.fail(('Glyph "%s" does not comply conventions.'
                            ' A glyph name may be up to 31 characters in length,'
                            ' must be entirely comprised of characters from'

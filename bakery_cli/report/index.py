@@ -58,10 +58,10 @@ def filter_with_tag(fonttestdata, tag):
 
 
 def filter_by_results_with_tag(fonttestdata, tag, *results):
-    tests = []
+    tests = {}
     for res in results:
-        tests = tests + fonttestdata.get(res)
-    return [test for test in tests if tag in test.get('tags')]
+        tests[res] = [test for test in fonttestdata.get(res) if tag in test.get('tags', [])]
+    return tests
 
 
 def get_fonts_table_sizes(fonts):

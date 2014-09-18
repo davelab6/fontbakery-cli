@@ -114,8 +114,8 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for blocker in blockers %}
-                  {%- for testType, icon in testTypes.iteritems() | sort %}
+                {%- for testType, icon in testTypes.iteritems() | sort %}
+                  {% for blocker in blockers[testType] %}
                     <tr class="apopover" data-placement="top" data-content="{{ blocker.name|replace('.','/') }}.py:{{ blocker.methodName }}()">
                       <td>{{ blocker['tags']|join(', ') }}</td>
                       <td>{{ blocker['methodDoc']|default('None') }}</td>

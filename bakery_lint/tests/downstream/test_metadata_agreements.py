@@ -61,15 +61,16 @@ class CheckMetadataAgreements(TestCase):
 
         self.assertTrue(have)
 
-    @tags('required',)
+    @tags('required')
     def test_metadata_regular_is_400(self):
-        """ Usually Regular should be 400 """
+        """ Regular should be 400 """
         have = False
         for i in self.metadata.fonts:
             if i.full_name.endswith('Regular') and i.weight == 400:
                 have = True
-
-        self.assertTrue(have)
+        if not have:
+            self.fail(('METADATA.json does not contain Regular font. At least'
+                       ' one font must be Regular and its weight must be 400'))
 
     def test_metadata_regular_is_normal(self):
         """ Usually Regular should be normal style """
