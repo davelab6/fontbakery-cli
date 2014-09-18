@@ -39,7 +39,7 @@
         width: inherit;
     }
 
-    span.coverageStats, td.coverageAverage {
+    td.coverageStats, td.coverageAverage {
       cursor: pointer;
     }
 
@@ -385,7 +385,7 @@
               <tr>
                 <td>{{ subset }}</td>
                 {% for font_info in info %}
-                  <td data-toggle="modal" data-target="#myModal" class="{{ font_info.support | replace('full','success') | replace('partial','info') | replace('fragmentary','warning') | replace('unsupported','error') }}"><span class="coverageStats">{{ font_info.coverage }}%</span></td>
+                  <td data-toggle="modal" data-target="#myModal" class="{{ font_info.support | replace('full','success') | replace('partial','info') | replace('fragmentary','warning') | replace('unsupported','error') }} coverageStats">{{ font_info.coverage }}%</td>
                   <td data-subset="{{ subset }}" data-fontname="{{ font_info.name }}" class="hidden">
                     <div>
                       {% if font_info.coverage != 100 and font_info.missing_chars %}
@@ -540,7 +540,7 @@
           td_col_average.addClass(td_class)
         });
       })
-      .on("click", "span.coverageStats", function() {
+      .on("click", "td.coverageStats", function() {
         // show modal window on click in td
         // in Font Coverage characters table
         var hidden_td = $(this).closest('td').next(),
