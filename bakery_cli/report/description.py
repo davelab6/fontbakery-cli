@@ -32,18 +32,19 @@ t = lambda templatefile: op.join(TEMPLATE_DIR, templatefile)
 
 
 def reformat_contents(path):
+    placeholder = '[LINEBREAK]'
+
     doc = etree.fromstring(open(path).read(), parser=etree.HTMLParser())
 
     for node in doc.xpath('//*'):
         if not node.text:
             continue
 
-        node.text = '\n'.join(re.findall(r'(.+?[.]+)', node.text.strip()))
-        print(node.text.strip())
+        node.text = placeholder.join(re.findall(r'(.+?[.]+)', node.text.strip()))
 
     doc = etree.tostring(doc, pretty_print=True)
-    doc, _ = tidy_document(doc, {'show-body-only': True})
-    return doc
+    doc, _ = tidy_document(doc, {'show-body-only': True, 'indent-cdata': '0'})
+    return doc.replace(placeholder, '\n')
 
 
 def generate(config, outfile='description.html'):
@@ -52,7 +53,8 @@ def generate(config, outfile='description.html'):
         return
     data = open(source_file).read()
 
-    print(reformat_contents(source_file), file=open(source_file, 'w'))
+    contents = reformat_contents(source_file)
+    print(contents, file=open(source_file, 'w'))
 
     destfile = open(op.join(config['path'], outfile), 'w')
 
