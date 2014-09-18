@@ -448,6 +448,28 @@
       background-color: #c4e3f3 !important;
     }
   </style>
+  <style>
+    {% for font in fonts %}
+      @font-face {
+        font-family: {{ font.basename }};
+        src: url({{ font.path }});
+      }
+      .face{{ loop.index }} {
+        font-family: {{ font.basename }};
+        font-size: 24pt;
+      }
+      .face-normal{{ loop.index }} {
+        font-family: {{ font.basename }};
+        font-style: normal;
+        font-size: 24pt;
+      }
+      .face-italic{{ loop.index }} {
+        font-family: {{ font.basename }};
+        font-style: italic;
+        font-size: 24pt;
+      }
+    {% endfor %}
+  </style>
 </head>
 <body>
 <div class="container-fluid">
@@ -465,20 +487,19 @@
           <div class="main-panel">
             <div class="superspecimen">
               <div itemprop="text" class="fontcard" id="font-card-container">
-                <p>
+                <div id="_set" class="supersample face1">Grumpy wizards make toxic brew for the evil Queen and Jack.</div>
+
                   {% for font in fonts %}
-                    <h4>{{ font.name }}</h4>
-
-                    <style>
-                      @font-face {font-family: {{ font.basename }}; src: url({{ font.path }});}
-                      .face{{ loop.index }} {font-family: {{ font.basename }}; font-size: 24pt;}
-                    </style>
-
-                    <div class="face{{ loop.index }}">
-                      Grumpy wizards make toxic brew for the evil Queen and Jack
+                    <div class="fontitem">
+                      <span class="identifier">Normal {{ font.OS2_usWeightClass }}</span>
+                      <span class="stylesample face-normal{{ loop.index }}">Grumpy wizards make toxic brew for the evil Queen and Jack.</span>
+                    </div>
+                    <div class="fontitem">
+                      <span class="identifier">Italic {{ font.OS2_usWeightClass }}</span>
+                      <span class="stylesample face-italic{{ loop.index }}">Grumpy wizards make toxic brew for the evil Queen and Jack.</span>
                     </div>
                 {% endfor %}
-                </p>
+
                 <p class="face1 face-example">
                   One morning, when Gregor Samsa woke from troubled dreams, he found himself transformed in his bed into a horrible vermin. He lay on his armour-like back, and if he lifted his head a little he could see his brown belly, slightly domed and divided by arches into stiff sections. The bedding was hardly able to cover it and seemed ready to slide off any moment. His many legs, pitifully thin compared with the size of the rest of him, waved about helplessly as he looked.
                 <p>

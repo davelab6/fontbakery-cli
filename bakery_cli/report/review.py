@@ -20,7 +20,7 @@ import os.path as op
 from markdown import markdown
 
 from bakery_cli.report import utils as report_utils
-
+from bakery_cli.ttfont import Font
 from bakery_cli.utils import UpstreamDirectory
 
 from fontaine.cmap import Library
@@ -51,7 +51,13 @@ def generate(config, outfile='review.html'):
         if 'static/' in font:
             continue
         basename = op.basename(font)[:-4]
-        faces.append({'name': font, 'basename': basename, 'path': font})
+        full_path = op.join(config['path'], font)
+        faces.append({
+            'name': font, 'basename':
+            basename,
+            'path': font,
+            'OS2_usWeightClass': Font(full_path).OS2_usWeightClass
+        })
     destfile = open(op.join(config['path'], 'review.html'), 'w')
     app_version = report_utils.git_info(config)
     print(report_utils.render_template(

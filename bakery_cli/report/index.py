@@ -27,7 +27,7 @@ from bakery_cli.scripts.vmet import get_metric_view
 from bakery_cli.utils import UpstreamDirectory
 
 from bakery_cli.report import utils as report_utils
-
+from bakery_cli.ttfont import Font
 
 TAB = 'Index'
 TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
@@ -213,7 +213,11 @@ def generate(config, outfile='index.html'):
         if 'static/' in font:
             continue
         basename = op.basename(font)[:-4]
-        faces.append({'name': font, 'basename': basename, 'path': font})
+        full_path = op.join(config['path'], font)
+        faces.append({'name': font,
+                      'basename': basename,
+                      'path': font,
+                      'OS2_usWeightClass': Font(full_path).OS2_usWeightClass})
 
     destfile = open(op.join(config['path'], outfile), 'w')
     data = yaml.load(open(op.join(config['path'], 'METADATA.yaml')))
