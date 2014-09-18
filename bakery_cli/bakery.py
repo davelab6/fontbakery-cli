@@ -173,6 +173,7 @@ class Bakery(object):
             except:
                 self.save_build_state()
                 self.logging_raw('ERROR: BUILD FAILED\n')
+                raise
 
         return self.config
 

@@ -79,10 +79,7 @@ def run_bakery(sourcedir):
         config = op.join(build_project_dir, 'bakery.yaml')
         b.load_config(config)
         b.run()
-    except Exception as ex:
-        raise
-        print('FAILED: %s' % sourcedir, file=sys.stderr)
-        print(ex, file=sys.stderr)
+    except:
         sys.exit(1)
 
 
