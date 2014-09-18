@@ -36,30 +36,30 @@ class ProjectUpstreamTestCase(TestCase):
     @tags('note')
     def test_bakery_yaml_exists(self):
         """ Repository does contain bakery.yaml configuration file """
-        f = os.path.exists(os.path.join(self.operator.path, 'bakery.yaml'))
-        f = f or os.path.exists(os.path.join(self.operator.path, 'bakery.yml'))
+        f = os.path.exists(os.path.join(self.operator.path, '..', 'bakery.yaml'))
+        f = f or os.path.exists(os.path.join(self.operator.path, '..', 'bakery.yml'))
         self.assertTrue(f,
-                        msg=('File `{}` does not exist in root '
-                             'of upstream repository').format(self.operator.path))
+                        msg=('File `bakery.yaml` does not exist in root '
+                             'of upstream repository'))
 
     @tags('note')
     def test_fontlog_txt_exists(self):
         """ Repository does contain FONTLOG.txt file """
-        self.assertTrue(os.path.exists(os.path.join(self.operator.path, 'FONTLOG.txt')),
+        self.assertTrue(os.path.exists(os.path.join(self.operator.path, '..', 'FONTLOG.txt')),
                         msg=('File `FONTLOG.txt` does not exist in root '
                              'of upstream repository'))
 
     @tags('note')
     def test_description_html_exists(self):
         """ Repository does containDESCRIPTION.en_us.html file """
-        self.assertTrue(os.path.exists(os.path.join(self.operator.path, 'DESCRIPTION.en_us.html')),
+        self.assertTrue(os.path.exists(os.path.join(self.operator.path, '..', 'DESCRIPTION.en_us.html')),
                         msg=('File `DESCRIPTION.en_us.html` does not exist in root '
                              'of upstream repository'))
 
     @tags('note')
     def test_metadata_json_exists(self):
         """ Repository does contain METADATA.json file """
-        self.assertTrue(os.path.exists(os.path.join(self.operator.path, 'METADATA.json')),
+        self.assertTrue(os.path.exists(os.path.join(self.operator.path, '..', 'METADATA.json')),
                         msg=('File `METADATA.json` does not exist in root '
                              'of upstream repository'))
 
