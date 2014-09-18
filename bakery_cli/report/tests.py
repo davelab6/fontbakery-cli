@@ -19,6 +19,7 @@ from __future__ import print_function
 from collections import defaultdict, Counter, namedtuple
 import os.path as op
 import yaml
+import json
 
 from bakery_cli.report import utils as report_utils
 from bakery_cli.utils import UpstreamDirectory
@@ -167,13 +168,12 @@ def generate(config, outfile='tests.html'):
         return
 
     tests_summary = {}
-    tests_summary_filepath = op.join(config['path'], 'tests.yaml')
+    tests_summary_filepath = op.join(config['path'], 'tests.json')
     if op.exists(tests_summary_filepath):
-        tests_summary = yaml.load(open(tests_summary_filepath))
+        tests_summary = json.load(open(tests_summary_filepath))
     tests_summary.update(tests)
 
-    with open(tests_summary_filepath, 'w') as l:
-        l.write(yaml.safe_dump(tests_summary))
+    json.dump(tests_summary, open(tests_summary_filepath, 'w'))
 
     destfile = open(op.join(config['path'], outfile), 'w')
     fontpaths = [op.join(config['path'], path) for path in directory.BIN]

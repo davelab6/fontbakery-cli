@@ -18,6 +18,7 @@ from __future__ import print_function
 import os.path as op
 from markdown import markdown
 import yaml
+import json
 
 from bakery_cli.report import utils as report_utils
 
@@ -53,9 +54,9 @@ def generate(config, outfile='metadata.html'):
     except IOError:
         data = {}
 
-    tests_summary_filepath = op.join(config['path'], 'tests.yaml')
+    tests_summary_filepath = op.join(config['path'], 'tests.json')
     if op.exists(tests_summary_filepath):
-        tests_summary = yaml.load(open(tests_summary_filepath))
+        tests_summary = json.load(open(tests_summary_filepath))
 
     summary = {
         'success': len(data.get('METADATA.json', {}).get('success', [])),
@@ -63,8 +64,7 @@ def generate(config, outfile='metadata.html'):
         'failure': len(data.get('METADATA.json', {}).get('failure', []))
     }
     tests_summary.update({'METADATA.json': summary})
-    with open(tests_summary_filepath, 'w') as l:
-        l.write(yaml.safe_dump(tests_summary))
+    json.dump(tests_summary, open(tests_summary_filepath, 'w'))
 
     destfile = open(op.join(config['path'], outfile), 'w')
 
