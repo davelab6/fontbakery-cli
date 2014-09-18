@@ -61,7 +61,7 @@ class TestDiacritic(TestCase):
         if flatglyphs and len(diacritic_glyphs) != flatglyphs:
             percentage = flatglyphs * 100. / len(diacritic_glyphs)
             self.fail('%.2f%% are made by Flat' % percentage)
-        self.fail(len(diacritic_glyphs))
+        self.fail('{}'.format(diacritic_glyphs))
 
     def test_diacritic_made_as_component(self):
         """ Check that diacritic glyph are made completely with composite """
