@@ -68,9 +68,7 @@ setup(
             'tests/*.txt',
             'tests/*.mkd',
             'report/templates/*.html',
-            'report/static/css/*.*',
-            'report/static/js/*.*',
-            'report/static/fonts/*.*'
+            'report/templates/css/*.*',
         ]
     },
     install_requires=[
