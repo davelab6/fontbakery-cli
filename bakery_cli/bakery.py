@@ -108,10 +108,10 @@ class Bakery(object):
         # add ch to logger
         self.logger.addHandler(ch)
 
-        chf = logging.FileHandler(op.join(self.build_dir, 'buildlog.txt'))
-        chf.setFormatter(formatter)
-        chf.setLevel(logging.DEBUG)
-        self.logger.addHandler(chf)
+        # chf = logging.FileHandler(op.join(self.build_dir, 'buildlog.txt'))
+        # chf.setFormatter(formatter)
+        # chf.setLevel(logging.DEBUG)
+        # self.logger.addHandler(chf)
 
     def init_taskset(self, taskset):
         """ Defines object to use TaskSet interface. Default: BakeryTaskSet
