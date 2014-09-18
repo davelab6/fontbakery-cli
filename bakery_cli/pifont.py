@@ -99,10 +99,10 @@ class PiFontSFD:
         ll = self.font.glyphs()
         return sorted(map(lambda x: (x.unicode, x.glyphname), ll))
 
-    def get_contours_count(self):
+    def get_contours_count(self, glyphname):
         return 0
 
-    def get_points_count(self):
+    def get_points_count(self, glyphname):
         return 0
 
 
@@ -190,8 +190,8 @@ class PiFontFontTools:
         ll = zip(cmap4, cmap4.values())
         return sorted(ll)
 
-    def get_contours_count(self):
+    def get_contours_count(self, glyphname):
         return 0
 
-    def get_points_count(self):
+    def get_points_count(self, glyphname):
         return 0
