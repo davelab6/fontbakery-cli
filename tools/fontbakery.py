@@ -43,6 +43,8 @@ def create_bakery_config(bakery_config_dir, data):
 
     bakeryyaml = op.abspath(op.join(bakery_config_dir, 'bakery.yaml'))
 
+    data = {k: data[k] for k in data if data[k]}
+
     l = open(bakeryyaml, 'w')
     l.write(yaml.safe_dump(data))
     l.close()
