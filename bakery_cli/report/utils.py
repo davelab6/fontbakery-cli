@@ -16,7 +16,8 @@ GH = 'https://github.com'
 GH_RAW = 'https://raw.githubusercontent.com/'
 TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
 
-jinjaenv = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
+jinjaenv = Environment(loader=FileSystemLoader(TEMPLATE_DIR),
+                       extensions=["jinja2.ext.do", ],)
 
 
 def render_template(templatename, *args, **kwargs):

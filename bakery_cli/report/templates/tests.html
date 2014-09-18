@@ -14,6 +14,7 @@
   {% for font in tests %}
     <div id="piechart{{ loop.index }}"></div>
   {% endfor %}
+  <div id="piechartAverage"></div>
   <div id="ttftablesizesGrouped"></div>
   <table class="table table-striped table-bordered table-condensed tablesorter">
     <thead>
@@ -78,32 +79,24 @@
         "failure": chartsum.failure + tests[font]['failure']|length,
         "fixed": chartsum.fixed + tests[font]['fixed']|length}
       %}
+      {% if loop.last %}
+        var av_data = google.visualization.arrayToDataTable([
+          ['Tests', '#'],
+          ['Success {{ chartsum['success'] }}', {{ chartsum['success']/tests|length }}],
+          ['Fixed {{ chartsum['fixed'] }}', {{ chartsum['fixed']/tests|length }}],
+          ['Failed {{ chartsum['failure'] }}', {{ chartsum['failure']/tests|length }}],
+          ['Error {{ chartsum['error'] }}', {{ chartsum['error']/tests|length }}]
+        ]);
+        var av_options = {
+          title: "Average",
+          is3D: true,
+          colors: ['#468847', '#3a87ad', '#b94a48', '#c09853'],
+        };
+        var av_chart = new google.visualization.PieChart(document.getElementById('piechartAverage'));
+        av_chart.draw(av_data, av_options);
+      {% endif %}
     {% endfor %}
 
-
-    var headings = $.merge( ["Table", "Average"], {{ttftablesizes_grouped.fonts}} );
-    var aggregated_table = [];
-
-    aggregated_table.push(headings);
-
-    $({{ttftablesizes_grouped.tables}}).each(function(i){
-      aggregated_table.push(this)
-    });
-
-    var data = google.visualization.arrayToDataTable(aggregated_table);
-    var chart = new google.visualization.LineChart(document.getElementById('ttftablesizesGrouped'));
-    var options = {
-      title: "Fonts compared to average",
-      is3D: true,
-      vAxis: {
-        title: "Size (bytes)"
-      },
-      hAxis: {
-        slantedText: true
-      },
-      height: 500
-    };
-    chart.draw(data, options);
   }
 </script>
 
