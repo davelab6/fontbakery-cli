@@ -16,11 +16,8 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
 import os.path as op
-import re
 
 from markdown import markdown
-from tidylib import tidy_document
-import lxml.etree as etree
 
 from bakery_cli.report import utils as report_utils
 
@@ -31,30 +28,11 @@ TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
 t = lambda templatefile: op.join(TEMPLATE_DIR, templatefile)
 
 
-def reformat_contents(path):
-    placeholder = '[LINEBREAK]'
-
-    doc = etree.fromstring(open(path).read(), parser=etree.HTMLParser())
-
-    for node in doc.xpath('//*'):
-        if not node.text:
-            continue
-
-        node.text = placeholder.join(re.findall(r'(.+?[.]+)', node.text.strip()))
-
-    doc = etree.tostring(doc, pretty_print=True)
-    doc, _ = tidy_document(doc, {'show-body-only': True, 'indent-cdata': '0'})
-    return doc.replace(placeholder, '\n')
-
-
 def generate(config, outfile='description.html'):
     source_file = op.join(config['path'], 'DESCRIPTION.en_us.html')
     if not op.exists(source_file):
         return
     data = open(source_file).read()
-
-    contents = reformat_contents(source_file)
-    print(contents, file=open(source_file, 'w'))
 
     destfile = open(op.join(config['path'], outfile), 'w')
 
