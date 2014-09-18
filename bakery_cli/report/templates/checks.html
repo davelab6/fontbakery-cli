@@ -10,6 +10,10 @@
   {% from "macros.html" import report_navigation with context %}
   {{ report_navigation(activeitem='prebuild') }}
   <h3>Pre-Build Checks</h3>
+  {% for font in tests %}
+    <div id="piechart{{ loop.index }}"></div>
+  {% endfor %}
+  <div id="piechartAverage"></div>
   <table class="table table-striped table-bordered table-condensed tablesorter">
     <thead>
     <tr>
@@ -23,7 +27,6 @@
     {% set map = {'success': 'OK', 'failure': 'FAIL', 'error': 'ERROR', 'fixed': 'FIXED'} %}
     {% set testTypes = { 'error': 'danger', 'failure': 'error', 'success': 'success', 'fixed': 'info'} %}
     {% for font in tests %}
-      <div id="piechart{{ loop.index }}"></div>
       {%- for testType, icon in testTypes.iteritems() | sort %}
         {% for item in sort(tests[font][testType]) %}
           <tr>
@@ -69,11 +72,10 @@
         ['Failed {{ tests[font]['failure']|length }}', {{ tests[font]['failure']|length }}],
         ['Error {{ tests[font]['error']|length }}', {{ tests[font]['error']|length }}]
       ]);
-
       var options = {
         title: "{{ font }}",
         is3D: true,
-        colors: ['#468847', '#3a87ad', '#b94a48', '#c09853'],
+        colors: ['#468847', '#3a87ad', '#b94a48', '#c09853']
       };
 
       var chart = new google.visualization.PieChart(document.getElementById('piechart{{ loop.index }}'));
@@ -85,6 +87,22 @@
         "failure": chartsum.failure + tests[font]['failure']|length,
         "fixed": chartsum.fixed + tests[font]['fixed']|length}
       %}
+      {% if loop.last %}
+        var av_data = google.visualization.arrayToDataTable([
+          ['Tests', '#'],
+          ['Success {{ chartsum['success'] }}', {{ chartsum['success']/tests|length }}],
+          ['Fixed {{ chartsum['fixed'] }}', {{ chartsum['fixed']/tests|length }}],
+          ['Failed {{ chartsum['failure'] }}', {{ chartsum['failure']/tests|length }}],
+          ['Error {{ chartsum['error'] }}', {{ chartsum['error']/tests|length }}]
+        ]);
+        var av_options = {
+          title: "Average",
+          is3D: true,
+          colors: ['#468847', '#3a87ad', '#b94a48', '#c09853']
+        };
+        var av_chart = new google.visualization.PieChart(document.getElementById('piechartAverage'));
+        av_chart.draw(av_data, av_options);
+      {% endif %}
     {% endfor %}
   }
 </script>
