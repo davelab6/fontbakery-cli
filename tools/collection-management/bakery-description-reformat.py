@@ -15,8 +15,8 @@
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
-import re
 from tidylib import tidy_document
+import nltk.data
 import lxml.etree as etree
 
 
@@ -28,11 +28,13 @@ def reformat_contents(path):
     except IOError:
         return ''
 
+    sent_detector = nltk.data.load('tokenizers/punkt/english.pickle')
+
     for node in doc.xpath('//*'):
         if not node.text:
             continue
 
-        node.text = placeholder.join(re.findall(r'(.+?[.]+)', node.text.strip()))
+        node.text = placeholder.join(sent_detector.tokenize(node.text.strip()))
 
     doc = etree.tostring(doc, pretty_print=True)
     doc, _ = tidy_document(doc, {'show-body-only': True, 'indent-cdata': '0'})
