@@ -79,8 +79,7 @@ setup(
         'fontaine',
         'html5lib',
         'python-magic',
-        'markdown',
-        'pytidylib'
+        'markdown'
     ],
     setup_requires=['nose', 'mock', 'coverage'],
     dependency_links=['https://github.com/behdad/fontTools/tarball/master#egg=fonttools-2.4'],
