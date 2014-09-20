@@ -27,7 +27,8 @@ from bakery_cli.scripts.vmet import get_metric_view
 from bakery_cli.utils import UpstreamDirectory
 
 from bakery_cli.report import utils as report_utils
-from bakery_cli.ttfont import Font
+
+from bakery_lint.metadata import Metadata
 
 TAB = 'Index'
 TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
@@ -207,17 +208,14 @@ def generate(config, outfile='index.html'):
 
     directory = UpstreamDirectory(config['path'])
 
+    metadata_file = open(op.join(config['path'], 'METADATA.json')).read()
+    family_metadata = Metadata.get_family_metadata(metadata_file)
     faces = []
-
-    for font in directory.BIN:
-        if 'static/' in font:
-            continue
-        basename = op.basename(font)[:-4]
-        full_path = op.join(config['path'], font)
-        faces.append({'name': font,
-                      'basename': basename,
-                      'path': font,
-                      'OS2_usWeightClass': Font(full_path).OS2_usWeightClass})
+    for f in family_metadata.fonts:
+        faces.append({'name': f.full_name,
+                      'basename': f.post_script_name,
+                      'path': f.filename,
+                      'meta': f})
 
     destfile = open(op.join(config['path'], outfile), 'w')
     data = yaml.load(open(op.join(config['path'], 'METADATA.yaml')))

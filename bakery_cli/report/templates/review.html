@@ -491,12 +491,8 @@
 
                   {% for font in fonts %}
                     <div class="fontitem">
-                      <span class="identifier">Normal {{ font.OS2_usWeightClass }}</span>
-                      <span class="stylesample face-normal{{ loop.index }}">Grumpy wizards make toxic brew for the evil Queen and Jack.</span>
-                    </div>
-                    <div class="fontitem">
-                      <span class="identifier">Italic {{ font.OS2_usWeightClass }}</span>
-                      <span class="stylesample face-italic{{ loop.index }}">Grumpy wizards make toxic brew for the evil Queen and Jack.</span>
+                      <span class="identifier">{{ get_weight_name(font.meta.weight) }} {{ font.meta.weight }} {{font.meta.style}}</span>
+                      <span class="stylesample face-{{font.meta.style}}{{ loop.index }}">Grumpy wizards make toxic brew for the evil Queen and Jack.</span>
                     </div>
                 {% endfor %}
 
