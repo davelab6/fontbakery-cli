@@ -117,17 +117,21 @@
           <tbody>
           {% for font in fonts %}
             <tr>
-              <td>{{ font.name }}</td>
-              <td>{{ font.OS2_usWeightClass }}</td>
+              <td>{{ font.path }}</td>
+              <td>{{ font.meta.weight }}</td>
               <td>
-                <div class="face-normal{{ loop.index }}">
-                  Grumpy wizards make toxic brew for the evil Queen and Jack
-                </div>
+                {% if font.meta.style == 'normal' %}
+                  <div class="face-normal{{ loop.index }}">
+                    Grumpy wizards make toxic brew for the evil Queen and Jack
+                  </div>
+                {% endif %}
               </td>
               <td>
-                <div class="face-italic{{ loop.index }}">
-                  Grumpy wizards make toxic brew for the evil Queen and Jack
-                </div>
+                {% if font.meta.style == 'italic' %}
+                  <div class="face-italic{{ loop.index }}">
+                    Grumpy wizards make toxic brew for the evil Queen and Jack
+                  </div>
+                {% endif %}
               </td>
             </tr>
           {% endfor %}
@@ -488,33 +492,31 @@
     };
     chart.draw(data, options);
 
+    var headings = $.merge( ["Table"], {{ttftablesizes_delta.fonts}} );
+    var deviation_table = [];
 
-    if ({{ttftablesizes_grouped.fonts}}.length > 1) {
-      var headings = $.merge( ["Table"], {{ttftablesizes_delta.fonts}} );
-      var deviation_table = [];
+    deviation_table.push(headings);
 
-      deviation_table.push(headings);
+    $({{ttftablesizes_delta.tables}}).each(function(i){
+      deviation_table.push(this)
+    });
 
-      $({{ttftablesizes_delta.tables}}).each(function(i){
-        deviation_table.push(this)
-      });
+    var data = google.visualization.arrayToDataTable(deviation_table);
+    var chart = new google.visualization.ColumnChart(document.getElementById('ttftablesizesDeviation'));
+    var options = {
+      bar: {groupWidth: "68%"},
+      title: "Deviation from an average",
+      is3D: true,
+      vAxis: {
+        title: "Deviation (bytes)"
+      },
+      hAxis: {
+        slantedText: true,
+      },
+      height: 500,
+    };
+    chart.draw(data, options);
 
-      var data = google.visualization.arrayToDataTable(deviation_table);
-      var chart = new google.visualization.ColumnChart(document.getElementById('ttftablesizesDeviation'));
-      var options = {
-        bar: {groupWidth: "68%"},
-        title: "Deviation from an average",
-        is3D: true,
-        vAxis: {
-          title: "Deviation (bytes)"
-        },
-        hAxis: {
-          slantedText: true,
-        },
-        height: 500,
-      };
-      chart.draw(data, options);
-    }
   }
 </script>
 <script>
