@@ -2,7 +2,6 @@ import re
 
 from bakery_lint.base import BakeryTestCase, tags
 from fontTools.agl import AGL2UV
-from fontTools.ttLib import TTFont
 import robofab.world
 
 
@@ -11,12 +10,6 @@ uniNamePattern = re.compile(
     "([0-9A-Fa-f]{4})"
     "$"
 )
-
-
-def get_first_cmap_table(ttfont, variants):
-    for table in ttfont['cmap'].tables:
-        if (table.platformID, table.platEncID) in variants:
-            return table
 
 
 class UnicodeValueShouldAppearOnlyOnce(BakeryTestCase):
