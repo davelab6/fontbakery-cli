@@ -150,11 +150,15 @@ class Build(object):
 
             try:
                 if self.bakery.config.get('compiler') == 'afdko':
+                    import time
+                    starttime = time.time()
                     command = 'makeotf -f {0} {1}'.format(op.join(self.builddir, filepath),
                                                           self.bakery.config.get('afdko', ''))
-                    self.bakery.logger.debug(op.join(self.builddir, op.dirname(filepath)))
+                    self.bakery.logging_cmd(op.join(self.builddir, op.dirname(filepath)))
                     run(command, op.join(self.builddir, op.dirname(filepath)),
                         self.bakery.logger)
+                    elapsedtime = time.time() - starttime
+                    self.bakery.logging_raw('Time elapsed: {}'.format(elapsedtime))
                     self.otf2ttf('{}.otf'.format(filepath[:-4]), pipedata)
                 else:
                     self.bakery.logging_cmd(_ % (filepath, ttfpath))
