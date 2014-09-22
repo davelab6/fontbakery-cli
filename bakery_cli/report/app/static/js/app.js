@@ -1,8 +1,55 @@
-// script.js
+// app.js
 
-// create the module and name it myApp
-// also include ngRoute for all our routing needs
-var myApp = angular.module('myApp', ['ngRoute', 'btford.markdown']);
+// create module and include dependencies
+var myApp = angular.module('myApp', ['ngRoute', 'btford.markdown', 'ui.bootstrap']);
+
+myApp.factory('alertsFactory',
+    function () {
+        var alerts = [];
+        return {
+            getAlerts: function () {
+                return alerts;
+            },
+            addAlert: function (msg, type) {
+                alerts.push({ msg: msg , type: type || 'danger'});
+            },
+            closeAlert: function (index) {
+                alerts.splice(index, 1);
+            }
+        }
+    });
+
+// interceptor of http calls
+myApp.factory('myHttpInterceptor', function($q, $location, alertsFactory) {
+    var _config = {};
+    return {
+        // optional method
+        'request': function(config) {
+            // do something on success
+            _config = config || $q.when(config);
+            return _config;
+        },
+
+        // optional method
+        'requestError': function(rejection) {
+            // do something on error
+            return $q.reject(rejection);
+        },
+
+        // optional method
+        'response': function(response) {
+            // do something on success
+             return response || $q.when(response);
+        },
+
+        // optional method
+        'responseError': function(rejection) {
+            // add alert for every error
+            alertsFactory.addAlert(rejection.status + " - " + rejection.statusText + ": " + _config.url);
+            return $q.reject(rejection);
+        }
+    };
+});
 
 // configure our app
 myApp.config(function($routeProvider, $httpProvider) {
@@ -65,6 +112,8 @@ myApp.config(function($routeProvider, $httpProvider) {
         });
     // enable default caching
     $httpProvider.defaults.cache = true;
+    // intercept http calls
+    $httpProvider.interceptors.push('myHttpInterceptor');
 });
 
 // directive to handle class attr of navigation menu items (eg, set/rm "active")
@@ -130,11 +179,23 @@ myApp.factory('DataSource', function() {
     };
 });
 
+myApp.service('FilesService', function() {
+    var all_parts = ['data'];
+    this.buildPath = function(parts) {
+        if (Array.isArray(parts)) {
+            parts.forEach(function(item) {all_parts.push(item)}, all_parts);
+        } else {
+            all_parts.push(parts)
+        }
+        return all_parts.join('/')
+    }
+});
+
 // use separate services to read files, eg METADATA.json
 myApp.service('DataService', function($http, DataSource) {
 //    delete $http.defaults.headers.common['X-Requested-With'];
     this.getMetadata = function() {
-        return $http({method: 'GET', url: DataSource.metadata.json});
+        return $http.get(DataSource.metadata.json);
     };
     this.getVersion = function() {
         return DataSource.version;
@@ -147,12 +208,16 @@ myApp.service('DataService', function($http, DataSource) {
 
 // create the controllers and inject Angular's $scope etc
 
-myApp.controller('mainController', function($scope, $http, DataService) {
+myApp.controller('mainController', function($scope, $http, DataService, alertsFactory) {
     // create a message to display in our view
     $scope.message = 'This is message from mainController!';
 
     $scope.version = DataService.getVersion();
     $scope.repo = DataService.getRepo();
+
+    // current controller is on top level, so all http
+    // errors should come through it
+    $scope.alerts = alertsFactory;
 });
 
 myApp.controller('summaryController', function($scope, $http) {
@@ -175,16 +240,12 @@ myApp.controller('testsController', function($scope, $http) {
     $scope.message = 'This is message from testsController!';
 });
 
-myApp.controller('buildLogController', function($scope, $http) {
+myApp.controller('buildLogController', function($scope, $http, FilesService) {
     // create a message to display in our view
     $scope.message = 'This is message from buildLogController!';
-    $http.get('data/buildlog.txt')
+    $http.get(FilesService.buildPath('buildlog.txt'))
         .success(function(data, status, headers, config) {
             $scope.data = data;
-        })
-        .error(function(data, status, headers, config) {
-            // #TODO make common area for errors across all pages
-            console.log("ERROR");
         });
 });
 

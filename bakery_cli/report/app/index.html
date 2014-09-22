@@ -19,9 +19,9 @@
 <!-- HEADER AND NAVBAR -->
 <header>
   <nav class="navbar navbar-default">
-    <div class="container">
+    <div class="container-fluid">
       <div class="navbar-header">
-        <a class="navbar-brand" href="/">Google Fonts Bakery</a>
+        <a class="navbar-brand" href="/">Fonts Bakery</a>
       </div>
       <!--<ul class="nav nav-tabs">-->
       <ul nav-menu="active" class="nav navbar-nav navbar-right">
@@ -42,9 +42,9 @@
 
 <!-- MAIN CONTENT AND INJECTED VIEWS -->
 <div id="main" class="container-fluid">
-  <div class="alert alert-danger hidden" id="alert-box">
-    <a href="#" class="close" data-dismiss="alert">&#120;</a>
-    <span id="alert-message"></span>
+  <!--this is the place where all alerts pop-up, controlled by mainController -->
+  <div id=alerts-box>
+    <alert ng-repeat="alert in alerts.getAlerts()" type="{{alert.type}}" close="alerts.closeAlert($index)">{{alert.msg}}</alert>
   </div>
   <!-- angular templating -->
   <!-- this is where content will be injected -->
@@ -77,6 +77,7 @@
 <script src="static/bower_components/angular-sanitize/angular-sanitize.js"></script>
 <script src="static/bower_components/showdown/src/showdown.js"></script>
 <script src="static/bower_components/angular-markdown-directive/markdown.js"></script>
+<script src="static/bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 
 <!--load app scripts-->
 <script src="static/js/app.js"></script>
