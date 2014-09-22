@@ -88,6 +88,7 @@ def run(command, cwd, log):
     # Start the command
     env = os.environ.copy()
 
+    log.info('$ %s\n' % command)
     env.update({'PYTHONPATH': os.pathsep.join(sys.path)})
     process = subprocess.Popen(command, shell=True, cwd=cwd,
                                stdout=subprocess.PIPE,

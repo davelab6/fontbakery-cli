@@ -20,7 +20,7 @@ import os.path as op
 from fontTools import ttx
 
 from bakery_cli.scripts.font2ttf import convert
-from bakery_cli.system import shutil as shellutil
+from bakery_cli.system import shutil as shellutil, run
 from bakery_cli.utils import UpstreamDirectory
 
 import multiprocessing
@@ -36,9 +36,9 @@ class Build(object):
     def otf2ttf(self, filepath, pipedata):
         fontname = filepath[:-4]
 
-        ttfpath = '{}.ttf'.format(os.path.basename(fontname))
+        ttfpath = '{}.ttf'.format(op.basename(fontname))
 
-        path = '{}.otf'.format(os.path.basename(fontname))
+        path = '{}.otf'.format(fontname)
 
         if op.exists(op.join(self.builddir, path)):
             _ = 'font2ttf.py {0}.otf {1}\n'
@@ -142,15 +142,24 @@ class Build(object):
             self.otf2ttf(p, pipedata)
 
     def execute_ufo_sfd(self, files, pipedata):
+        _ = 'font2ttf.py %s %s'
+
         for filepath in files:
-            _ = 'font2ttf.py %s %s'
             ttfpath = os.path.basename(filepath)[:-4] + '.ttf'
-            self.bakery.logging_cmd(_ % (filepath, ttfpath))
 
             try:
-                convert(op.join(self.builddir, filepath),
-                        op.join(self.builddir, ttfpath), log=self.bakery.logger)
-                self.start_processes(op.basename(ttfpath), pipedata)
+                if self.bakery.config.get('compiler') == 'afdko':
+                    command = 'makeotf -f {0} {1}'.format(op.join(self.builddir, filepath),
+                                                          self.bakery.config.get('afdko', ''))
+                    self.bakery.logger.debug(op.join(self.builddir, op.dirname(filepath)))
+                    run(command, op.join(self.builddir, op.dirname(filepath)),
+                        self.bakery.logger)
+                    self.otf2ttf('{}.otf'.format(filepath[:-4]), pipedata)
+                else:
+                    self.bakery.logging_cmd(_ % (filepath, ttfpath))
+                    convert(op.join(self.builddir, filepath),
+                            op.join(self.builddir, ttfpath), log=self.bakery.logger)
+                    self.start_processes(op.basename(ttfpath), pipedata)
             except Exception as ex:
                 self.bakery.logging_err(ex.message)
                 raise
