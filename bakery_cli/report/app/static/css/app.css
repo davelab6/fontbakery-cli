@@ -1,0 +1,40 @@
+.popover {
+    max-width: 1980px;
+    font-family: Courier,serif;
+}
+
+.footer {
+  color: #bbb;
+  text-align: center;
+  font-size: smaller;
+  padding: 0 0;
+  margin-top: 70px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.footer:hover {
+  color: #444;
+}
+
+.footer a {
+  color: #add8e6;
+}
+
+.footer:hover a {
+  color: #0088cc;
+}
+
+.footer p {
+  margin-bottom: 0;
+  color: #777;
+}
+.footer-links {
+  margin: 10px 0;
+}
+.footer-links li {
+  list-style: none;
+  line-height: 1.2em;
+}
+.footer-links li:first-child {
+  padding-left: 0;
+}

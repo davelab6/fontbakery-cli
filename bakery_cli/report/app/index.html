@@ -1,0 +1,84 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html ng-app="myApp">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title ng-bind="'Google Fonts &mdash; ' + title"></title>
+
+  <!-- load bootstrap and fontawesome via CDN -->
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.css" />
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.css" />
+
+  <!--<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />-->
+  <!--<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />-->
+  <!--load local static file-->
+  <link rel="stylesheet" href="static/css/app.css" />
+</head>
+<body ng-controller="mainController">
+
+<!-- HEADER AND NAVBAR -->
+<header>
+  <nav class="navbar navbar-default">
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/">Google Fonts Bakery</a>
+      </div>
+      <!--<ul class="nav nav-tabs">-->
+      <ul nav-menu="active" class="nav navbar-nav navbar-right">
+        <li><a href="{{repo.gh_pages}}" target="_blank"><i class="fa fa-github"></i> gh-pages</a></li>
+        <li><a href="{{repo.url}}" target="_blank"><i class="fa fa-github-square"></i> Github Page</a></li>
+        <li><a href="#/"><i class="fa fa-home"></i> Summary</a></li>
+        <li><a href="#/review">Review</a></li>
+        <li><a href="#/checks">Pre-Build Checks</a></li>
+        <li><a href="#/tests">Tests</a></li>
+        <li><a href="#/build-log">Build Log</a></li>
+        <li><a href="#/metadata"><i class="fa fa-info-circle"></i> METADATA.json</a></li>
+        <li><a href="#/bakery-yaml">bakery.yaml</a></li>
+        <li><a href="#/description"><i class="fa fa-shield"></i> Description</a></li>
+      </ul>
+    </div>
+  </nav>
+</header>
+
+<!-- MAIN CONTENT AND INJECTED VIEWS -->
+<div id="main" class="container-fluid">
+  <div class="alert alert-danger hidden" id="alert-box">
+    <a href="#" class="close" data-dismiss="alert">&#120;</a>
+    <span id="alert-message"></span>
+  </div>
+  <!-- angular templating -->
+  <!-- this is where content will be injected -->
+  <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-view></div>
+  </div>
+</div>
+
+<!--Footer-->
+<footer class="footer">
+  <div class="container-fluid">
+    <ul class="footer-links">
+      <li><a href='https://github.com/googlefonts/fontbakery-cli/edit/master/bakery_cli/report/templates/{{ current_page }}'>Edit this page's template</a></li>
+      <li><a href='https://github.com/googlefonts/fontbakery-cli/'>Made with Font Bakery</a> (<a href='http://www.gnu.org/philosophy/free-sw.html'>libre software</a> available under the terms of the <a href='https://github.com/googlefonts/fontbakery-cli/blob/master/LICENSE.txt'>Apache 2.0 license</a>.)</li>
+      <li>Please <a href='https://github.com/googlefonts/fontbakery-cli/issues/new'>report bugs</a>, suggest features, and contribute on <a href='https://github.com/googlefonts/fontbakery-cli/'>GitHub <i class='icon-github'></i></a></li>
+      <li>{{ version.commit }}, {{ version.date | date:'yyyy-MM-dd' }}</li>
+    </ul>
+  </div>
+</footer>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.7/js/jquery.tablesorter.min.js" type="text/javascript" charset="utf-8"></script>
+
+<!-- load angular and angular route via CDN -->
+<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular-route.js"></script>
+
+<!--load third-party scripts-->
+<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+<script src="bower_components/showdown/src/showdown.js"></script>
+<script src="bower_components/angular-markdown-directive/markdown.js"></script>
+
+<!--load app scripts-->
+<script src="static/js/app.js"></script>
+</body>
+</html>
