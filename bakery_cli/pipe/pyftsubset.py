@@ -38,6 +38,9 @@ class PyFtSubset(object):
 
     def execute_pyftsubset(self, pipedata, subsetname, name, glyphs="", args=""):
         from fontTools.subset import Subsetter, Options, load_font, save_font
+        target_file = '{0}.{1}'.format(op.join(self.builddir, name)[:-4],
+                                       subsetname)
+        self.bakery.logging_cmd('pyftsubset {}'.format(op.basename(target_file)))
 
         options = Options()
         if pipedata.get('pyftsubset'):
@@ -52,11 +55,8 @@ class PyFtSubset(object):
         subsetter.populate(unicodes=[int(g.replace('U+', ''), 16) for g in glyphs.split()])
         subsetter.subset(font)
 
-        target_file = '{0}.{1}'.format(op.join(self.builddir, name)[:-4],
-                                       subsetname)
         save_font(font, target_file, options)
 
-        self.bakery.logging_raw('Generate {}\n'.format(op.basename(target_file)))
 
     def execute(self, pipedata):
         task = self.bakery.logging_task('Subset TTFs (pyftsubset)')
@@ -70,7 +70,7 @@ class PyFtSubset(object):
 
     def run(self, name, pipedata):
         # create menu subset with glyph for text of family name
-        if not pipedata.get('pyftsubset'):
+        if pipedata.get('pyftsubset') is False:
             return
 
         self.bakery.logging_raw('### Subset TTFs (pyftsubset) {}\n'.format(name))
@@ -80,15 +80,14 @@ class PyFtSubset(object):
         D = dict(L)
 
         string = bin2unistring(D.get(16) or D.get(1))
-        menu_glyphs = ['U+%04x' % ord(c) for c in string]
+        menu_glyphs = '\n'.join(['U+%04x' % ord(c) for c in string])
 
         for subset in pipedata.get('subset', []):
             glyphs = SubsetExtension.get_glyphs(subset)
 
             # The every subsets must include the "latin" subset
             if subset != 'latin':
-                G = SubsetExtension.get_glyphs('latin')
-                glyphs += ' ' + ' '.join(G.split())
+                glyphs += '\n{}'.format(SubsetExtension.get_glyphs('latin'))
             self.execute_pyftsubset(pipedata, subset, name, glyphs=glyphs)
 
             # If any subset other than latin or latin-ext has been
@@ -97,8 +96,7 @@ class PyFtSubset(object):
             #   of those subsets.
             G = SubsetExtension.get_glyphs(subset + '-menu')
             if G:
-                menu_glyphs += G.split()
+                menu_glyphs += '\n{}'.format(G)
 
-        self.execute_pyftsubset(pipedata, 'menu', name,
-                                glyphs='\n'.join(menu_glyphs))
+        self.execute_pyftsubset(pipedata, 'menu', name, glyphs=menu_glyphs)
 
