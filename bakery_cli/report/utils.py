@@ -97,6 +97,18 @@ class Singleton(type):
         return cls._instances[cls]
 
 
+class lazy_property(object):
+    def __init__(self, func):
+        self.func = func
+
+    def __get__(self, instance, cls):
+        if instance is None:
+            return self
+        result = self.func(instance)
+        setattr(instance, self.func.__name__, result)
+        return result
+
+
 class ReportApp(six.with_metaclass(Singleton, object)):
     def __init__(self, config, **kwargs):
         self.config = config
@@ -107,6 +119,7 @@ class ReportApp(six.with_metaclass(Singleton, object)):
         self.bower_components = kwargs.get('bower_components', ['angular-markdown-directive', 'angular-bootstrap'])
         self.make()
         print('Report Application created.')
+        self.write_app_info()
         self.bower_install()
 
     def bower_install(self):
@@ -130,8 +143,17 @@ class ReportApp(six.with_metaclass(Singleton, object)):
 
     def copy_file(self, src, dst):
         try:
-            print('Copying report file: {} -> {}'.format(src, dst))
+            print('Copying file: {} -> {}'.format(src, dst))
             shutil.copy(src, dst)
+        except shutil.Error as e:
+            print('Error: %s' % e)
+        except IOError as e:
+            print('Error: %s' % e.strerror)
+
+    def move_file(self, src, dst):
+        try:
+            print('Moving file: {} -> {}'.format(src, dst))
+            shutil.move(src, dst)
         except shutil.Error as e:
             print('Error: %s' % e)
         except IOError as e:
@@ -139,3 +161,25 @@ class ReportApp(six.with_metaclass(Singleton, object)):
 
     def copy_to_data(self, src):
         self.copy_file(src, self.data_dir)
+
+    def move_to_data(self, src):
+        self.move_file(src, self.data_dir)
+
+    def dump_to_file(self, data, fname):
+        print('Writing data to file: {}'.format(fname))
+        with open(op.join(self.data_dir, fname), 'w') as outfile:
+            json.dump(data, outfile)
+
+    def write_app_info(self):
+        self.dump_to_file(self.version, 'app.json')
+        self.dump_to_file(self.repo, 'repo.json')
+
+    @lazy_property
+    def version(self):
+        return git_info(self.config)
+
+    @lazy_property
+    def repo(self):
+        repo_url = build_repo_url()
+        repo_gh_pages = build_repo_url('tree', 'gh-pages')
+        return dict(url=repo_url, gh_pages=repo_gh_pages)

@@ -3,24 +3,23 @@
 // create module and include dependencies
 var myApp = angular.module('myApp', ['ngRoute', 'btford.markdown', 'ui.bootstrap']);
 
-myApp.factory('alertsFactory',
-    function () {
-        var alerts = [];
-        return {
-            getAlerts: function () {
-                return alerts;
-            },
-            addAlert: function (msg, type) {
-                alerts.push({ msg: msg , type: type || 'danger'});
-            },
-            closeAlert: function (index) {
-                alerts.splice(index, 1);
-            }
+myApp.factory('alertsFactory', function () {
+    var alerts = [];
+    return {
+        getAlerts: function () {
+            return alerts;
+        },
+        addAlert: function (msg, type) {
+            alerts.push({ msg: msg , type: type || 'danger'});
+        },
+        closeAlert: function (index) {
+            alerts.splice(index, 1);
         }
-    });
+    }
+});
 
 // interceptor of http calls
-myApp.factory('myHttpInterceptor', function($q, $location, alertsFactory) {
+myApp.factory('httpInterceptor', function($q, $location, alertsFactory) {
     var _config = {};
     return {
         // optional method
@@ -110,10 +109,19 @@ myApp.config(function($routeProvider, $httpProvider) {
             templateUrl : 'pages/description.html',
             controller  : 'descriptionController'
         });
+
+    // #TODO: switch to custom cache factory
+    // Current caching mechanism brings unexpected results.
+    // The response will be stored in a cache named "$http".
+    // This cache is created by Angular's $cacheFactory as the default
+    // cache for the $http service when Angular boots up.
+    // Such behaviour does not fit our needs as it will use the same
+    // cache across all fonts opened in one browser.
+
     // enable default caching
     $httpProvider.defaults.cache = true;
     // intercept http calls
-    $httpProvider.interceptors.push('myHttpInterceptor');
+    $httpProvider.interceptors.push('httpInterceptor');
 });
 
 // directive to handle class attr of navigation menu items (eg, set/rm "active")
@@ -167,41 +175,36 @@ myApp.run(['$location', '$rootScope', function($location, $rootScope) {
 }]);
 
 // either use $rootScope to have app wide variables, or use factories
+// #TODO
 myApp.factory('DataSource', function() {
-    return {
-        metadata: {json: 'data/METADATA.json'},
-        // the data below should be fetched via DataService once and then cached
-        version: {commit: 'some#fake#commit#1', date: new Date()},
-        repo: {
-            gh_pages: 'http://fake.com/this/should/be/real/url/to/gh_pages',
-            url: 'http://fake.com/this/should/be/real/url'
-        }
-    };
+    return {};
 });
 
 myApp.service('FilesService', function() {
-    var all_parts = ['data'];
+    //#TODO should be some built-in solution
     this.buildPath = function(parts) {
+        var path_chunks = ['data'];
         if (Array.isArray(parts)) {
-            parts.forEach(function(item) {all_parts.push(item)}, all_parts);
+            parts.forEach(function(item) {path_chunks.push(item)}, path_chunks);
         } else {
-            all_parts.push(parts)
+            path_chunks.push(parts)
         }
-        return all_parts.join('/')
+        return path_chunks.join('/')
     }
 });
 
 // use separate services to read files, eg METADATA.json
-myApp.service('DataService', function($http, DataSource) {
+// this service gets some common for all pages data
+myApp.service('DataService', function($http, FilesService) {
 //    delete $http.defaults.headers.common['X-Requested-With'];
     this.getMetadata = function() {
-        return $http.get(DataSource.metadata.json);
+        return $http.get(FilesService.buildPath('METADATA.json'));
     };
-    this.getVersion = function() {
-        return DataSource.version;
+    this.getAppInfo = function() {
+        return $http.get(FilesService.buildPath('app.json'));
     };
-    this.getRepo = function() {
-        return DataSource.repo;
+    this.getRepoInfo = function() {
+        return $http.get(FilesService.buildPath('repo.json'));
     };
 });
 
@@ -209,12 +212,15 @@ myApp.service('DataService', function($http, DataSource) {
 // create the controllers and inject Angular's $scope etc
 
 myApp.controller('mainController', function($scope, $http, DataService, alertsFactory) {
-    // create a message to display in our view
-    $scope.message = 'This is message from mainController!';
-
-    $scope.version = DataService.getVersion();
-    $scope.repo = DataService.getRepo();
-
+    DataService.getAppInfo().then(function(dataResponse) {
+        $scope.version = dataResponse.data;
+    });
+    DataService.getRepoInfo().then(function(dataResponse) {
+        $scope.repo = dataResponse.data;
+    });
+    DataService.getMetadata().then(function(dataResponse) {
+        $scope.metadata = dataResponse.data;
+    });
     // current controller is on top level, so all http
     // errors should come through it
     $scope.alerts = alertsFactory;
@@ -241,21 +247,26 @@ myApp.controller('testsController', function($scope, $http) {
 });
 
 myApp.controller('buildLogController', function($scope, $http, FilesService) {
-    // create a message to display in our view
-    $scope.message = 'This is message from buildLogController!';
     $http.get(FilesService.buildPath('buildlog.txt'))
         .success(function(data, status, headers, config) {
             $scope.data = data;
         });
 });
 
-myApp.controller('metadataController', function($scope, $http, DataService) {
-    // create a message to display in our view
-    $scope.message = 'This is message from metadataController!';
+myApp.controller('metadataController', function($scope, $http, FilesService) {
+    // we already have METADATA.json parsed into object in `mainController`
+    // and here we need raw file, do not deserialize it using a JSON parser.
+    $http.get(FilesService.buildPath('METADATA.json'), {transformResponse: []})
+        .success(function(data, status, headers, config) {
+            $scope.metadata_raw = data;
+        });
 
-    $scope.metadata = null;
-    DataService.getMetadata().then(function(dataResponse) {
-        $scope.metadata = dataResponse;
+    $http.get(FilesService.buildPath('METADATA.json.new'), {transformResponse: []})
+        .success(function(data, status, headers, config) {
+            $scope.metadata_new_raw = data;
+        });
+    angular.element(document).ready(function () {
+        console.log('Document ready!');
     });
 });
 
