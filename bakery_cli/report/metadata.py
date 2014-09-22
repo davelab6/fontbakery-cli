@@ -75,6 +75,11 @@ def generate(config, outfile='metadata.html'):
     except (IOError, OSError):
         metadata_new = ''
     app_version = report_utils.git_info(config)
+
+    report_app = report_utils.ReportApp(config)
+    report_app.copy_to_data(op.join(config['path'], 'METADATA.json'))
+    report_app.copy_to_data(op.join(config['path'], 'METADATA.json.new'))
+
     print(report_utils.render_template(
         outfile, metadata=metadata, tests=data, sort=sort,
         app_version=app_version, build_repo_url=report_utils.build_repo_url,

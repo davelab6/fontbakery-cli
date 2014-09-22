@@ -3,7 +3,8 @@ import os.path as op
 import os
 import sys
 import subprocess
-
+import shutil
+import six
 from jinja2 import Environment, FileSystemLoader
 
 try:
@@ -15,7 +16,7 @@ except ImportError:
 GH = 'https://github.com'
 GH_RAW = 'https://raw.githubusercontent.com/'
 TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
-
+APP_DIR = op.join(op.dirname(__file__), 'app')
 jinjaenv = Environment(loader=FileSystemLoader(TEMPLATE_DIR),
                        extensions=["jinja2.ext.do", ],)
 
@@ -85,3 +86,56 @@ def git_info(config):
         return json.loads(log)
     except ValueError:
         return None
+
+
+class Singleton(type):
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
+
+
+class ReportApp(six.with_metaclass(Singleton, object)):
+    def __init__(self, config, **kwargs):
+        self.config = config
+        self.source_dir = kwargs.get('source_dir', APP_DIR)
+        self.target_dir = kwargs.get('target_dir', op.join(self.config['path'], 'app'))
+        self.data_dir = kwargs.get('data_dir', op.join(self.target_dir, 'data'))
+        self.static_dir = kwargs.get('static_dir', op.join(self.target_dir, 'static'))
+        self.bower_components = kwargs.get('bower_components', ['angular-markdown-directive', ])
+        self.make()
+        print('Report Application created.')
+        self.bower_install()
+
+    def bower_install(self):
+        #TODO dependency on bower is temporary
+        #cdn is preferred, if js can't be on cdn, it will be in static data
+        print('Installing components')
+        params = ' '.join(self.bower_components)
+        log = prun('bower install {}'.format(params), self.static_dir)
+        print(log)
+
+    def exists(self):
+        return op.exists(self.target_dir)
+
+    def clean(self):
+        if self.exists():
+            shutil.rmtree(self.target_dir)
+    
+    def make(self):
+        self.clean()
+        shutil.copytree(self.source_dir, self.target_dir)
+
+    def copy_file(self, src, dst):
+        try:
+            print('Copying report file: {} -> {}'.format(src, dst))
+            shutil.copy(src, dst)
+        except shutil.Error as e:
+            print('Error: %s' % e)
+        except IOError as e:
+            print('Error: %s' % e.strerror)
+
+    def copy_to_data(self, src):
+        self.copy_file(src, self.data_dir)
