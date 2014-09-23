@@ -116,7 +116,7 @@ class ReportApp(six.with_metaclass(Singleton, object)):
         self.target_dir = kwargs.get('target_dir', op.join(self.config['path'], 'app'))
         self.data_dir = kwargs.get('data_dir', op.join(self.target_dir, 'data'))
         self.static_dir = kwargs.get('static_dir', op.join(self.target_dir, 'static'))
-        self.bower_components = kwargs.get('bower_components', ['angular-markdown-directive', 'angular-bootstrap'])
+        self.bower_components = kwargs.get('bower_components', ['angular-markdown-directive', 'angular-bootstrap', 'angular-ui-ace\#bower'])
         self.make()
         print('Report Application created.')
         self.write_app_info()
