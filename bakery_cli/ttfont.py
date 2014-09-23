@@ -97,7 +97,7 @@ class Font(BaseFont):
 
         >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
         >>> font.license_url
-        'http://scripts.sil.org/OFL'
+        u'http://scripts.sil.org/OFL'
         """
         for name in self.names:
             if name.nameID == 14:
@@ -168,7 +168,7 @@ class Font(BaseFont):
 
         >>> font = Font("tests/fixtures/ttf/Font-Regular.ttf")
         >>> font.fullname
-        'Monda Regular'
+        u'Monda Regular'
         """
         for entry in self.names:
             if entry.nameID != 4:
@@ -194,7 +194,7 @@ class Font(BaseFont):
 
         >>> font = Font("tests/fixtures/ttf/Font-Bold.ttf")
         >>> font.stylename
-        'Bold'
+        u'Bold'
         """
         return self._style_name
 
@@ -215,7 +215,7 @@ class Font(BaseFont):
 
         >>> font = Font("tests/fixtures/ttf/Font-Bold.ttf")
         >>> font.familyname
-        'Font'
+        u'Font'
         """
         return self._family_name
 
@@ -267,7 +267,7 @@ class Font(BaseFont):
 
         >>> font = Font("tests/fixtures/ttf/Font-Bold.ttf")
         >>> font.post_script_name
-        'Font-Bold'
+        u'Font-Bold'
         """
         for entry in self.names:
             if entry.nameID != 6:

@@ -52,31 +52,29 @@ def bin2unistring(string):
 class Bakery(object):
     """ Class to handle all parts of bakery process.
 
-        Attributes:
+    Attributes:
 
-            root: Absolute path of directory where user project placed
-            project_dir: Project directory name (eg. 12.in)
-            build_dir: Build directory name (eg. 21.abcdef)
-            builds_dir: Builds directory name (eg. 12.out)
+        root: Absolute path of directory where user project placed
+        project_dir: Project directory name (eg. 12.in)
+        build_dir: Build directory name (eg. 21.abcdef)
+        builds_dir: Builds directory name (eg. 12.out)
 
-        All arguments will be appended to `root`. Eg:
+    All arguments will be appended to `root`. Eg:
 
-        >>> b = Bakery("/home/user", "projectclone", build_dir="build",
-        ...            builds_dir="out")
-        >>> b.build_dir
-        '/home/user/out/build'
-        >>> b.project_root
-        '/home/user/projectclone'
-        >>> b.builds_dir
-        '/home/user/out'
+    >>> b = Bakery("/home/user", "projectclone", build_dir="build",
+    ...            builds_dir="out")
+    >>> b.build_dir
+    '/home/user/out/build'
+    >>> b.project_root
+    '/home/user/projectclone'
+    >>> b.builds_dir
+    '/home/user/out'
     """
 
     def __init__(self, root, project_dir, builds_dir='', build_dir='build'):
         self.rootpath = op.abspath(root)
 
         self.build_dir = op.join(self.rootpath, builds_dir, build_dir)
-        if not op.exists(self.build_dir):
-            os.makedirs(self.build_dir)
 
         self.project_root = op.join(self.rootpath, project_dir)
         self.builds_dir = op.join(self.rootpath, builds_dir)

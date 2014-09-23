@@ -128,7 +128,6 @@ class Build(object):
     def start_processes(self, f, pipedata):
         p = multiprocessing.Process(target=self.run_processes, args=(f, pipedata, ))
         p.start()
-        p.join()
 
     def execute_ttx(self, files, pipedata):
         paths = []
