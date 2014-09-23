@@ -1,4 +1,7 @@
 language: python
+branches:
+  only:
+    - master
 before_install:
   - sudo add-apt-repository --yes ppa:fontforge/fontforge
   - sudo apt-get update -qq
