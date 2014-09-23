@@ -53,3 +53,9 @@
     /* Then we define how is distributed the remaining space */
     justify-content: space-around;
 }
+
+/*make table with depend on content*/
+.table {
+    max-width: none;
+    width: inherit;
+}

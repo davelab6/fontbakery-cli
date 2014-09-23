@@ -176,59 +176,77 @@ myApp.run(['$location', '$rootScope', function($location, $rootScope) {
     });
 }]);
 
-// either use $rootScope to have app wide variables, or use factories
-// #TODO
-myApp.factory('DataSource', function() {
-    return {};
+// #TODO it would be better to get it from .json conf file once and use later.
+// Allows to not change code, but rather external file
+myApp.constant("appConfig", {
+    files: {
+        metadata: 'METADATA.json',
+        metadata1: 'metadata1.json',
+        metadata_new: 'METADATA.json.new',
+        app: 'app.json',
+        buildlog: 'buildlog.txt',
+        repo: 'repo.json'
+    },
+    statusMap: {'success': 'OK', 'failure': 'FAIL', 'error': 'ERROR', 'fixed': 'FIXED'},
+    resultMap: {'success': 'success', 'failure': 'danger', 'error': 'warning', 'fixed': 'info'}
 });
 
 myApp.service('FilesService', function() {
     //#TODO should be some built-in solution
-    this.buildPath = function(parts) {
+    this.buildPath = function() {
         var path_chunks = ['data'];
-        if (Array.isArray(parts)) {
-            parts.forEach(function(item) {path_chunks.push(item)}, path_chunks);
-        } else {
-            path_chunks.push(parts)
-        }
+        angular.forEach(arguments, function(item) {
+            path_chunks.push(item);
+        });
+        return path_chunks.join('/')
+    };
+});
+
+myApp.service('UrlsService', function() {
+    //#TODO should be some built-in solution
+    this.buildUrl = function() {
+        var path_chunks = [];
+        angular.forEach(arguments, function(item) {
+            path_chunks.push(item);
+        });
         return path_chunks.join('/')
     }
 });
 
 // use this service to get files, eg METADATA.json
-myApp.service('DataService', function($http, $q, FilesService) {
+myApp.service('DataService', function($http, $q, FilesService, appConfig) {
 //    delete $http.defaults.headers.common['X-Requested-With'];
     this.getAppInfo = function() {
-        return $http.get(FilesService.buildPath('app.json'));
+        return $http.get(FilesService.buildPath(appConfig.files.app));
     };
 
     this.getRepoInfo = function() {
-        return $http.get(FilesService.buildPath('repo.json'));
+        return $http.get(FilesService.buildPath(appConfig.files.repo));
     };
 
     this.getMetadata = function() {
-        return $http.get(FilesService.buildPath('METADATA.json'));
+        return $http.get(FilesService.buildPath(appConfig.files.metadata));
     };
 
     this.getMetadataNew = function() {
-        return $http.get(FilesService.buildPath('METADATA.json'));
+        return $http.get(FilesService.buildPath(appConfig.files.metadata_new));
     };
 
     this.getMetadataRaw = function() {
-        return $http.get(FilesService.buildPath('METADATA.json'), {transformResponse: []});
+        return $http.get(FilesService.buildPath(appConfig.files.metadata), {transformResponse: []});
     };
 
     this.getMetadataNewRaw = function() {
-        return $http.get(FilesService.buildPath('METADATA.json.new'), {transformResponse: []});
+        return $http.get(FilesService.buildPath(appConfig.files.metadata_new), {transformResponse: []});
     };
 
     this.getBuildLog = function() {
-        return $http.get(FilesService.buildPath('buildlog.txt'));
+        return $http.get(FilesService.buildPath(appConfig.files.buildlog));
     };
 
     this.getRawFiles = function(urls_list) {
-        var urls = urls_list || [{url: FilesService.buildPath('METADATA.json')},
-                                 {url: FilesService.buildPath('METADATA.json.new')}];
+        var urls = urls_list || [{url: FilesService.buildPath(appConfig.files.metadata)},
+                                 {url: FilesService.buildPath(appConfig.files.metadata_new)}];
         var deferred = $q.defer();
         var urlCalls = [];
         angular.forEach(urls, function(url) {
@@ -248,6 +266,10 @@ myApp.service('DataService', function($http, $q, FilesService) {
                 deferred.update(updates);
             });
         return deferred.promise;
+    };
+
+    this.getMetadata1 = function() {
+        return $http.get(FilesService.buildPath(appConfig.files.metadata1));
     };
 
 });
@@ -300,7 +322,7 @@ myApp.service('EditorService', function() {
 
 // create the controllers and inject Angular's $scope etc
 
-myApp.controller('mainController', function($scope, $http, DataService, alertsFactory) {
+myApp.controller('mainController', function($scope, $http, DataService, alertsFactory, appConfig) {
     DataService.getAppInfo().then(function(dataResponse) {
         $scope.version = dataResponse.data;
     });
@@ -313,6 +335,8 @@ myApp.controller('mainController', function($scope, $http, DataService, alertsFa
     // current controller is on top level, so all http
     // errors should come through it
     $scope.alerts = alertsFactory;
+    $scope.statusMap = appConfig.statusMap;
+    $scope.resultMap = appConfig.resultMap;
 });
 
 myApp.controller('summaryController', function($scope, $http) {
@@ -341,19 +365,29 @@ myApp.controller('buildLogController', function($scope, $http, DataService) {
     });
 });
 
-myApp.controller('metadataController', function($scope, $http, $q, DataService, EditorService) {
+myApp.controller('metadataController', function($scope, $http, $q, DataService, EditorService, UrlsService, appConfig) {
 
     $scope.dataLoaded = false;
     $scope._editor = null;
     $scope._editor_new = null;
 
+    $scope.view_url = UrlsService.buildUrl($scope.repo.url, 'blob', 'master', appConfig.files.metadata);
+    $scope.edit_url = UrlsService.buildUrl($scope.repo.url, 'edit', 'master', appConfig.files.metadata);
+
     $scope.$watch('dataLoaded', function() {
         if ($scope.dataLoaded) {
+            angular.element('.tablesorter').tablesorter();
             if ($scope._editor && $scope._editor_new) {
-                $scope.doDiff = EditorService.doDiff($scope._editor, $scope._editor_new, 'visualdiff');
-//                    $scope.doDiff();
+                EditorService.heightUpdateFunction($scope._editor, angular.element('#editor-new'), angular.element('#editor-new-section'));
+                EditorService.heightUpdateFunction($scope._editor_new, angular.element('#editor-new'), angular.element('#editor-new-section'));
+                $scope.doDiff = EditorService.doDiff($scope._editor.getSession(), $scope._editor_new.getSession(), 'visualdiff');
+//                $scope.doDiff();
             }
         }
+    });
+
+    DataService.getMetadata1().then(function(response) {
+        $scope.all_fonts = response.data;
     });
 
 //    DataService.getMetadataRaw().then(function(response) {
@@ -373,23 +407,26 @@ myApp.controller('metadataController', function($scope, $http, $q, DataService, 
 
     $scope.aceLoaded = function(_editor) {
         EditorService.heightUpdateFunction(_editor, angular.element('#editor'), angular.element('#editor-section'));
-        $scope._editor = _editor.getSession();
+        $scope._editor = _editor;
     };
 
     $scope.aceChanged = function(_editor) {
-//        $scope._editor = _editor.getSession();
+//        $scope._editor = _editor;
     };
 
     $scope.aceLoadedNew = function(_editor) {
         EditorService.heightUpdateFunction(_editor, angular.element('#editor-new'), angular.element('#editor-new-section'));
-        $scope._editor_new = _editor.getSession();
+        $scope._editor_new = _editor;
     };
 
     $scope.aceChangedNew = function(_editor) {
-//        $scope._editor_new = _editor.getSession();
+//        $scope._editor_new = _editor;
     };
-    $scope.doDiff = EditorService.doDiff($scope._editor, $scope._editor_new, 'visualdiff');
-    if ($scope.dataLoaded) {$scope.doDiff();}
+
+    if ($scope.dataLoaded && $scope._editor && $scope._editor_new) {
+        $scope.doDiff = EditorService.doDiff($scope._editor.getSession(), $scope._editor_new.getSession(), 'visualdiff');
+        $scope.doDiff();
+    }
 });
 
 myApp.controller('bakeryYamlController', function($scope, $http) {
