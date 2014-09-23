@@ -1,7 +1,9 @@
 // app.js
 
 // create module and include dependencies
-var myApp = angular.module('myApp', ['ngRoute', 'btford.markdown', 'ui.bootstrap']);
+var myApp = angular.module(
+    'myApp', ['ngRoute', 'btford.markdown', 'ui.bootstrap', 'ui.ace']
+);
 
 myApp.factory('alertsFactory', function () {
     var alerts = [];
@@ -193,21 +195,108 @@ myApp.service('FilesService', function() {
     }
 });
 
-// use separate services to read files, eg METADATA.json
-// this service gets some common for all pages data
-myApp.service('DataService', function($http, FilesService) {
+// use this service to get files, eg METADATA.json
+myApp.service('DataService', function($http, $q, FilesService) {
 //    delete $http.defaults.headers.common['X-Requested-With'];
-    this.getMetadata = function() {
-        return $http.get(FilesService.buildPath('METADATA.json'));
-    };
     this.getAppInfo = function() {
         return $http.get(FilesService.buildPath('app.json'));
     };
+
     this.getRepoInfo = function() {
         return $http.get(FilesService.buildPath('repo.json'));
     };
+
+    this.getMetadata = function() {
+        return $http.get(FilesService.buildPath('METADATA.json'));
+    };
+
+    this.getMetadataNew = function() {
+        return $http.get(FilesService.buildPath('METADATA.json'));
+    };
+
+    this.getMetadataRaw = function() {
+        return $http.get(FilesService.buildPath('METADATA.json'), {transformResponse: []});
+    };
+
+    this.getMetadataNewRaw = function() {
+        return $http.get(FilesService.buildPath('METADATA.json.new'), {transformResponse: []});
+    };
+
+    this.getBuildLog = function() {
+        return $http.get(FilesService.buildPath('buildlog.txt'));
+    };
+
+    this.getRawFiles = function(urls_list) {
+        var urls = urls_list || [{url: FilesService.buildPath('METADATA.json')},
+                                 {url: FilesService.buildPath('METADATA.json.new')}];
+        var deferred = $q.defer();
+        var urlCalls = [];
+        angular.forEach(urls, function(url) {
+            urlCalls.push($http.get(url.url, {transformResponse: []}));
+        });
+        // they may, in fact, all be done, but this
+        // executes the callbacks in then, once they are
+        // completely finished.
+        $q.all(urlCalls).then(
+            function(results) {
+                deferred.resolve(results)
+            },
+            function(errors) {
+                deferred.reject(errors);
+            },
+            function(updates) {
+                deferred.update(updates);
+            });
+        return deferred.promise;
+    };
+
 });
 
+myApp.service('EditorService', function() {
+    this.heightUpdateFunction = function(editor, editor_div, editor_section) {
+        var newHeight =
+            editor.getSession().getScreenLength()
+                * editor.renderer.lineHeight
+                + editor.renderer.scrollBar.getWidth();
+        editor_div.height(newHeight.toString() + "px");
+        editor_section.height(newHeight.toString() + "px");
+        // This call is required for the editor to fix all
+        // of its inner structure for adapting to a change in size
+        editor.resize();
+    };
+
+    this.doDiff = function(editor1, editor2, result_of_diff) {
+        return function () {
+            var left = JSON.parse(editor1.getValue());
+            var right = JSON.parse(editor2.getValue());
+
+            var instance = jsondiffpatch.create({
+                objectHash: function (obj) {
+                    return '';
+                }
+            });
+
+            var delta = instance.diff(left, right);
+
+            var visualdiff = document.getElementById(result_of_diff);
+//            angular.element(visualdiff).empty();
+            if (visualdiff) {
+                visualdiff.innerHTML = jsondiffpatch.formatters.html.format(delta, left);
+
+                var scripts = visualdiff.querySelectorAll('script');
+                for (var i = 0; i < scripts.length; i++) {
+                    var s = scripts[i];
+                    /* jshint evil: true */
+                    eval(s.innerHTML);
+                }
+            }
+            angular.element(visualdiff).find('div').first().find('pre')
+                .each(function (i) {
+                    angular.element(this).css("background-color", "transparent").css("border", "0");
+                })
+        };
+    };
+});
 
 // create the controllers and inject Angular's $scope etc
 
@@ -246,28 +335,61 @@ myApp.controller('testsController', function($scope, $http) {
     $scope.message = 'This is message from testsController!';
 });
 
-myApp.controller('buildLogController', function($scope, $http, FilesService) {
-    $http.get(FilesService.buildPath('buildlog.txt'))
-        .success(function(data, status, headers, config) {
-            $scope.data = data;
-        });
+myApp.controller('buildLogController', function($scope, $http, DataService) {
+    DataService.getBuildLog().then(function(response) {
+        $scope.data = response.data;
+    });
 });
 
-myApp.controller('metadataController', function($scope, $http, FilesService) {
-    // we already have METADATA.json parsed into object in `mainController`
-    // and here we need raw file, do not deserialize it using a JSON parser.
-    $http.get(FilesService.buildPath('METADATA.json'), {transformResponse: []})
-        .success(function(data, status, headers, config) {
-            $scope.metadata_raw = data;
-        });
+myApp.controller('metadataController', function($scope, $http, $q, DataService, EditorService) {
 
-    $http.get(FilesService.buildPath('METADATA.json.new'), {transformResponse: []})
-        .success(function(data, status, headers, config) {
-            $scope.metadata_new_raw = data;
-        });
-    angular.element(document).ready(function () {
-        console.log('Document ready!');
+    $scope.dataLoaded = false;
+    $scope._editor = null;
+    $scope._editor_new = null;
+
+    $scope.$watch('dataLoaded', function() {
+        if ($scope.dataLoaded) {
+            if ($scope._editor && $scope._editor_new) {
+                $scope.doDiff = EditorService.doDiff($scope._editor, $scope._editor_new, 'visualdiff');
+//                    $scope.doDiff();
+            }
+        }
     });
+
+//    DataService.getMetadataRaw().then(function(response) {
+//        $scope.metadata_raw = response.data;
+//    });
+//
+//    DataService.getMetadataNewRaw().then(function(response) {
+//        $scope.metadata_new_raw = response.data;
+//    });
+//    OR
+
+    DataService.getRawFiles().then(function(responses) {
+        $scope.metadata_raw = responses[0].data;
+        $scope.metadata_new_raw = responses[1].data;
+        $scope.dataLoaded = true;
+    });
+
+    $scope.aceLoaded = function(_editor) {
+        EditorService.heightUpdateFunction(_editor, angular.element('#editor'), angular.element('#editor-section'));
+        $scope._editor = _editor.getSession();
+    };
+
+    $scope.aceChanged = function(_editor) {
+//        $scope._editor = _editor.getSession();
+    };
+
+    $scope.aceLoadedNew = function(_editor) {
+        EditorService.heightUpdateFunction(_editor, angular.element('#editor-new'), angular.element('#editor-new-section'));
+        $scope._editor_new = _editor.getSession();
+    };
+
+    $scope.aceChangedNew = function(_editor) {
+//        $scope._editor_new = _editor.getSession();
+    };
+    $scope.doDiff = EditorService.doDiff($scope._editor, $scope._editor_new, 'visualdiff');
+    if ($scope.dataLoaded) {$scope.doDiff();}
 });
 
 myApp.controller('bakeryYamlController', function($scope, $http) {

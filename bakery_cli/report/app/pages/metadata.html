@@ -1,103 +1,45 @@
-<div class="jumbotron text-center">
-  <h1>metadata.html</h1>
+<!--<h3 class="text-center">JSON Diff of the Two Files</h3>-->
+<div class="text-center">
+  <button class="btn btn-primary text-center" ng-click="doDiff()" ng-disabled="!dataLoaded">JSON Diff of the Two Files</button>
 </div>
 
-<h3 class="text-center">JSON Diff of the Two Files</h3>
-<div class="col-md-6">
-  <h4>METADATA.json imported from upstream repo</h4>
-  <div class="container">
-    <div class="row">
-      <div class="col-sm-5 col-md-5">
-        <div id="editor"></div>
-        <textarea id="metadatajson" name="metadatajson">{{ metadata_raw }}</textarea>
-      </div>
+<p class="text-center" ng-hide="dataLoaded">
+  <i class="fa fa-spinner fa-spin fa-5x"></i>
+</p>
+<div ng-show="dataLoaded">
+  <div class="row">
+    <div class="col-xs-offset-1 col-sm-offset-1 col-md-offset-1 col-lg-offset-1 col-xs-5 col-sm-5 col-md-5 col-lg-5">
+      <h4>METADATA.json imported from upstream repo</h4>
+      <div id="editor" class="editor" ui-ace="{
+         mode: 'json',
+         theme: 'solarized_light',
+         UseSoftTabs: false,
+         useWrapMode: true,
+         HighlightActiveLine: false,
+         onLoad: aceLoaded,
+         onChange: aceChanged
+         }" ng-model="metadata_raw"></div>
+      <p class="navbar-text navbar-left">
+        <span><a href="{{ view_url }}" class="navbar-link">View</a></span>
+        <span><a href="{{ edit_url }}" class="navbar-link">Edit</a></span>
+      </p>
+    </div>
+    <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+      <h4>METADATA.json.new generated from files</h4>
+      <div id="editor-new" class="editor" ui-ace="{
+         mode: 'json',
+         theme: 'solarized_light',
+         UseSoftTabs: false,
+         useWrapMode: true,
+         HighlightActiveLine: false,
+         onLoad: aceLoadedNew,
+         onChange: aceChangedNew
+         }" ng-model="metadata_new_raw"></div>
     </div>
   </div>
-  <p class="navbar-text navbar-left">
-    <span><a href="{{ view_url }}" class="navbar-link">View</a></span>
-    <span><a href="{{ edit_url }}" class="navbar-link">Edit</a></span>
-  </p>
+  <div class="row flex-container">
+    <div id="delta-panel-visual" style="clear: both;">
+      <p id="visualdiff"></p>
+    </div>
+  </div>
 </div>
-
-<div class="col-md-6">
-  <h4>METADATA.json.new generated from files</h4>
-  <div id="editor_new"></div>
-  <textarea id="metadatajson_new" name="metadatajson_new">{{ metadata_new_raw }}</textarea>
-</div>
-
-<div id="delta-panel-visual" style="clear: both;">
-  <p id="visualdiff"></p>
-</div>
-
-
-<!--<script>-->
-  <!--var doDiff = function() {-->
-    <!--var left = JSON.parse($('#metadatajson').text());-->
-    <!--var right = JSON.parse($('#metadatajson_new').text());-->
-
-    <!--var instance = jsondiffpatch.create({-->
-      <!--objectHash: function(obj) {-->
-        <!--return '';-->
-      <!--}-->
-    <!--});-->
-
-    <!--var delta = instance.diff(left, right);-->
-
-    <!--var visualdiff = document.getElementById('visualdiff');-->
-    <!--$(visualdiff).empty();-->
-    <!--if (visualdiff) {-->
-      <!--visualdiff.innerHTML = jsondiffpatch.formatters.html.format(delta, left);-->
-
-      <!--var scripts = visualdiff.querySelectorAll('script');-->
-      <!--for (var i = 0; i < scripts.length; i++) {-->
-        <!--var s = scripts[i];-->
-        <!--/* jshint evil: true */-->
-        <!--eval(s.innerHTML);-->
-      <!--}-->
-    <!--}-->
-    <!--$(visualdiff).find('div').first().find('pre')-->
-        <!--.each(function(i){-->
-          <!--$(this).css("background-color", "transparent").css("border", "0");-->
-        <!--})-->
-  <!--};-->
-
-  <!--var heightUpdateFunction = function(editor, editor_div, editor_section) {-->
-      <!--var newHeight =-->
-          <!--editor.getSession().getScreenLength()-->
-              <!--* editor.renderer.lineHeight-->
-              <!--+ editor.renderer.scrollBar.getWidth();-->
-      <!--editor_div.height(newHeight.toString() + "px");-->
-      <!--editor_section.height(newHeight.toString() + "px");-->
-      <!--// This call is required for the editor to fix all-->
-      <!--// of its inner structure for adapting to a change in size-->
-      <!--editor.resize();-->
-    <!--};-->
-
-  <!--var prepareEditor = function(editor, textarea) {-->
-    <!--editor.setTheme("ace/theme/solarized_light");-->
-    <!--editor.getSession().setMode("ace/mode/html");-->
-    <!--editor.getSession().setUseSoftTabs(false);-->
-    <!--editor.getSession().setUseWrapMode(true);-->
-    <!--editor.setHighlightActiveLine(false);-->
-
-    <!--textarea.hide();-->
-
-    <!--editor.getSession().setUseWrapMode(true);-->
-    <!--editor.getSession().setValue(textarea.val());-->
-    <!--//editor.setReadOnly(true);-->
-  <!--};-->
-  <!--$(document).ready(function () {-->
-    <!--var editor = ace.edit("editor"),-->
-        <!--editor_new = ace.edit("editor_new"),-->
-        <!--textarea = $('textarea[name="metadatajson"]'),-->
-        <!--textarea_new = $('textarea[name="metadatajson_new"]');-->
-
-    <!--prepareEditor(editor, textarea);-->
-    <!--prepareEditor(editor_new, textarea_new);-->
-
-    <!--heightUpdateFunction(editor, $('#editor'), $('#editor-section'));-->
-    <!--heightUpdateFunction(editor_new, $('#editor_new'), $('#editor_new-section'));-->
-
-    <!--doDiff();-->
-  <!--});-->
-<!--</script>-->
