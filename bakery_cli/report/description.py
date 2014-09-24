@@ -36,6 +36,9 @@ def generate(config, outfile='description.html'):
 
     destfile = open(op.join(config['path'], outfile), 'w')
 
+    report_app = report_utils.ReportApp(config)
+    report_app.description_page.copy_file(op.join(config['path'], 'DESCRIPTION.en_us.html'))
+
     app_version = report_utils.git_info(config)
     print(report_utils.render_template(outfile,
         app_version=app_version, data=data, current_page=outfile,

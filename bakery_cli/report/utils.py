@@ -135,6 +135,10 @@ class MetadataPage(ReportPageBase):
     name = 'metadata'
 
 
+class DescriptionPage(ReportPageBase):
+    name = 'description'
+
+
 class ReportApp(six.with_metaclass(Singleton, object)):
     def __init__(self, config, **kwargs):
         self.config = config
@@ -151,6 +155,7 @@ class ReportApp(six.with_metaclass(Singleton, object)):
         self.init()
         self.build_page = BuildPage(self)
         self.metadata_page = MetadataPage(self)
+        self.description_page = DescriptionPage(self)
 
         print('Report Application created.')
         self.write_app_info()

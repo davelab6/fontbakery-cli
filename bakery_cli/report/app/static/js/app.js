@@ -175,13 +175,17 @@ myApp.filter('replace', function () {
     };
 });
 
+myApp.filter( 'default', [ '$filter', function( $filter ) {
+    return function( input, defaultValue ) {
+        if ( !input ) return defaultValue;
+        return input;
+    };
+}]);
+
 // change <title> of the pages at runtime
 myApp.run(['$location', '$rootScope', function($location, $rootScope) {
     $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
         $rootScope.title = current.$$route.title;
-
-
-
     });
 }]);
 
@@ -290,7 +294,13 @@ myApp.service('buildApi', function($http, $q, PathBuilder) {
     this.getBuildLog = function() {
         return $http.get(PathBuilder.buildPagesPath(name, 'buildlog.txt'));
     };
+});
 
+myApp.service('descriptionApi', function($http, $q, PathBuilder) {
+    var name = 'description';
+    this.getDescriptionFile = function() {
+        return $http.get(PathBuilder.buildPagesPath(name, 'DESCRIPTION.en_us.html'), {transformResponse: []});
+    };
 });
 
 myApp.service('EditorService', function() {
@@ -383,7 +393,7 @@ myApp.controller('buildLogController', function($scope, $http, buildApi) {
     });
 });
 
-myApp.controller('metadataController', function($scope, $http, $q, metadataApi, EditorService, PathBuilder, appConfig, googleChartApiPromise) {
+myApp.controller('metadataController', function($scope, $http, $q, metadataApi, EditorService, PathBuilder, appConfig) {
     $scope.charts = [];
     $scope.dataLoaded = false;
     $scope.editor1 = null;
@@ -464,8 +474,19 @@ myApp.controller('bakeryYamlController', function($scope, $http) {
     $scope.message = 'This is message from bakeryYamlController!';
 });
 
-myApp.controller('descriptionController', function($scope) {
-    $scope.message = 'This is message from descriptionController!';
+myApp.controller('descriptionController', function($scope, descriptionApi, EditorService) {
+    descriptionApi.getDescriptionFile().then(function(response) {
+        $scope.data = response.data;
+    });
+    $scope.aceLoaded = function(_editor) {
+        EditorService.heightUpdateFunction(_editor, angular.element('#editor'), angular.element('#editor-section'));
+        $scope.editor = _editor;
+        angular.element('#preview').html($scope.editor.getSession().getValue());
+    };
+
+    $scope.aceChanged = function(_editor) {
+        angular.element('#preview').html($scope.editor.getSession().getValue());
+    };
 });
 
 
