@@ -7,7 +7,7 @@
 
   <!-- load bootstrap and fontawesome via CDN -->
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.css" />
-  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.css" />
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css" />
 
   <!--<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />-->
   <!--<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />-->
@@ -33,14 +33,14 @@
       <ul nav-menu="active" class="nav navbar-nav navbar-right">
         <li><a href="{{repo.gh_pages}}" target="_blank"><i class="fa fa-github"></i> gh-pages</a></li>
         <li><a href="{{repo.url}}" target="_blank"><i class="fa fa-github-square"></i> Github Page</a></li>
-        <li><a href="#/"><i class="fa fa-home"></i> Summary</a></li>
-        <li><a href="#/review">Review</a></li>
-        <li><a href="#/checks">Pre-Build Checks</a></li>
-        <li><a href="#/tests">Tests</a></li>
-        <li><a href="#/build-log">Build Log</a></li>
+        <li><a href="#/"><i class="fa fa-bar-chart"></i> Summary</a></li>
+        <li><a href="#/review"><i class="fa fa-binoculars"></i> Review</a></li>
+        <li><a href="#/checks"><i class="fa fa-briefcase"></i> Pre-Build Checks</a></li>
+        <li><a href="#/tests"><i class="fa fa-bug"></i> Tests</a></li>
+        <li><a href="#/build-log"><i class="fa fa-file-text-o"></i> Build Log</a></li>
         <li><a href="#/metadata"><i class="fa fa-info-circle"></i> METADATA.json</a></li>
-        <li><a href="#/bakery-yaml">bakery.yaml</a></li>
-        <li><a href="#/description"><i class="fa fa-shield"></i> Description</a></li>
+        <li><a href="#/bakery-yaml"><i class="fa fa-file"></i> bakery.yaml</a></li>
+        <li><a href="#/description"><i class="fa fa-pencil-square-o"></i> Description</a></li>
       </ul>
     </div>
   </nav>
@@ -103,5 +103,17 @@
 
 <!--load app scripts-->
 <script src="static/js/app.js"></script>
+<script src="static/js/directives.js"></script>
+<script src="static/js/filters.js"></script>
+<script src="static/js/services.js"></script>
+<script src="static/js/controllers/mainController.js"></script>
+<script src="static/js/controllers/bakeryYamlController.js"></script>
+<script src="static/js/controllers/buildController.js"></script>
+<script src="static/js/controllers/checksController.js"></script>
+<script src="static/js/controllers/descriptionController.js"></script>
+<script src="static/js/controllers/metadataController.js"></script>
+<script src="static/js/controllers/reviewController.js"></script>
+<script src="static/js/controllers/summaryController.js"></script>
+<script src="static/js/controllers/testsController.js"></script>
 </body>
 </html>
