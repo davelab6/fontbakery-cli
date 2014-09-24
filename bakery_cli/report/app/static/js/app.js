@@ -72,7 +72,7 @@ myApp.config(function($routeProvider, $httpProvider) {
         // route for the build log page
         .when('/build-log', {
             title: 'Build Log',
-            templateUrl : 'pages/build-log.html',
+            templateUrl : 'pages/build.html',
             controller  : 'buildController'
         })
 
@@ -124,8 +124,6 @@ myApp.constant("appConfig", {
     data_dir: 'data',
     pages_dir: 'pages',
 
-    metadata: 'METADATA.json',
-    metadata_new: 'METADATA.json.new',
     app: 'app.json',
     repo: 'repo.json',
 

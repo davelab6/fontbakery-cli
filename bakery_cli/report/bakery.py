@@ -31,6 +31,10 @@ def generate(config, outfile='bakery-yaml.html'):
 
     data = open(op.join(config['path'], 'bakery.yaml')).read()
     app_version = report_utils.git_info(config)
+
+    report_app = report_utils.ReportApp(config)
+    report_app.bakeryyaml_page.copy_file(op.join(config['path'], 'bakery.yaml'))
+
     print(report_utils.render_template(
         outfile, data=data, app_version=app_version, current_page=outfile,
         build_repo_url=report_utils.build_repo_url,).encode('utf8'), file=destfile)

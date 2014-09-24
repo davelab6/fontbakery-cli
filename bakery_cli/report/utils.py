@@ -139,6 +139,10 @@ class DescriptionPage(ReportPageBase):
     name = 'description'
 
 
+class BakeryYamlPage(ReportPageBase):
+    name = 'bakery-yaml'
+
+
 class ReportApp(six.with_metaclass(Singleton, object)):
     def __init__(self, config, **kwargs):
         self.config = config
@@ -156,6 +160,7 @@ class ReportApp(six.with_metaclass(Singleton, object)):
         self.build_page = BuildPage(self)
         self.metadata_page = MetadataPage(self)
         self.description_page = DescriptionPage(self)
+        self.bakeryyaml_page = BakeryYamlPage(self)
 
         print('Report Application created.')
         self.write_app_info()
