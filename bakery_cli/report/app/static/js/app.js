@@ -2,7 +2,7 @@
 
 // create module and include dependencies
 var myApp = angular.module(
-    'myApp', ['ngRoute', 'btford.markdown', 'ui.bootstrap', 'ui.ace']
+    'myApp', ['ngRoute', 'btford.markdown', 'ui.bootstrap', 'ui.ace', 'googlechart']
 );
 
 myApp.factory('alertsFactory', function () {
@@ -169,10 +169,19 @@ myApp.directive('navMenu', function($location) {
     }
 });
 
+myApp.filter('replace', function () {
+    return function (target, arg1, arg2) {
+        return target.replace(arg1, arg2);
+    };
+});
+
 // change <title> of the pages at runtime
 myApp.run(['$location', '$rootScope', function($location, $rootScope) {
     $rootScope.$on('$routeChangeSuccess', function (event, current, previous) {
         $rootScope.title = current.$$route.title;
+
+
+
     });
 }]);
 
@@ -375,8 +384,8 @@ myApp.controller('buildLogController', function($scope, $http, buildApi) {
     });
 });
 
-myApp.controller('metadataController', function($scope, $http, $q, metadataApi, EditorService, PathBuilder, appConfig) {
-
+myApp.controller('metadataController', function($scope, $http, $q, metadataApi, EditorService, PathBuilder, appConfig, googleChartApiPromise) {
+    $scope.charts = [];
     $scope.dataLoaded = false;
     $scope.editor1 = null;
     $scope.editor2 = null;
@@ -400,16 +409,26 @@ myApp.controller('metadataController', function($scope, $http, $q, metadataApi, 
 
     metadataApi.getMetadataResults().then(function(response) {
         $scope.tests = response.data;
+        angular.forEach($scope.tests, function(results, test) {
+            var success_len = results['success'].length;
+            var fixed_len = results['fixed'].length;
+            var failure_len = results['failure'].length;
+            var error_len = results['error'].length;
+            var data = google.visualization.arrayToDataTable([
+                ['Tests', '#'],
+                ['Success '+success_len, success_len],
+                ['Fixed '+fixed_len, fixed_len],
+                ['Failed '+failure_len, failure_len],
+                ['Error '+error_len, error_len]
+            ]);
+            var options = {
+                title: test,
+                is3D: true,
+                colors: ['#468847', '#3a87ad', '#b94a48', '#c09853']
+            };
+            $scope.charts.push({data: data, options: options, type: "PieChart", displayed: true});
+        });
     });
-
-//    metadataApi.getMetadataRaw().then(function(response) {
-//        $scope.metadata1 = response.data;
-//    });
-//
-//    metadataApi.getMetadataNewRaw().then(function(response) {
-//        $scope.metadata2 = response.data;
-//    });
-//    OR
 
     metadataApi.getRawFiles().then(function(responses) {
         $scope.metadata1 = responses[0].data;
@@ -449,3 +468,12 @@ myApp.controller('bakeryYamlController', function($scope, $http) {
 myApp.controller('descriptionController', function($scope) {
     $scope.message = 'This is message from descriptionController!';
 });
+
+
+/* Load this now, becuse app uses *google.*!!! */
+google.load('visualization', '1', { packages: ['corechart'] });
+
+
+//angular.element(document).ready(function() {
+//    angular.bootstrap(document, ['myApp']);
+//});

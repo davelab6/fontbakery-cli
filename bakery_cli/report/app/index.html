@@ -1,6 +1,7 @@
 <!-- index.html -->
-<!DOCTYPE html>
+<!--<!DOCTYPE html>-->
 <html ng-app="myApp">
+<html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title ng-bind="'Google Fonts &mdash; ' + title"></title>
@@ -48,7 +49,7 @@
 <div id="main" class="container-fluid">
   <!--this is the place where all alerts pop-up, controlled by mainController -->
   <div id=alerts-box>
-    <alert ng-repeat="alert in alerts.getAlerts()" type="{{alert.type}}" close="alerts.closeAlert($index)">{{alert.msg}}</alert>
+    <alert ng-repeat="alert in alerts.getAlerts()" type="{{alert.type}}" close="alerts.closeAlert($index)">{{ alert.msg }}</alert>
   </div>
   <!-- angular templating -->
   <!-- this is where content will be injected -->
@@ -93,6 +94,7 @@
 <script src="static/bower_components/angular-markdown-directive/markdown.js"></script>
 <script src="static/bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 <script src="static/bower_components/ng-table/ng-table.js"></script>
+<script src="static/js/libs/gchart/gchart.js"></script>
 
 <!--load app scripts-->
 <script src="static/js/app.js"></script>

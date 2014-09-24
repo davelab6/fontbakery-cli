@@ -59,3 +59,8 @@
     max-width: none;
     width: inherit;
 }
+
+.apopover {
+    max-width: 1980px;
+    font-family: Courier,serif;
+}
