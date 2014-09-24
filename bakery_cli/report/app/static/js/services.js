@@ -81,17 +81,16 @@ angular.module('myApp').service('appApi', function($http, $q, PathBuilder, appCo
     };
 
     this.getMetadata = function() {
-        return $http.get(PathBuilder.buildDataPath('METADATA.json'));
+        return $http.get(PathBuilder.buildDataPath(appConfig.metadata));
     };
 });
 
 angular.module('myApp').service('metadataApi', function($http, $q, PathBuilder, appConfig) {
     var name = 'metadata',
-        metadata = 'METADATA.json',
         metadata_new = 'METADATA.json.new';
 
     this.getMetadata = function() {
-        return $http.get(PathBuilder.buildDataPath(metadata));
+        return $http.get(PathBuilder.buildDataPath(appConfig.metadata));
     };
 
     this.getMetadataNew = function() {
@@ -99,14 +98,14 @@ angular.module('myApp').service('metadataApi', function($http, $q, PathBuilder, 
     };
 
     this.getMetadataRaw = function() {
-        return $http.get(PathBuilder.buildDataPath(metadata), {transformResponse: []});
+        return $http.get(PathBuilder.buildDataPath(appConfig.metadata), {transformResponse: []});
     };
 
     this.getMetadataNewRaw = function() {
         return $http.get(PathBuilder.buildDataPath(metadata_new), {transformResponse: []});
     };
     this.getRawFiles = function(urls_list) {
-        var urls = urls_list || [{url: PathBuilder.buildDataPath(metadata)},
+        var urls = urls_list || [{url: PathBuilder.buildDataPath(appConfig.metadata)},
                                  {url: PathBuilder.buildDataPath(metadata_new)}];
         var deferred = $q.defer();
         var urlCalls = [];
@@ -130,7 +129,7 @@ angular.module('myApp').service('metadataApi', function($http, $q, PathBuilder, 
     };
 
     this.getMetadataResults = function() {
-        return $http.get(PathBuilder.buildPagesPath(name, metadata));
+        return $http.get(PathBuilder.buildPagesPath(name, appConfig.metadata));
     };
 });
 
