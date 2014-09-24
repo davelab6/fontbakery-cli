@@ -320,7 +320,6 @@ myApp.service('EditorService', function() {
             var delta = instance.diff(left, right);
 
             var visualdiff = document.getElementById(result_of_diff);
-//            angular.element(visualdiff).empty();
             if (visualdiff) {
                 visualdiff.innerHTML = jsondiffpatch.formatters.html.format(delta, left);
 
