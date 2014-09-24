@@ -1308,6 +1308,67 @@ class Test_CheckVerticalMetricsAutoFixCalled(TestCase):
                     assert not fix.called
 
 
+class TestFontOnDiskFamilyEqualToMetadataJSON(TestCase):
+
+    @mock.patch.object(downstream.TestFontOnDiskFamilyEqualToMetadataJSON, 'read_metadata_contents')
+    def test_font_on_disk_family_equal_in_metadata_json(self, obj):
+        obj.return_value = json.dumps({
+            'fonts': [{
+                'name': 'FamilyName',
+                'filename': 'FamilyName-Regular.ttf'
+            }]
+        })
+
+        class FontFailure(object):
+
+            @property
+            def familyname(self):
+                return 'Family'
+
+        class FontSuccess(object):
+
+            @property
+            def familyname(self):
+                return 'FamilyName'
+
+        with mock.patch.object(OriginFont, 'get_ttfont_from_metadata') as func:
+            func.return_value = FontFailure()
+            self.failure_run(downstream.TestFontOnDiskFamilyEqualToMetadataJSON)
+
+            func.return_value = FontSuccess()
+            self.success_run(downstream.TestFontOnDiskFamilyEqualToMetadataJSON)
+
+
+class TestPostScriptNameInMetadataEqualFontOnDisk(TestCase):
+
+    @mock.patch.object(downstream.TestPostScriptNameInMetadataEqualFontOnDisk, 'read_metadata_contents')
+    def test_font_on_disk_family_equal_in_metadata_json(self, obj):
+        obj.return_value = json.dumps({
+            'fonts': [{
+                'postScriptName': 'FamilyName'
+            }]
+        })
+
+        class FontFailure(object):
+
+            @property
+            def post_script_name(self):
+                return 'Family'
+
+        class FontSuccess(object):
+
+            @property
+            def post_script_name(self):
+                return 'FamilyName'
+
+        with mock.patch.object(OriginFont, 'get_ttfont_from_metadata') as func:
+            func.return_value = FontFailure()
+            self.failure_run(downstream.TestPostScriptNameInMetadataEqualFontOnDisk)
+
+            func.return_value = FontSuccess()
+            self.success_run(downstream.TestPostScriptNameInMetadataEqualFontOnDisk)
+
+
 class SourceFontFileNameEqualsFamilyStyle(TestCase):
 
     def test_source_ttf_font_filename_equals_familystyle(self):
