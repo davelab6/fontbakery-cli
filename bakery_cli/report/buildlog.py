@@ -35,7 +35,7 @@ def generate(config, outfile='buildlog.html'):
     app_version = report_utils.git_info(config)
 
     report_app = report_utils.ReportApp(config)
-    report_app.copy_to_data(op.join(config['path'], 'buildlog.txt'))
+    report_app.build_page.copy_file(op.join(config['path'], 'buildlog.txt'))
     print(report_utils.render_template(
         outfile, log=log, app_version=app_version, current_page=outfile,
         build_repo_url=report_utils.build_repo_url, markdown=markdown), file=destfile)

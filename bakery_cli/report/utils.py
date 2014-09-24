@@ -1,3 +1,4 @@
+from abc import ABCMeta
 import json
 import os.path as op
 import os
@@ -109,18 +110,48 @@ class lazy_property(object):
         return result
 
 
+#TODO make it of type ABCMeta
+class ReportPageBase(object):
+    name = None
+
+    def __init__(self, app):
+        self.app = app
+        self.path = op.join(self.app.pages_dir, self.name)
+        if not op.exists(self.path):
+            os.makedirs(self.path)
+
+    def copy_file(self, src):
+        self.app.copy_file(src, self.path)
+
+    def dump_file(self, data, fname):
+        self.app.dump_file(data, op.join(self.path, fname))
+
+
+class BuildPage(ReportPageBase):
+    name = 'build'
+
+
+class MetadataPage(ReportPageBase):
+    name = 'metadata'
+
+
 class ReportApp(six.with_metaclass(Singleton, object)):
     def __init__(self, config, **kwargs):
         self.config = config
         self.source_dir = kwargs.get('source_dir', APP_DIR)
         self.target_dir = kwargs.get('target_dir', op.join(self.config['path'], 'app'))
         self.data_dir = kwargs.get('data_dir', op.join(self.target_dir, 'data'))
+        self.pages_dir = kwargs.get('pages_dir', op.join(self.data_dir, 'pages'))
         self.static_dir = kwargs.get('static_dir', op.join(self.target_dir, 'static'))
+
         self.bower_components = kwargs.get('bower_components', ['angular-markdown-directive',
                                                                 'angular-bootstrap',
                                                                 'angular-ui-ace\#bower',
                                                                 'ng-table'])
-        self.make()
+        self.init()
+        self.build_page = BuildPage(self)
+        self.metadata_page = MetadataPage(self)
+
         print('Report Application created.')
         self.write_app_info()
         self.bower_install()
@@ -140,14 +171,14 @@ class ReportApp(six.with_metaclass(Singleton, object)):
         if self.exists():
             shutil.rmtree(self.target_dir)
     
-    def make(self):
+    def init(self):
         self.clean()
         shutil.copytree(self.source_dir, self.target_dir)
 
     def copy_file(self, src, dst):
         try:
             print('Copying file: {} -> {}'.format(src, dst))
-            shutil.copy(src, dst)
+            shutil.copy2(src, dst)
         except shutil.Error as e:
             print('Error: %s' % e)
         except IOError as e:
@@ -168,14 +199,19 @@ class ReportApp(six.with_metaclass(Singleton, object)):
     def move_to_data(self, src):
         self.move_file(src, self.data_dir)
 
-    def dump_to_file(self, data, fname):
+    def dump_data_file(self, data, fname):
         print('Writing data to file: {}'.format(fname))
         with open(op.join(self.data_dir, fname), 'w') as outfile:
             json.dump(data, outfile, indent=2)
 
+    def dump_file(self, data, fpath):
+        print('Writing data to file: {}'.format(fpath))
+        with open(fpath, 'w') as outfile:
+            json.dump(data, outfile, indent=2)
+
     def write_app_info(self):
-        self.dump_to_file(self.version, 'app.json')
-        self.dump_to_file(self.repo, 'repo.json')
+        self.dump_data_file(self.version, 'app.json')
+        self.dump_data_file(self.repo, 'repo.json')
 
     @lazy_property
     def version(self):

@@ -1,31 +1,31 @@
 <h3>METADATA Tests</h3>
-<div ng-repeat="(font, results) in all_fonts">
-  <div class="flex-container">
-    <table ng-rpeat="(font, results) in all_fonts" class="table table-striped table-hover table-bordered table-condensed tablesorter">
-      <!--<caption><h4>{{ font }}</h4></caption>-->
-      <thead>
-      <tr>
-        <th>Category</th>
-        <th>Description</th>
-        <th>File</th>
-        <th>Result</th>
-        <th>Status</th>
-      </tr>
-      </thead>
-      <tr ng-repeat-start="(testType, icon) in resultMap"></tr>
-      <tr ng-repeat-start="item in all_fonts[font][testType]" class="{{ icon }}">
-        <td>{{ item.tags.join(', ') }}</td>
-        <!--<td><span class="apopover" data-placement="top" data-content="{{ item.name|replace('.','/') }}.py:{{ item.methodName }}()">{{ item.methodDoc|default('None') }}</span></td>-->
-        <td><span class="apopover" data-placement="top" >{{ item.methodDoc }}</span></td>
-        <td>{{ font }}</td>
-        <td>{{ item.err_msg }}</td>
-        <td>{{ statusMap[testType] }}</td>
-      </tr>
-      <tr ng-repeat-end></tr>
-      <tr ng-repeat-end></tr>
-    </table>
-  </div>
+
+<div class="flex-container">
+  <table ng-repeat="(font, results) in tests" class="table table-striped table-hover table-bordered table-condensed tablesorter">
+    <!--<caption><h4>{{ font }}</h4></caption>-->
+    <thead>
+    <tr>
+      <th>Category</th>
+      <th>Description</th>
+      <th>File</th>
+      <th>Result</th>
+      <th>Status</th>
+    </tr>
+    </thead>
+    <tr ng-repeat-start="(testType, icon) in resultMap"></tr>
+    <tr ng-repeat-start="item in tests[font][testType]" class="{{ icon }}">
+      <td>{{ item.tags.join(', ') }}</td>
+      <!--<td><span class="apopover" data-placement="top" data-content="{{ item.name|replace('.','/') }}.py:{{ item.methodName }}()">{{ item.methodDoc|default('None') }}</span></td>-->
+      <td><span class="apopover" data-placement="top" >{{ item.methodDoc }}</span></td>
+      <td>{{ font }}</td>
+      <td>{{ item.err_msg }}</td>
+      <td>{{ statusMap[testType] }}</td>
+    </tr>
+    <tr ng-repeat-end></tr>
+    <tr ng-repeat-end></tr>
+  </table>
 </div>
+
 <h3 class="text-center">JSON Diff of the Two Files</h3>
 <p class="text-center" ng-hide="dataLoaded">
   <i class="fa fa-spinner fa-spin fa-5x"></i>
@@ -40,9 +40,9 @@
          UseSoftTabs: false,
          useWrapMode: true,
          HighlightActiveLine: false,
-         onLoad: aceLoaded,
-         onChange: aceChanged
-         }" ng-model="metadata_raw"></div>
+         onLoad: aceLoaded1,
+         onChange: aceChanged1
+         }" ng-model="metadata1"></div>
       <p class="navbar-text navbar-left">
         <span><a ng-href="{{ view_url }}" target="_blank" class="navbar-link">View</a></span>
         <span><a ng-href="{{ edit_url }}" target="_blank" class="navbar-link">Edit</a></span>
@@ -56,9 +56,9 @@
          UseSoftTabs: false,
          useWrapMode: true,
          HighlightActiveLine: false,
-         onLoad: aceLoadedNew,
-         onChange: aceChangedNew
-         }" ng-model="metadata_new_raw"></div>
+         onLoad: aceLoaded2,
+         onChange: aceChanged2
+         }" ng-model="metadata2"></div>
     </div>
   </div>
   <div class="text-center">
