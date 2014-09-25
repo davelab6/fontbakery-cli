@@ -114,7 +114,7 @@ class CheckMetadataAgreements(TestCase):
         """ Regular should be 400 """
         have = False
         for i in self.metadata.fonts:
-            if i.full_name.endswith('Regular') and i.weight == 400:
+            if i.filename.endswith('Regular.ttf') and i.weight == 400:
                 have = True
         if not have:
             self.fail(('METADATA.json does not contain Regular font. At least'
