@@ -31,7 +31,7 @@ class CheckFontsMenuAgreements(TestCase):
         return open(self.operator.path).read()
 
     def menufile(self, font_metadata):
-        return '%s.menu' % font_metadata.post_script_name
+        return '%s.menu' % font_metadata.filename[:-4]
 
     @tags('required')
     def test_menu_file_agreement(self):
