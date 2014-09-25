@@ -29,6 +29,7 @@ class CheckMetadataMatchesNameTable(TestCase):
         return open(self.operator.path).read()
 
     def test_check_metadata_matches_nametable(self):
+        """ Metadata key-value match to table name fields """
         contents = self.read_metadata_contents()
         fm = Metadata.get_family_metadata(contents)
         for font_metadata in fm.fonts:

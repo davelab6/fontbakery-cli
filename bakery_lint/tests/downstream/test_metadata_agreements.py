@@ -129,20 +129,30 @@ class CheckMetadataAgreements(TestCase):
         self.assertTrue(have)
 
     @tags('required')
-    def test_metadata_filename_matches_postScriptName(self):
+    def test_metadata_filename_matches_postscriptname(self):
         """ METADATA.json `filename` matches `postScriptName` """
+        import re
+        regex = re.compile(r'\W')
+
         for x in self.metadata.fonts:
-            post_script_name = x.post_script_name
-            filename = x.filename
-            self.assertEqual(os.path.splitext(filename)[0], post_script_name)
+            post_script_name = regex.sub('', x.post_script_name)
+            filename = regex.sub('', os.path.splitext(x.filename)[0])
+            if filename != post_script_name:
+                msg = '"{0}" does not match "{1}"'
+                self.fail(msg.format(x.filename, x.post_script_name))
 
     @tags('required')
     def test_metadata_fullname_matches_postScriptName(self):
         """ METADATA.json `fullName` matches `postScriptName` """
+        import re
+        regex = re.compile(r'\W')
+
         for x in self.metadata.fonts:
-            post_script_name = x.post_script_name.replace('-', ' ')
-            fullname = x.full_name
-            self.assertEqual(fullname, post_script_name)
+            post_script_name = regex.sub('', x.post_script_name)
+            fullname = regex.sub('', x.full_name)
+            if fullname != post_script_name:
+                msg = '"{0}" does not match "{1}"'
+                self.fail(msg.format(x.full_name, x.post_script_name))
 
     def test_metadata_fullname_is_equal_to_internal_font_fullname(self):
         """ METADATA.json 'fullname' value matches internal 'fullname' """
