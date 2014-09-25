@@ -392,19 +392,25 @@ class MetadataTest(TestCase):
     def test_metadata_top_keys_types(self):
         """ METADATA.json should have proper top keys types """
         self.assertEqual(type(self.metadata.get("name", None)),
-                         type(""), msg="name key type invalid")
+                         type(u""), msg="'name' is {0}, but must be {1}".format(type(self.metadata.get("name", None)), type(u"")))
+
         self.assertEqual(type(self.metadata.get("designer", None)),
-                         type(""), msg="designer key type invalid")
+                         type(u""), msg="'designer' is {0}, but must be {1}".format(type(self.metadata.get("designer", None)), type(u"")))
+
         self.assertEqual(type(self.metadata.get("license", None)),
-                         type(""), msg="license key type invalid")
+                         type(u""), msg="'license' is {0}, but must be {1}".format(type(self.metadata.get("license", None)), type(u"")))
+
         self.assertEqual(type(self.metadata.get("visibility", None)),
-                         type(""), msg="visibility key type invalid")
+                         type(u""), msg="'visibility' is {0}, but must be {1}".format(type(self.metadata.get("visibility", None)), type(u"")))
+
         self.assertEqual(type(self.metadata.get("category", None)),
-                         type(""), msg="category key type invalid")
+                         type(u""), msg="'category' is {0}, but must be {1}".format(type(self.metadata.get("category", None)), type(u"")))
+
         self.assertEqual(type(self.metadata.get("size", None)),
-                         type(0), msg="size key type invalid")
+                         type(0), msg="'size' is {0}, but must be {1}".format(type(self.metadata.get("size", None)), type(u"")))
+
         self.assertEqual(type(self.metadata.get("dateAdded", None)),
-                         type(""), msg="dateAdded key type invalid")
+                         type(u""), msg="'dateAdded' is {0}, but must be {1}".format(type(self.metadata.get("dateAdded", None)), type(u"")))
 
     @tags('required')
     def test_metadata_no_unknown_top_keys(self):

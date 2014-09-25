@@ -133,7 +133,7 @@ class CheckMetadataAgreements(TestCase):
         """ METADATA.json `filename` matches `postScriptName` """
         for x in self.metadata.fonts:
             post_script_name = x.post_script_name
-            filename = x.full_name
+            filename = x.filename
             self.assertEqual(os.path.splitext(filename)[0], post_script_name)
 
     @tags('required')
