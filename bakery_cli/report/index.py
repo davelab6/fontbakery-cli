@@ -196,6 +196,18 @@ def average_table_size(tdict):
     return sum(tdict.values()) / len(tdict)
 
 
+def font_factory_instance_to_dict(instance, exclude_attrs=()):
+    # Very simplified, but enough for reports
+    _exclude_attrs = exclude_attrs or (
+        'get_othography_info', 'get_orthographies', 'orthographies',
+        'refresh_sfnt_properties', '_fontFace',
+    )
+    return {
+        k: getattr(instance, k) for k in dir(instance) \
+        if not any([k.startswith('__'), str(k) in _exclude_attrs])
+    }
+
+
 def generate(config, outfile='index.html'):
     if config.get('failed'):
         destfile = open(op.join(config['path'], outfile), 'w')
@@ -238,6 +250,7 @@ def generate(config, outfile='index.html'):
 
     fonts = [(path, FontFactory.openfont(op.join(config['path'], path)))
              for path in directory.BIN]
+
     app_version = report_utils.git_info(config)
 
     report_app = report_utils.ReportApp(config)
@@ -245,6 +258,10 @@ def generate(config, outfile='index.html'):
     table_sizes = {'tables': ttftablesizes[0], 'sizes': ttftablesizes[1:]}
     report_app.summary_page.dump_file(metrics, 'metrics.json')
     report_app.summary_page.dump_file(table_sizes, 'table_sizes.json')
+    report_app.summary_page.dump_file(autohint_sizes, 'autohint_sizes.json')
+
+    fonts_serialized = dict([(str(path), font_factory_instance_to_dict(fontaine)) for path, fontaine in fonts])
+    report_app.summary_page.dump_file(fonts_serialized, 'fontaine_fonts.json')
 
     print(report_utils.render_template(outfile, current_page=outfile,
                                        fonts=faces, tests=data,

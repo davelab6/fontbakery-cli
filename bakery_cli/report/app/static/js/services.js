@@ -176,6 +176,12 @@ angular.module('myApp').service('summaryApi', function($http, $q, PathBuilder) {
     this.getTableSizes = function() {
         return $http.get(PathBuilder.buildPagesPath(name, 'table_sizes.json'));
     };
+    this.getAutohintSizes = function() {
+        return $http.get(PathBuilder.buildPagesPath(name, 'autohint_sizes.json'));
+    };
+    this.getFontaineFonts = function() {
+        return $http.get(PathBuilder.buildPagesPath(name, 'fontaine_fonts.json'));
+    };
 });
 
 angular.module('myApp').service('checksApi', function($http, $q, PathBuilder) {

@@ -110,7 +110,6 @@ class lazy_property(object):
         return result
 
 
-#TODO make it of type ABCMeta
 class ReportPageBase(object):
     name = None
 
@@ -123,8 +122,11 @@ class ReportPageBase(object):
     def copy_file(self, src):
         self.app.copy_file(src, self.path)
 
-    def dump_file(self, data, fname):
-        self.app.dump_file(data, op.join(self.path, fname))
+    def dump_file(self, data, fname, **kwargs):
+        self.app.dump_file(data, op.join(self.path, fname), **kwargs)
+
+    def write_file(self, data, fname):
+        self.app.write_file(data, op.join(self.path, fname))
 
 
 class SummaryPage(ReportPageBase):
@@ -225,14 +227,20 @@ class ReportApp(six.with_metaclass(Singleton, object)):
         self.move_file(src, self.data_dir)
 
     def dump_data_file(self, data, fname):
-        print('Writing data to file: {}'.format(fname))
+        print('Dumping data to file: {}'.format(fname))
         with open(op.join(self.data_dir, fname), 'w') as outfile:
             json.dump(data, outfile, indent=2)
 
-    def dump_file(self, data, fpath):
+    def dump_file(self, data, fpath, **kwargs):
+        print('Dumping data to file: {}'.format(fpath))
+        kwargs.setdefault('indent', 2)
+        with open(fpath, 'w') as outfile:
+            json.dump(data, outfile, **kwargs)
+
+    def write_file(self, data, fpath):
         print('Writing data to file: {}'.format(fpath))
         with open(fpath, 'w') as outfile:
-            json.dump(data, outfile, indent=2)
+            outfile.write(data)
 
     def write_app_info(self):
         self.dump_data_file(self.version, 'app.json')
