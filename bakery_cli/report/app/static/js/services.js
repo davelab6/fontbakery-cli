@@ -44,6 +44,38 @@ angular.module('myApp').service('EditorService', function() {
     };
 });
 
+angular.module('myApp').service('Mixins', function() {
+    this.checkAll = function() {
+        var compare_to = arguments[0];
+        function boolFilter(element, index, array) {
+            return element === compare_to;
+        }
+        var args = Array.prototype.slice.call(arguments, 1);
+        return args.every(boolFilter);
+    };
+
+    //<div ng-bind-html="&#item;"></div>
+    //fails because of
+    //https://github.com/angular/angular.js/pull/4747
+    //https://github.com/angular/angular.js/pull/7485#issuecomment-43722719
+    //https://github.com/angular/angular.js/issues/2174
+
+    // encode(decode) html text into html entity
+    this.decodeHtmlEntity = function(str) {
+        return str.replace(/&#(\d+);/g, function(match, dec) {
+            return String.fromCharCode(dec);
+        });
+    };
+
+    this.encodeHtmlEntity = function(str) {
+        var buf = [];
+        for (var i=str.length-1;i>=0;i--) {
+            buf.unshift(['&#', str[i].charCodeAt(), ';'].join(''));
+        }
+        return buf.join('');
+    };
+});
+
 // helper service to build paths
 angular.module('myApp').service('PathBuilder', function(appConfig) {
     //#TODO should be some built-in solution
@@ -181,6 +213,9 @@ angular.module('myApp').service('summaryApi', function($http, $q, PathBuilder) {
     };
     this.getFontaineFonts = function() {
         return $http.get(PathBuilder.buildPagesPath(name, 'fontaine_fonts.json'));
+    };
+    this.getFontsOrthography = function() {
+        return $http.get(PathBuilder.buildPagesPath(name, 'fonts_orthography.json'));
     };
 });
 

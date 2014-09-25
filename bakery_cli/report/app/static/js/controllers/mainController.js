@@ -1,4 +1,5 @@
-angular.module('myApp').controller('mainController', function($scope, $http, appApi, alertsFactory, appConfig) {
+angular.module('myApp').controller('mainController', function($scope, $http, appApi, alertsFactory, appConfig, Mixins) {
+    $scope.mixins = Mixins;
     appApi.getAppInfo().then(function(dataResponse) {
         $scope.version = dataResponse.data;
     });
