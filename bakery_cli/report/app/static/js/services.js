@@ -133,6 +133,42 @@ angular.module('myApp').service('metadataApi', function($http, $q, PathBuilder, 
     };
 });
 
+angular.module('myApp').service('testsApi', function($http, $q, PathBuilder, appConfig) {
+    var name = 'tests';
+    this.getDataFile = function() {
+        return $http.get(PathBuilder.buildPagesPath(name, 'data.json'));
+    };
+
+    this.getTestsFile = function() {
+        return $http.get(PathBuilder.buildPagesPath(name, 'tests.json'));
+    };
+
+    this.getFiles = function(urls_list) {
+        var urls = urls_list || [{url: PathBuilder.buildPagesPath(name, 'tests.json')},
+                                 {url: PathBuilder.buildPagesPath(name, 'data.json')}];
+        var deferred = $q.defer();
+        var urlCalls = [];
+        angular.forEach(urls, function(url) {
+            urlCalls.push($http.get(url.url));
+        });
+        // they may, in fact, all be done, but this
+        // executes the callbacks in then, once they are
+        // completely finished.
+        $q.all(urlCalls).then(
+            function(results) {
+                deferred.resolve(results)
+            },
+            function(errors) {
+                deferred.reject(errors);
+            },
+            function(updates) {
+                deferred.update(updates);
+            });
+        return deferred.promise;
+    };
+
+});
+
 angular.module('myApp').service('buildApi', function($http, $q, PathBuilder) {
     var name = 'build';
     this.getBuildLog = function() {

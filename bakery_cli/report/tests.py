@@ -69,9 +69,15 @@ def generate(config, outfile='tests.html'):
     if op.exists(tests_summary_filepath):
         tests_summary = json.load(open(tests_summary_filepath))
     tests_summary.update(tests)
+
     json.dump(tests_summary, open(tests_summary_filepath, 'w'))
     destfile = open(op.join(config['path'], outfile), 'w')
     app_version = report_utils.git_info(config)
+
+    report_app = report_utils.ReportApp(config)
+    report_app.tests_page.copy_file(tests_summary_filepath)
+    report_app.tests_page.dump_file(data, 'data.json')
+
     print(report_utils.render_template(outfile,
         tests=data, sort=sort, current_page=outfile, app_version=app_version,
         build_repo_url=report_utils.build_repo_url), file=destfile)
