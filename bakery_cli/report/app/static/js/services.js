@@ -166,7 +166,17 @@ angular.module('myApp').service('testsApi', function($http, $q, PathBuilder, app
             });
         return deferred.promise;
     };
+});
 
+angular.module('myApp').service('checksApi', function($http, $q, PathBuilder) {
+    var name = 'checks';
+    this.getDataFile = function() {
+        return $http.get(PathBuilder.buildPagesPath(name, 'data.json'));
+    };
+
+    this.getUpstreamYamlFile = function() {
+        return $http.get(PathBuilder.buildPagesPath(name, 'upstream.yaml'));
+    };
 });
 
 angular.module('myApp').service('buildApi', function($http, $q, PathBuilder) {

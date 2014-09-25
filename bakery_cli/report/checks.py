@@ -53,6 +53,11 @@ def generate(config, outfile='checks.html'):
 
     upstream = yaml.load(open(upstreamdatafile))
     app_version = report_utils.git_info(config)
+
+    report_app = report_utils.ReportApp(config)
+    report_app.checks_page.copy_file(upstreamdatafile)
+    report_app.checks_page.dump_file(upstream, 'data.json')
+
     print(report_utils.render_template(outfile,
         sort=sort, tests=upstream, current_page=outfile, app_version=app_version,
         build_repo_url=report_utils.build_repo_url), file=destfile)
