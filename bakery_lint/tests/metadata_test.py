@@ -34,6 +34,7 @@ SCRAPE_DATAROOT = op.join(ROOT, 'bakery_cli', 'scrapes', 'json')
 def get_test_subset_function(path):
     def function(self):
 
+        self.operator.logger.debug('SUBSET: TEST')
         if not op.exists(path):
             self.fail('%s subset does not exist' % op.basename(path))
 
