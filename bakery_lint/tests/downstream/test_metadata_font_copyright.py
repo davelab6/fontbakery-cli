@@ -58,7 +58,7 @@ class CheckMetadataContainsReservedFontName(TestCase):
         copyright = ''
         for font_metadata in fm.fonts:
             if copyright and font_metadata.copyright != copyright:
-                self.fail('Copyright is not in consistent across family')
+                self.fail('Copyright is inconsistent across family')
             copyright = font_metadata.copyright
 
     @tags('required')
