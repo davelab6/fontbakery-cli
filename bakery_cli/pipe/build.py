@@ -126,6 +126,7 @@ class Build(object):
         fontcrunch.run(filename, pipedata)
 
     def start_processes(self, f, pipedata):
+
         p = multiprocessing.Process(target=self.run_processes, args=(f, pipedata, ))
         p.start()
         p.join()

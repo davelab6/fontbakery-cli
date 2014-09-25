@@ -55,7 +55,6 @@ class PyFtSubset(object):
         subsetter.populate(unicodes=[int(g.replace('U+', ''), 16) for g in glyphs.split()])
         subsetter.subset(font)
 
-        self.bakery.logging_raw('SUBSET: BUILD')
         save_font(font, target_file, options)
 
 
