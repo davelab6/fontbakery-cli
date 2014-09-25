@@ -127,6 +127,10 @@ class ReportPageBase(object):
         self.app.dump_file(data, op.join(self.path, fname))
 
 
+class SummaryPage(ReportPageBase):
+    name = 'summary'
+
+
 class BuildPage(ReportPageBase):
     name = 'build'
 
@@ -171,6 +175,7 @@ class ReportApp(six.with_metaclass(Singleton, object)):
         self.bakeryyaml_page = BakeryYamlPage(self)
         self.tests_page = TestsPage(self)
         self.checks_page = ChecksPage(self)
+        self.summary_page = SummaryPage(self)
 
         print('Report Application created.')
         self.write_app_info()

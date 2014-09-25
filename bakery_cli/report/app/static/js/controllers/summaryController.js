@@ -1,4 +1,8 @@
-myApp.controller('summaryController', function($scope, $http) {
-    // create a message to display in our view
-    $scope.message = 'This is message from summaryController!';
+myApp.controller('summaryController', function($scope, $http, summaryApi) {
+    summaryApi.getMetrics().then(function(response) {
+        $scope.metrics = response.data;
+    });
+    summaryApi.getTableSizes().then(function(response) {
+        $scope.table_sizes = response.data;
+    });
 });

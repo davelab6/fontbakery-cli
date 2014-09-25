@@ -1,5 +1,37 @@
-<div class="jumbotron text-center">
-  <h1>summary.html</h1>
-  <p ng-bind='message'></p>
+<div class="flex-container">
+  <table id="vmetTable" class="table table-striped table-hover table-bordered table-condensed tablesorter">
+    <caption><h4>Vertical metrics</h4></caption>
+    <thead>
+    <tr>
+      <th></th>
+      <th>{{ metrics.headings[1] }}</th>
+    </tr>
+    </thead>
+    <tr ng-repeat="(k, v) in metrics.data">
+      <td>{{ k }}</td>
+      <td class="text-right">{{ v[0] }}</td>
+    </tr>
+  </table>
 </div>
 
+<h4>TTF Table Sizes</h4>
+<div id="ttftablesizesDeviation"></div>
+<div id="ttftablesizesGrouped"></div>
+<div class="flex-container">
+  <table id="ttfTableSizesTable" class="table table-striped table-hover table-bordered table-condensed tablesorter">
+    <thead>
+    <tr>
+      <th></th>
+      <th class="hidden" ng-repeat-start="font in table_sizes.sizes"></th>
+      <th ng-repeat="(name, params) in font">{{ name }}</th>
+      <th class="hidden" ng-repeat-end></th>
+    </tr>
+    </thead>
+    <tr ng-repeat="table in table_sizes.tables">
+      <td>{{ table }}</td>
+      <td class="hidden" ng-repeat-start="font in table_sizes.sizes"></td>
+      <td ng-repeat="(name, params) in font" class="text-right">{{ params[table]|default:'N/A' }}</td>
+      <td class="hidden" ng-repeat-end colspan="0"></td>
+    </tr>
+  </table>
+</div>

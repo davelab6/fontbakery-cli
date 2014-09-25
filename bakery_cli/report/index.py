@@ -239,6 +239,13 @@ def generate(config, outfile='index.html'):
     fonts = [(path, FontFactory.openfont(op.join(config['path'], path)))
              for path in directory.BIN]
     app_version = report_utils.git_info(config)
+
+    report_app = report_utils.ReportApp(config)
+    metrics = {'data': vmet._its_metrics, 'headings': vmet._its_metrics_header}
+    table_sizes = {'tables': ttftablesizes[0], 'sizes': ttftablesizes[1:]}
+    report_app.summary_page.dump_file(metrics, 'metrics.json')
+    report_app.summary_page.dump_file(table_sizes, 'table_sizes.json')
+
     print(report_utils.render_template(outfile, current_page=outfile,
                                        fonts=faces, tests=data,
                                        basenames=basenames,

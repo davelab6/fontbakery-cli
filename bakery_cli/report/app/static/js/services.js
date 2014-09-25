@@ -168,6 +168,16 @@ angular.module('myApp').service('testsApi', function($http, $q, PathBuilder, app
     };
 });
 
+angular.module('myApp').service('summaryApi', function($http, $q, PathBuilder) {
+    var name = 'summary';
+    this.getMetrics = function() {
+        return $http.get(PathBuilder.buildPagesPath(name, 'metrics.json'));
+    };
+    this.getTableSizes = function() {
+        return $http.get(PathBuilder.buildPagesPath(name, 'table_sizes.json'));
+    };
+});
+
 angular.module('myApp').service('checksApi', function($http, $q, PathBuilder) {
     var name = 'checks';
     this.getDataFile = function() {
