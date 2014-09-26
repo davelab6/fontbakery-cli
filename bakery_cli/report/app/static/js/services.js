@@ -126,7 +126,7 @@ angular.module('myApp').service('metadataApi', function($http, $q, PathBuilder, 
     };
 
     this.getMetadataNew = function() {
-        return $http.get(PathBuilder.buildDataPath(metadata_new));
+        return $http.get(PathBuilder.buildPagesPath(name, metadata_new));
     };
 
     this.getMetadataRaw = function() {
@@ -134,11 +134,11 @@ angular.module('myApp').service('metadataApi', function($http, $q, PathBuilder, 
     };
 
     this.getMetadataNewRaw = function() {
-        return $http.get(PathBuilder.buildDataPath(metadata_new), {transformResponse: []});
+        return $http.get(PathBuilder.buildPagesPath(name, metadata_new), {transformResponse: []});
     };
     this.getRawFiles = function(urls_list) {
         var urls = urls_list || [{url: PathBuilder.buildDataPath(appConfig.metadata)},
-                                 {url: PathBuilder.buildDataPath(metadata_new)}];
+                                 {url: PathBuilder.buildPagesPath(name, metadata_new)}];
         var deferred = $q.defer();
         var urlCalls = [];
         angular.forEach(urls, function(url) {
@@ -160,8 +160,8 @@ angular.module('myApp').service('metadataApi', function($http, $q, PathBuilder, 
         return deferred.promise;
     };
 
-    this.getMetadataResults = function() {
-        return $http.get(PathBuilder.buildPagesPath(name, appConfig.metadata));
+    this.getTestsResults = function() {
+        return $http.get(PathBuilder.buildPagesPath(name, 'tests.json'));
     };
 });
 
@@ -219,6 +219,9 @@ angular.module('myApp').service('summaryApi', function($http, $q, PathBuilder) {
     };
     this.getTests = function() {
         return $http.get(PathBuilder.buildPagesPath(name, 'tests.json'));
+    };
+    this.getFontsTableGrouped = function() {
+        return $http.get(PathBuilder.buildPagesPath(name, 'fonts_tables_grouped.json'));
     };
 });
 
