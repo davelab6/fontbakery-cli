@@ -1,4 +1,5 @@
 myApp.controller('summaryController', function($scope, $http, summaryApi, Mixins) {
+    $scope.tests = null;
     $scope.metrics = null;
     $scope.table_sizes = null;
     $scope.autohint_sizes = null;
@@ -26,12 +27,36 @@ myApp.controller('summaryController', function($scope, $http, summaryApi, Mixins
     summaryApi.getFontsOrthography().then(function(response) {
         $scope.fonts_orthography = response.data;
     });
+    summaryApi.getTests().then(function(response) {
+        $scope.tests = response.data;
+        $scope.blockers = {};
+        var watch_list = ['error', 'failure', 'fixed'];
+        var watch_tag = 'required';
+        angular.forEach($scope.tests, function(results, font) {
+            $scope.blockers[font] = {};
+            angular.forEach(results, function(values, name) {
+                if (watch_list.indexOf(name) != -1) {
+                    var items = [];
+                    angular.forEach(values, function(item) {
+                        if (item.tags.indexOf(watch_tag) != -1) {
+                            items.push(item)
+                        }
+                        $scope.blockers[font][name] = items;
+                    })
+                }
+            });
+        });
+    });
+
     $scope.isReady = function() {
         return !Mixins.checkAll(
-            null, $scope.metrics,
+            null, $scope.metrics, $scope.tests,
             $scope.table_sizes, $scope.autohint_sizes,
             $scope.fontaine_fonts, $scope.fonts_orthography
         )
     };
-    console.log(Mixins.decodeHtmlEntity('&#329;'))
+
+    $scope.$on('$viewContentLoaded', function() {
+        console.log("$viewContentLoaded");
+    });
 });

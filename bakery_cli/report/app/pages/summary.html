@@ -2,6 +2,32 @@
   <i class="fa fa-spinner fa-spin fa-5x"></i>
 </p>
 <div ng-show="isReady()" ng-cloak>
+  <h4>Blockers</h4>
+  <table class="table table-striped table-hover table-bordered table-condensed tablesorter">
+    <!--<caption><h4>{{ font }}</h4></caption>-->
+    <thead>
+    <tr>
+      <th>Category</th>
+      <th>Description</th>
+      <th>File</th>
+      <th>Result</th>
+      <th>Status</th>
+    </tr>
+    </thead>
+    <tr ng-repeat-start="(font, results) in blockers"></tr>
+    <tr ng-repeat-start="(testType, icon) in resultMap"></tr>
+    <tr ng-repeat-start="item in blockers[font][testType]" class="{{ icon }}">
+      <td>{{ item.tags.join(', ') }}</td>
+      <td><span class="apopover" popover-title="{{ item.name|replace:'.':'/' }}.py" popover-placement="top" data-placement="top" popover="{{ item.methodName }}()">{{ item.methodDoc }}</span></td>
+      <td>{{ font }}</td>
+      <td>{{ item.err_msg }}</td>
+      <td>{{ statusMap[testType] }}</td>
+    </tr>
+    <tr ng-repeat-end></tr>
+    <tr ng-repeat-end></tr>
+    <tr ng-repeat-end></tr>
+  </table>
+
   <div class="flex-container">
     <table id="vmetTable" class="table table-striped table-hover table-bordered table-condensed tablesorter">
       <caption><h4>Vertical metrics</h4></caption>
@@ -169,7 +195,8 @@
       <tr ng-repeat="(subset, info) in fonts_orthography.fonts_info">
         <td>{{ subset }}</td>
         <td ng-repeat-start="font_info in info" class="hidden"></td>
-        <td data-toggle="modal" data-target="#myModal" class="{{ fontSupportToStyle[font_info.support] }} coverageStats">{{ font_info.coverage }}%</td>
+        <!--<td data-toggle="modal" data-target="#myModal" class="{{ fontSupportToStyle[font_info.support] }} coverageStats">{{ font_info.coverage }}%</td>-->
+        <td data-toggle="modal" data-target="#myModal" class="coverageStats">{{ font_info.coverage }}%</td>
         <td data-subset="{{ subset }}" data-fontname="{{ font_info.name }}" class="missing-chars hidden">
           <div>
             <div ng-if="font_info.coverage != 100">
@@ -180,7 +207,7 @@
           </div>
         </td>
         <td ng-repeat-end class="hidden"></td>
-        <td data-toggle="modal" data-target="#myModal" class="coverageAverage">{{ fonts_orthography.coverage_averages[subset] }}%</td>
+        <td data-toggle="modal" data-target="#myModal" class="coverageAverage" update-class condition="true">{{ fonts_orthography.coverage_averages[subset] }}%</td>
       </tr>
       </tbody>
     </table>
@@ -214,7 +241,6 @@
             missing_chars = hidden_td.html(),
             subset = hidden_td.attr("data-subset"),
             font = hidden_td.attr("data-fontname");
-
         angular.element("#myModalInfo").html("<h5>"+font+"</h5><small>"+subset+"</small>");
         angular.element(".modal-body").html(missing_chars);
       })

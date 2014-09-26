@@ -217,6 +217,9 @@ angular.module('myApp').service('summaryApi', function($http, $q, PathBuilder) {
     this.getFontsOrthography = function() {
         return $http.get(PathBuilder.buildPagesPath(name, 'fonts_orthography.json'));
     };
+    this.getTests = function() {
+        return $http.get(PathBuilder.buildPagesPath(name, 'tests.json'));
+    };
 });
 
 angular.module('myApp').service('checksApi', function($http, $q, PathBuilder) {
