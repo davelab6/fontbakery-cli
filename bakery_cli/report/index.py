@@ -260,6 +260,10 @@ def generate(config, outfile='index.html'):
     report_app.summary_page.dump_file(table_sizes, 'table_sizes.json')
     report_app.summary_page.dump_file(autohint_sizes, 'autohint_sizes.json')
     report_app.summary_page.dump_file(data, 'tests.json')
+    report_app.summary_page.dump_file({'mean': ftables_data.mean,
+                                       'grouped': ftables_data.grouped,
+                                       'delta': ftables_data.delta},
+                                      'fonts_tables_grouped.json')
 
     fonts_serialized = dict([(str(path), font_factory_instance_to_dict(fontaine)) for path, fontaine in fonts])
     report_app.summary_page.dump_file(fonts_serialized, 'fontaine_fonts.json')

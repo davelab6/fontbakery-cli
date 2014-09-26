@@ -78,8 +78,8 @@ def generate(config, outfile='metadata.html'):
 
     report_app = report_utils.ReportApp(config)
     report_app.copy_to_data(op.join(config['path'], 'METADATA.json'))
-    report_app.copy_to_data(op.join(config['path'], 'METADATA.json.new'))
-    report_app.metadata_page.dump_file(data, 'metadata.json')
+    report_app.metadata_page.copy_file(op.join(config['path'], 'METADATA.json.new'))
+    report_app.metadata_page.dump_file(data, 'tests.json')
 
     print(report_utils.render_template(
         outfile, metadata=metadata, tests=data, sort=sort,

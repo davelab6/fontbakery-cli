@@ -21,7 +21,7 @@ angular.module('myApp').controller('metadataController', function($scope, $http,
         }
     });
 
-    metadataApi.getMetadataResults().then(function(response) {
+    metadataApi.getTestsResults().then(function(response) {
         $scope.tests = response.data;
         angular.forEach($scope.tests, function(results, test) {
             var success_len = results['success'].length;
