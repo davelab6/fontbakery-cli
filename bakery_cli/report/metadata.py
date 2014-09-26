@@ -54,6 +54,7 @@ def generate(config, outfile='metadata.html'):
     except IOError:
         data = {}
 
+    tests_summary = {}
     tests_summary_filepath = op.join(config['path'], 'tests.json')
     if op.exists(tests_summary_filepath):
         tests_summary = json.load(open(tests_summary_filepath))

@@ -47,6 +47,7 @@ class Pipe(object):
                 copy_single_file(op.join(self.project_root, self.filename),
                                  self.builddir, self.bakery.logger)
             except:
+                self.bakery.logger.debug('Unable to copy files')
                 raise
 
         return pipedata
@@ -78,8 +79,12 @@ class Copy(Pipe):
         for path in process_files:
             path = op.join(self.project_root, path)
             if op.isdir(path):
+                if op.exists(op.join(destdir, op.basename(path))):
+                    shutil.rmtree(op.join(destdir, op.basename(path)))
                 shutil.copytree(path, op.join(destdir, op.basename(path)))
             else:
+                if op.exists(op.join(destdir, op.basename(path))):
+                    os.unlink(op.join(destdir, op.basename(path)))
                 shutil.copy(path, destdir)
 
     def create_source_dir(self):
@@ -123,7 +128,8 @@ class Copy(Pipe):
 
             pipedata.update({'process_files': sources})
             self.bakery.logging_task_done(task)
-        except:
+        except Exception as ex:
+            self.bakery.logger.debug('Unable process copy. Exception info: %s' % ex)
             self.bakery.logging_task_done(task, failed=True)
             raise
 
