@@ -3,7 +3,7 @@
 // create module and include dependencies
 var myApp = angular.module(
 //    'myApp', ['ngRoute', 'btford.markdown', 'ui.bootstrap', 'ui.ace', 'googlechart']
-    'myApp', ['ngRoute', 'btford.markdown', 'ui.bootstrap', 'ui.ace', 'googlechart', 'ngTable']
+    'myApp', ['ngRoute', 'btford.markdown', 'ui.bootstrap', 'ui.ace', 'googlechart', 'ngTable', 'routeStyles']
 );
 
 // interceptor of http calls
@@ -74,28 +74,32 @@ myApp.config(function($routeProvider, $httpProvider) {
         .when('/build-log', {
             title: 'Build Log',
             templateUrl : 'pages/build.html',
-            controller  : 'buildController'
+            controller  : 'buildController',
+            css: 'static/css/pages/build-log.css'
         })
 
         // route for the metadata page
         .when('/metadata', {
             title: 'Metadata',
             templateUrl : 'pages/metadata.html',
-            controller  : 'metadataController'
+            controller  : 'metadataController',
+            css: 'static/css/libs/jsondiffpatch/html.css'
         })
 
         // route for the bakery yaml page
         .when('/bakery-yaml', {
             title: 'Metadata',
             templateUrl : 'pages/bakery-yaml.html',
-            controller  : 'bakeryYamlController'
+            controller  : 'bakeryYamlController',
+            css: 'static/css/libs/jsondiffpatch/html.css'
         })
 
         // route for the description page
         .when('/description', {
             title: 'Contact',
             templateUrl : 'pages/description.html',
-            controller  : 'descriptionController'
+            controller  : 'descriptionController',
+            css: 'static/css/libs/jsondiffpatch/html.css'
         });
 
     // #TODO: switch to custom cache factory

@@ -72,5 +72,5 @@ if __name__ == '__main__':
     else:
         conf = {'path': args.path, 'failed': True}
         app.generate(conf)
-        index.generate(conf)
+        # index.generate(conf)
 

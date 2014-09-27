@@ -1,4 +1,3 @@
-from abc import ABCMeta
 import json
 import os.path as op
 import os
@@ -169,6 +168,7 @@ class ReportApp(six.with_metaclass(Singleton, object)):
         self.bower_components = kwargs.get('bower_components', ['angular-markdown-directive',
                                                                 'angular-bootstrap',
                                                                 'angular-ui-ace\#bower',
+                                                                'angular-route-styles',
                                                                 'ng-table'])
         self.init()
         self.build_page = BuildPage(self)
@@ -243,7 +243,11 @@ class ReportApp(six.with_metaclass(Singleton, object)):
             outfile.write(data)
 
     def write_app_info(self):
-        self.dump_data_file(self.version, 'app.json')
+        slug = os.environ.get('TRAVIS_REPO_SLUG', 'fontdirectory/dummy')
+        travis_link = 'https://travis-ci.org/{}'.format(slug)
+        info = self.version
+        info.update(dict(build_passed=not self.config.get('failed', False), travis_link=travis_link))
+        self.dump_data_file(info, 'app.json')
         self.dump_data_file(self.repo, 'repo.json')
 
     @lazy_property

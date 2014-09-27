@@ -10,14 +10,6 @@
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css" />
 
   <link data-require="ng-table@*" data-semver="0.3.1" rel="stylesheet" href="http://bazalt-cms.com/assets/ng-table/0.3.1/ng-table.css" />
-  <!--<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />-->
-  <!--<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" />-->
-
-  <!--#TODO make it loaded on demand only at needed pages-->
-  <!--http://benjamine.github.io/jsondiffpatch/ has been refactored, so we do not rely on code from GH anymore-->
-  <!--<link rel="stylesheet" href="http://benjamine.github.io/jsondiffpatch/src/formatters/html.css" type="text/css" />-->
-  <link rel="stylesheet" href="static/css/libs/jsondiffpatch/html.css" type="text/css" />
-
   <!--load local static file-->
   <link rel="stylesheet" href="static/css/app.css" />
 </head>
@@ -34,14 +26,14 @@
       <ul nav-menu="active" class="nav navbar-nav navbar-right">
         <li><a href="{{repo.gh_pages}}" target="_blank"><i class="fa fa-github"></i> gh-pages</a></li>
         <li><a href="{{repo.url}}" target="_blank"><i class="fa fa-github-square"></i> Github Page</a></li>
-        <li><a href="#/"><i class="fa fa-bar-chart"></i> Summary</a></li>
-        <li><a href="#/review"><i class="fa fa-binoculars"></i> Review</a></li>
-        <li><a href="#/checks"><i class="fa fa-briefcase"></i> Pre-Build Checks</a></li>
-        <li><a href="#/tests"><i class="fa fa-bug"></i> Tests</a></li>
-        <li><a href="#/build-log"><i class="fa fa-file-text-o"></i> Build Log</a></li>
-        <li><a href="#/metadata"><i class="fa fa-info-circle"></i> METADATA.json</a></li>
-        <li><a href="#/bakery-yaml"><i class="fa fa-file"></i> bakery.yaml</a></li>
-        <li><a href="#/description"><i class="fa fa-pencil-square-o"></i> Description</a></li>
+        <li ng-class="{'disabled': version.build_passed == false}"><a href="#/"><i class="fa fa-bar-chart"></i> Summary</a></li>
+        <li ng-class="{'disabled': version.build_passed == false}"><a href="#/review"><i class="fa fa-binoculars"></i> Review</a></li>
+        <li ng-class="{'disabled': version.build_passed == false}"><a href="#/checks"><i class="fa fa-briefcase"></i> Pre-Build Checks</a></li>
+        <li ng-class="{'disabled': version.build_passed == false}"><a href="#/tests"><i class="fa fa-bug"></i> Tests</a></li>
+        <li ng-class="{'disabled': version.build_passed == false}"><a href="#/build-log"><i class="fa fa-file-text-o"></i> Build Log</a></li>
+        <li ng-class="{'disabled': version.build_passed == false}"><a href="#/metadata"><i class="fa fa-info-circle"></i> METADATA.json</a></li>
+        <li ng-class="{'disabled': version.build_passed == false}"><a href="#/bakery-yaml"><i class="fa fa-file"></i> bakery.yaml</a></li>
+        <li ng-class="{'disabled': version.build_passed == false}"><a href="#/description"><i class="fa fa-pencil-square-o"></i> Description</a></li>
       </ul>
     </div>
   </nav>
@@ -56,7 +48,23 @@
   <!-- angular templating -->
   <!-- this is where content will be injected -->
   <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-view></div>
+    <div ng-if="version.build_passed">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" ng-view></div>
+    </div>
+    <div ng-if="version.build_passed == false">
+      <div class="jumbotron">
+        <div class="container">
+          <div class="row well well-lg">
+            <div class="col-md-6 col-md-offset-3 text-center">
+              <h1>Sorry, build failed</h1>
+              <p>
+                <a href="{{ version.travis_link }}" class="btn btn-primary btn-large">See Travis for details</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -95,6 +103,7 @@
 <script type="text/javascript" src="static/js/libs/jsondiffpatch/formatters.min.js"></script>
 
 <!--load third-party angular scripts-->
+<script src="static/bower_components/angular-route-styles/route-styles.js"></script>
 <script src="static/bower_components/angular-sanitize/angular-sanitize.js"></script>
 <script src="static/bower_components/showdown/src/showdown.js"></script>
 <script src="static/bower_components/angular-markdown-directive/markdown.js"></script>
