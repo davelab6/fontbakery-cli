@@ -2,8 +2,8 @@
 
 // create module and include dependencies
 var myApp = angular.module(
-    'myApp', ['ngRoute', 'btford.markdown', 'ui.bootstrap', 'ui.ace', 'googlechart']
-//    'myApp', ['ngRoute', 'btford.markdown', 'ui.bootstrap', 'ui.ace', 'googlechart', 'ngTable']
+//    'myApp', ['ngRoute', 'btford.markdown', 'ui.bootstrap', 'ui.ace', 'googlechart']
+    'myApp', ['ngRoute', 'btford.markdown', 'ui.bootstrap', 'ui.ace', 'googlechart', 'ngTable']
 );
 
 // interceptor of http calls
