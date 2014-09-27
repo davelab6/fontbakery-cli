@@ -1,8 +1,3 @@
-.popover {
-    max-width: 1980px;
-    font-family: Courier,serif;
-}
-
 .footer {
     color: #bbb;
     text-align: center;
@@ -55,7 +50,7 @@
 }
 
 /*make table with depend on content*/
-.table {
+.table-dynamic-width {
     max-width: none;
     width: inherit;
 }
@@ -63,4 +58,8 @@
 .apopover {
     max-width: 1980px;
     font-family: Courier,serif;
+}
+
+td.clickable {
+    cursor: pointer;
 }
