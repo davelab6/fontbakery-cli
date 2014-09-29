@@ -14,4 +14,5 @@ angular.module('myApp').controller('mainController', function($scope, $http, app
     $scope.alerts = alertsFactory;
     $scope.statusMap = appConfig.statusMap;
     $scope.resultMap = appConfig.resultMap;
+    $scope.pangram = appConfig.pangram;
 });

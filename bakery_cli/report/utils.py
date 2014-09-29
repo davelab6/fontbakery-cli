@@ -1,4 +1,5 @@
 import json
+import fnmatch
 import os.path as op
 import os
 import sys
@@ -160,10 +161,12 @@ class ReportApp(six.with_metaclass(Singleton, object)):
     def __init__(self, config, **kwargs):
         self.config = config
         self.source_dir = kwargs.get('source_dir', APP_DIR)
+        self.build_dir = kwargs.get('build_dir', self.config['path'])
         self.target_dir = kwargs.get('target_dir', op.join(self.config['path'], 'app'))
         self.data_dir = kwargs.get('data_dir', op.join(self.target_dir, 'data'))
         self.pages_dir = kwargs.get('pages_dir', op.join(self.data_dir, 'pages'))
         self.static_dir = kwargs.get('static_dir', op.join(self.target_dir, 'static'))
+        self.css_dir = kwargs.get('css_dir', op.join(self.static_dir, 'css'))
 
         self.bower_components = kwargs.get('bower_components', ['angular-markdown-directive',
                                                                 'angular-bootstrap',
@@ -201,6 +204,7 @@ class ReportApp(six.with_metaclass(Singleton, object)):
     def init(self):
         self.clean()
         shutil.copytree(self.source_dir, self.target_dir)
+        self.copy_ttf_fonts()
 
     def copy_file(self, src, dst):
         try:
@@ -237,9 +241,9 @@ class ReportApp(six.with_metaclass(Singleton, object)):
         with open(fpath, 'w') as outfile:
             json.dump(data, outfile, **kwargs)
 
-    def write_file(self, data, fpath):
+    def write_file(self, data, fpath, mode='w'):
         print('Writing data to file: {}'.format(fpath))
-        with open(fpath, 'w') as outfile:
+        with open(fpath, mode) as outfile:
             outfile.write(data)
 
     def write_app_info(self):
@@ -249,6 +253,16 @@ class ReportApp(six.with_metaclass(Singleton, object)):
         info.update(dict(build_passed=not self.config.get('failed', False), travis_link=travis_link))
         self.dump_data_file(info, 'app.json')
         self.dump_data_file(self.repo, 'repo.json')
+
+    def copy_ttf_fonts(self):
+        pattern = '*.ttf'
+        src_dir = os.path.abspath(self.build_dir)
+        dst_dir = os.path.join(self.css_dir, 'fonts')
+        fonts_files = [f for f in fnmatch.filter(os.listdir(src_dir), pattern)]
+        for font_file in fonts_files:
+            src = os.path.join(src_dir, font_file)
+            print('Copying file: {} -> {}'.format(src, dst_dir))
+            shutil.copy2(src, dst_dir)
 
     @lazy_property
     def version(self):

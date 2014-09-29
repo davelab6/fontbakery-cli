@@ -5,6 +5,7 @@ myApp.controller('summaryController', function($scope, $http, summaryApi, Mixins
     $scope.deviation_line_chart = null;
     $scope.tests = null;
     $scope.metrics = null;
+    $scope.faces = null;
     $scope.table_sizes = null;
     $scope.autohint_sizes = null;
     $scope.fontaine_fonts = null;
@@ -16,7 +17,9 @@ myApp.controller('summaryController', function($scope, $http, summaryApi, Mixins
         'fragmentary': 'warning',
         'unsupported': 'danger'
     };
-
+    summaryApi.getFontsMetadata().then(function(response) {
+        $scope.faces = response.data;
+    });
     summaryApi.getMetrics().then(function(response) {
         $scope.metrics = response.data;
     });
@@ -148,7 +151,7 @@ myApp.controller('summaryController', function($scope, $http, summaryApi, Mixins
 
 $scope.isReady = function() {
     return !Mixins.checkAll(
-        null, $scope.metrics, $scope.tests,
+        null, $scope.metrics, $scope.tests, $scope.faces,
         $scope.table_sizes, $scope.autohint_sizes,
         $scope.fontaine_fonts, $scope.fonts_orthography
     )

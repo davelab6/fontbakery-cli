@@ -46,7 +46,8 @@ myApp.config(function($routeProvider, $httpProvider) {
         .when('/', {
             title: 'Summary',
             templateUrl : 'pages/summary.html',
-            controller  : 'summaryController'
+            controller  : 'summaryController',
+            css: 'static/css/faces.css'
         })
 
         // route for the review page
@@ -88,10 +89,9 @@ myApp.config(function($routeProvider, $httpProvider) {
 
         // route for the bakery yaml page
         .when('/bakery-yaml', {
-            title: 'Metadata',
+            title: 'bakery.yaml',
             templateUrl : 'pages/bakery-yaml.html',
             controller  : 'bakeryYamlController',
-            css: 'static/css/libs/jsondiffpatch/html.css'
         })
 
         // route for the description page
@@ -134,7 +134,9 @@ myApp.constant("appConfig", {
     metadata: 'METADATA.json',
 
     statusMap: {'success': 'OK', 'failure': 'FAIL', 'error': 'ERROR', 'fixed': 'FIXED'},
-    resultMap: {'success': 'success', 'failure': 'danger', 'error': 'warning', 'fixed': 'info'}
+    resultMap: {'success': 'success', 'failure': 'danger', 'error': 'warning', 'fixed': 'info'},
+
+    pangram: 'Grumpy wizards make toxic brew for the evil Queen and Jack'
 });
 
 

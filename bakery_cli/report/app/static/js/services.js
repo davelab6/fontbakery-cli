@@ -223,6 +223,9 @@ angular.module('myApp').service('summaryApi', function($http, $q, PathBuilder) {
     this.getFontsTableGrouped = function() {
         return $http.get(PathBuilder.buildPagesPath(name, 'fonts_tables_grouped.json'));
     };
+    this.getFontsMetadata = function() {
+        return $http.get(PathBuilder.buildPagesPath(name, 'faces.json'));
+    };
 });
 
 angular.module('myApp').service('checksApi', function($http, $q, PathBuilder) {

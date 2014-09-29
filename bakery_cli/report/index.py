@@ -196,16 +196,19 @@ def average_table_size(tdict):
     return sum(tdict.values()) / len(tdict)
 
 
-def font_factory_instance_to_dict(instance, exclude_attrs=()):
+def _obj_to_dict(instance, exclude_attrs=()):
     # Very simplified, but enough for reports
-    _exclude_attrs = exclude_attrs or (
-        'get_othography_info', 'get_orthographies', 'orthographies',
-        'refresh_sfnt_properties', '_fontFace',
-    )
     return {
         k: getattr(instance, k) for k in dir(instance) \
-        if not any([k.startswith('__'), str(k) in _exclude_attrs])
+        if not any([k.startswith('__'), str(k) in exclude_attrs])
     }
+
+
+def font_factory_instance_to_dict(instance):
+    return _obj_to_dict(instance, exclude_attrs=(
+        'get_othography_info', 'get_orthographies', 'orthographies',
+        'refresh_sfnt_properties', '_fontFace',
+    ))
 
 
 def generate(config, outfile='index.html'):
@@ -260,10 +263,14 @@ def generate(config, outfile='index.html'):
     report_app.summary_page.dump_file(table_sizes, 'table_sizes.json')
     report_app.summary_page.dump_file(autohint_sizes, 'autohint_sizes.json')
     report_app.summary_page.dump_file(data, 'tests.json')
+    report_app.summary_page.dump_file([face.metadata_object for face in family_metadata.fonts], 'faces.json')
     report_app.summary_page.dump_file({'mean': ftables_data.mean,
                                        'grouped': ftables_data.grouped,
                                        'delta': ftables_data.delta},
                                       'fonts_tables_grouped.json')
+    for face in family_metadata.fonts:
+        face_template = "@font-face {{ font-family: {}; src: url(fonts/{});}}\n".format(face.metadata_object['postScriptName'], face.metadata_object['filename'])
+        report_app.write_file(face_template, op.join(report_app.css_dir, 'faces.css'), mode='a')
 
     fonts_serialized = dict([(str(path), font_factory_instance_to_dict(fontaine)) for path, fontaine in fonts])
     report_app.summary_page.dump_file(fonts_serialized, 'fontaine_fonts.json')
