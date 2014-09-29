@@ -59,7 +59,7 @@ td.clickable {
     cursor: pointer;
 }
 
-/*.apopover {*/
-    /*max-width: 1980px;*/
-    /*font-family: Courier,serif;*/
-/*}*/
+.popover {
+    max-width: 1980px;
+    font-family: Courier,serif;
+}

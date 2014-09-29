@@ -1,4 +1,4 @@
-myApp.controller('summaryController', function($scope, $http, summaryApi, Mixins) {
+myApp.controller('summaryController', function($scope, $http, $filter, summaryApi, Mixins, ngTableParams) {
     $scope.pie_charts = [];
     $scope.average_pie_chart = null;
     $scope.average_line_chart = null;
@@ -25,7 +25,6 @@ myApp.controller('summaryController', function($scope, $http, summaryApi, Mixins
                 return face.weight == weight;
             });
         });
-        console.log($scope.faces);
     });
     summaryApi.getMetrics().then(function(response) {
         $scope.metrics = response.data;
@@ -44,23 +43,72 @@ myApp.controller('summaryController', function($scope, $http, summaryApi, Mixins
     });
     summaryApi.getTests().then(function(response) {
         $scope.tests = response.data;
-        $scope.blockers = {};
+//        $scope.blockers = {};
         var watch_list = ['error', 'failure', 'fixed'];
         var watch_tag = 'required';
+        var data = [];
         angular.forEach($scope.tests, function(results, font) {
-            $scope.blockers[font] = {};
+//            $scope.blockers[font] = {};
             angular.forEach(results, function(values, name) {
                 if (watch_list.indexOf(name) != -1) {
-                    var items = [];
                     angular.forEach(values, function(item) {
                         if (item.tags.indexOf(watch_tag) != -1) {
-                            items.push(item)
+                            var _item = {
+                                item: item, // keep original item inside newly created
+                                category: item.tags.join(', '),
+                                description: item.methodDoc,
+                                result_msg: item.err_msg,
+                                status: $scope.statusMap[name],
+                                result_class: $scope.resultMap[name],
+                                result: name,
+                                font: font
+                            };
+                            data.push(_item);
                         }
-                        $scope.blockers[font][name] = items;
-                    })
+                    });
+//                    var items = [];
+//                    angular.forEach(values, function(item) {
+//                        if (item.tags.indexOf(watch_tag) != -1) {
+//                            items.push(item)
+//                        }
+//                        $scope.blockers[font][name] = items;
+//                    })
                 }
             });
         });
+
+        $scope.tableParams = new ngTableParams({
+            // show first page
+            page: 1,
+            // count per page
+            count: data.length,
+            // initial sorting
+            sorting: {
+                status: 'asc'
+            },
+            // initial filter
+            filter: {
+                description: '',
+                result: ''
+            }
+        }, {
+            // hide page counts control
+            counts: [],
+            // length of data
+            total: data.length,
+            getData: function($defer, params) {
+                // use build-in angular filter
+                var filteredData = params.sorting() ?
+                    $filter('orderBy')(data, params.orderBy()) :
+                    data;
+                var orderedData = params.filter() ?
+                   $filter('filter')(filteredData, params.filter()) :
+                   data;
+                params.total(orderedData.length);
+                $defer.resolve(orderedData);
+            }
+        });
+
         var chartsum = {"success": 0, "failure": 0, "fixed": 0, "error": 0};
         angular.forEach($scope.tests, function(results, test) {
             var success_len = results['success'].length,
@@ -165,6 +213,6 @@ $scope.isReady = function() {
 };
 
 $scope.$on('$viewContentLoaded', function() {
-    console.log("$viewContentLoaded");
+//    console.log("$viewContentLoaded");
 });
 });
