@@ -18,7 +18,14 @@ myApp.controller('summaryController', function($scope, $http, summaryApi, Mixins
         'unsupported': 'danger'
     };
     summaryApi.getFontsMetadata().then(function(response) {
-        $scope.faces = response.data;
+        var faces = response.data;
+        $scope.faces = {};
+        angular.forEach([100, 200, 300, 400, 500, 600, 700, 800, 900], function(weight) {
+            $scope.faces[weight] = faces.filter(function(face) {
+                return face.weight == weight;
+            });
+        });
+        console.log($scope.faces);
     });
     summaryApi.getMetrics().then(function(response) {
         $scope.metrics = response.data;
