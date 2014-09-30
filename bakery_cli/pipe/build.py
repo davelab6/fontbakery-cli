@@ -38,7 +38,7 @@ class Build(object):
 
         ttfpath = '{}.ttf'.format(op.basename(fontname))
 
-        path = '{}.otf'.format(fontname)
+        path = '{}.otf'.format(op.basename(fontname))
 
         if op.exists(op.join(self.builddir, path)):
             _ = 'font2ttf.py {0}.otf {1}\n'
@@ -153,8 +153,9 @@ class Build(object):
                 if self.bakery.config.get('compiler') == 'afdko':
                     import time
                     starttime = time.time()
-                    command = 'makeotf -f {0} {1}'.format(op.join(self.builddir, filepath),
-                                                          self.bakery.config.get('afdko', ''))
+                    command = 'makeotf -f {0} {1} -o {2}.otf'.format(op.join(self.builddir, filepath),
+                                                                     self.bakery.config.get('afdko', ''),
+                                                                     op.join(self.builddir, filepath)[:-4])
                     self.bakery.logging_cmd(op.join(self.builddir, op.dirname(filepath)))
                     run(command, op.join(self.builddir, op.dirname(filepath)),
                         self.bakery.logger)
