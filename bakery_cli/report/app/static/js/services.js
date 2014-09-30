@@ -259,3 +259,14 @@ angular.module('myApp').service('descriptionApi', function($http, $q, PathBuilde
         return $http.get(PathBuilder.buildPagesPath(name, 'DESCRIPTION.en_us.html'), {transformResponse: []});
     };
 });
+
+angular.module('myApp').service('reviewApi', function($http, $q, PathBuilder) {
+    var name = 'review';
+    this.getFontsOrthography = function() {
+        return $http.get(PathBuilder.buildPagesPath(name, 'fonts_orthography.json'));
+    };
+    this.getFontsOrthographySorted = function() {
+        return $http.get(PathBuilder.buildPagesPath(name, 'fonts_sorted.json'));
+    };
+
+});

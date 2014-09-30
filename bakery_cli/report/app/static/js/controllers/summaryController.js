@@ -77,7 +77,7 @@ myApp.controller('summaryController', function($scope, $http, $filter, summaryAp
             });
         });
 
-        $scope.tableParams = new ngTableParams({
+        $scope.testsTableParams = new ngTableParams({
             // show first page
             page: 1,
             // count per page
@@ -102,8 +102,8 @@ myApp.controller('summaryController', function($scope, $http, $filter, summaryAp
                     $filter('orderBy')(data, params.orderBy()) :
                     data;
                 var orderedData = params.filter() ?
-                   $filter('filter')(filteredData, params.filter()) :
-                   data;
+                    $filter('filter')(filteredData, params.filter()) :
+                    data;
                 params.total(orderedData.length);
                 $defer.resolve(orderedData);
             }
@@ -204,15 +204,15 @@ myApp.controller('summaryController', function($scope, $http, $filter, summaryAp
     });
 
 
-$scope.isReady = function() {
-    return !Mixins.checkAll(
-        null, $scope.metrics, $scope.tests, $scope.faces,
-        $scope.table_sizes, $scope.autohint_sizes,
-        $scope.fontaine_fonts, $scope.fonts_orthography
-    )
-};
+    $scope.isReady = function() {
+        return !Mixins.checkAll(
+            null, $scope.metrics, $scope.tests, $scope.faces,
+            $scope.table_sizes, $scope.autohint_sizes,
+            $scope.fontaine_fonts, $scope.fonts_orthography
+        )
+    };
 
-$scope.$on('$viewContentLoaded', function() {
+    $scope.$on('$viewContentLoaded', function() {
 //    console.log("$viewContentLoaded");
-});
+    });
 });

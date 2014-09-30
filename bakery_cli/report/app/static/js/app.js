@@ -54,7 +54,12 @@ myApp.config(function($routeProvider, $httpProvider) {
         .when('/review', {
             title: 'Review',
             templateUrl : 'pages/review.html',
-            controller  : 'reviewController'
+            controller  : 'reviewController',
+            css: [
+                'static/css/faces.css',
+                'static/css/pages/review.css',
+                'static/css/pages/opentype.css'
+            ]
         })
 
         // route for the checks page
@@ -136,7 +141,19 @@ myApp.constant("appConfig", {
     statusMap: {'success': 'OK', 'failure': 'FAIL', 'error': 'ERROR', 'fixed': 'FIXED'},
     resultMap: {'success': 'success', 'failure': 'danger', 'error': 'warning', 'fixed': 'info'},
 
-    pangram: 'Grumpy wizards make toxic brew for the evil Queen and Jack'
+    fontWeightMap: {
+        100: 'Thin',
+        200: 'ExtraLight',
+        300: 'Light',
+        400: '',
+        500: 'Medium',
+        600: 'SemiBold',
+        700: 'Bold',
+        800: 'ExtraBold',
+        900: 'Black'
+    },
+
+    pangram: 'Grumpy wizards make toxic brew for the evil Queen and Jack.'
 });
 
 

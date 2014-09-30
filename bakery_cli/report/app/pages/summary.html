@@ -74,14 +74,14 @@
 <!--</div>-->
 
 <div class="flex-container">
-  <table id="blockersTable" ng-table="tableParams" show-filter="show_filter" class="table table-striped table-hover table-bordered table-condensed">
+  <table id="blockersTable" ng-table="testsTableParams" show-filter="show_filter" class="table table-striped table-hover table-bordered table-condensed">
     <caption class="small">
       <p class="text-left text-muted">
-        <button ng-click="tableParams.sorting({'status': 'asc'})" class="btn btn-default btn-xs"><i class="fa fa-close"></i></button><strong> Sorting:</strong> {{tableParams.sorting()|json}}
+        <button ng-click="testsTableParams.sorting({'status': 'asc'})" class="btn btn-default btn-xs"><i class="fa fa-close"></i></button><strong> Sorting:</strong> {{testsTableParams.sorting()|json}}
       </p>
       <p class="text-left text-muted">
         <button ng-click="show_filter = !show_filter" class="btn btn-default btn-xs"><i ng-class="{true: 'fa fa-eye', false: 'fa fa-eye-slash'}[show_filter]"></i></button>
-        <button ng-click="tableParams.filter({'description': ''})" class="btn btn-default btn-xs"><i class="fa fa-close"></i></button><strong> Filter:</strong> {{tableParams.filter()|json}}
+        <button ng-click="testsTableParams.filter({'description': ''})" class="btn btn-default btn-xs"><i class="fa fa-close"></i></button><strong> Filter:</strong> {{testsTableParams.filter()|json}}
       </p>
     </caption>
     <tr ng-repeat="test in $data" class="{{ test.result_class }}">

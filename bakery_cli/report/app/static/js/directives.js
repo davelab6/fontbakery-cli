@@ -40,3 +40,16 @@ angular.module('myApp').directive('navMenu', function($location) {
         link: activeLink
     }
 });
+
+angular.module('myApp').directive('insertGlyph', function($compile) {
+    var getTemplate = function(is_missing) {
+        return is_missing ? '<div style="display: none;"><span class="defaultCharacter">{{ glyph_decoded }}</span><span class="missing-glyph">X</span></div>' : '<div><span class="defaultCharacter">{{ glyph_decoded }}</span><span>{{ glyph_decoded }}</span></div>';
+    };
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            var el = $compile(getTemplate(scope.is_missing))(scope);
+            element.replaceWith(el);
+        }
+    };
+});

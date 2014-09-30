@@ -157,6 +157,10 @@ class ChecksPage(ReportPageBase):
     name = 'checks'
 
 
+class ReviewPage(ReportPageBase):
+    name = 'review'
+
+
 class ReportApp(six.with_metaclass(Singleton, object)):
     def __init__(self, config, **kwargs):
         self.config = config
@@ -181,6 +185,7 @@ class ReportApp(six.with_metaclass(Singleton, object)):
         self.tests_page = TestsPage(self)
         self.checks_page = ChecksPage(self)
         self.summary_page = SummaryPage(self)
+        self.review_page = ReviewPage(self)
 
         print('Report Application created.')
         self.write_app_info()
