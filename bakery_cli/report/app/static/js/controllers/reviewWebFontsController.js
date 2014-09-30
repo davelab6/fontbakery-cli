@@ -1,4 +1,4 @@
-myApp.controller('reviewController', function($scope, $http, reviewApi) {
+myApp.controller('reviewWebFontsController', function($scope, $http, reviewApi) {
     $scope.missing_chars_hidden = false;
     $scope.toggleMissingGlyphs = function() {
         try {

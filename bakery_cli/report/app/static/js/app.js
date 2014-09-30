@@ -50,11 +50,23 @@ myApp.config(function($routeProvider, $httpProvider) {
             css: 'static/css/faces.css'
         })
 
-        // route for the review page
-        .when('/review', {
-            title: 'Review',
-            templateUrl : 'pages/review.html',
-            controller  : 'reviewController',
+        // route for the review page, web fonts tab
+        .when('/review-web-fonts', {
+            title: 'Review - Web Fonts',
+            templateUrl : 'pages/review-web-fonts.html',
+            controller  : 'reviewWebFontsController',
+            css: [
+                'static/css/faces.css',
+                'static/css/pages/review.css',
+                'static/css/pages/opentype.css'
+            ]
+        })
+
+        // route for the review page, glyph inspector tab
+        .when('/review-glyph-inspector', {
+            title: 'Review - Glyph Inspector',
+            templateUrl : 'pages/review-glyph-inspector.html',
+            controller  : 'reviewGlyphInspectorController',
             css: [
                 'static/css/faces.css',
                 'static/css/pages/review.css',
