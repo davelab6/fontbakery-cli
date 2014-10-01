@@ -270,8 +270,4 @@ angular.module('myApp').service('reviewApi', function($http, $q, PathBuilder) {
     this.getFontsOrthography = function() {
         return $http.get(PathBuilder.buildPagesPath(name, 'fonts_orthography.json'));
     };
-    this.getFontsOrthographySorted = function() {
-        return $http.get(PathBuilder.buildPagesPath(name, 'fonts_sorted.json'));
-    };
-
 });

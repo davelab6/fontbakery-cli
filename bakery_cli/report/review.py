@@ -35,7 +35,7 @@ TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
 t = lambda templatefile: op.join(TEMPLATE_DIR, templatefile)
 
 
-def get_orthography(fontaineFonts):
+def get_orthography_old(fontaineFonts):
     library = Library(collections=['subsets'])
     result = []
     for font, fontaine in fontaineFonts:
@@ -44,7 +44,7 @@ def get_orthography(fontaineFonts):
     return sorted(result, key=lambda x: x[3], reverse=True)
 
 
-def get_orthography2(fontaineFonts):
+def get_orthography(fontaineFonts):
     result = []
     fonts_dict = defaultdict(list)
     library = Library(collections=['subsets'])
@@ -94,15 +94,15 @@ def generate(config, outfile='review.html'):
     app_version = report_utils.git_info(config)
 
     report_app = report_utils.ReportApp(config)
-    fonts_orthography = get_orthography2(fonts)
+    fonts_orthography = get_orthography(fonts)
     report_app.review_page.dump_file({'fonts_list': fonts_orthography[0],
                                        'coverage_averages': fonts_orthography[1],
                                        'fonts_info': fonts_orthography[2],
                                        'sorted_fonts': fonts_orthography[3]},
                                       'fonts_orthography.json')
-    report_app.review_page.dump_file(fonts_orthography[3], 'fonts_sorted.json')
+
     print(report_utils.render_template(
         outfile, fonts=faces, markdown=markdown, current_page=outfile,
         get_weight_name=get_weight_name,
         build_repo_url=report_utils.build_repo_url, app_version=app_version,
-        get_orthography=get_orthography, fontaineFonts=fonts), file=destfile)
+        get_orthography=get_orthography_old, fontaineFonts=fonts), file=destfile)

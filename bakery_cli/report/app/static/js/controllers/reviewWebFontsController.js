@@ -36,24 +36,9 @@ myApp.controller('reviewWebFontsController', function($scope, $http, reviewApi) 
     reviewApi.getFontsOrthography().then(function(response) {
         var fonts_orthography = response.data;
         $scope.glyphs = [];
-        angular.forEach(fonts_orthography.fonts_info, function(info, subset) {
-            angular.forEach(info, function(font_info) {
-                angular.forEach(font_info.glyphs, function(glyph) {
-                    $scope.glyphs.push({
-                        'glyph': glyph,
-                        'is_missing': font_info.missing_chars.indexOf(glyph) != -1
-                    })
-                })
-            });
-        });
-    });
-
-    reviewApi.getFontsOrthographySorted().then(function(response) {
-        var fonts_orthography_sorted = response.data;
-        $scope.glyphs_sorted = [];
-        angular.forEach(fonts_orthography_sorted, function(fonts) {
+        angular.forEach(fonts_orthography.sorted_fonts, function(fonts) {
             angular.forEach(fonts[1], function(glyph) {
-                $scope.glyphs_sorted.push({
+                $scope.glyphs.push({
                     'glyph': glyph,
                     'is_missing': fonts[4].indexOf(glyph) != -1
                 })

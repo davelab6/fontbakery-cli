@@ -23,7 +23,7 @@
               <div>
                 <p><button id="toggleMissingGlyphs" ng-click="toggleMissingGlyphs()">{{ missing_chars_hidden && 'Hide missing glyphs' || 'Show missing glyphs' }}</button></p>
                 <div id="glyphContainer" class="sample Exo-normal-400">
-                  <div ng-repeat="g in glyphs_sorted" ng-init="glyph_decoded = mixins.decodeHtmlEntity('&#'+g.glyph+';'); is_missing = g.is_missing;" ng-style="{display: setClassOnParentDiv(g.is_missing)}">
+                  <div ng-repeat="g in glyphs" ng-init="glyph_decoded = mixins.decodeHtmlEntity('&#'+g.glyph+';'); is_missing = g.is_missing;" ng-style="{display: setClassOnParentDiv(g.is_missing)}">
                     <div insert-glyph></div>
                   </div>
                 </div>

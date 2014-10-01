@@ -263,7 +263,6 @@ def generate(config, outfile='index.html'):
     report_app.summary_page.dump_file(table_sizes, 'table_sizes.json')
     report_app.summary_page.dump_file(autohint_sizes, 'autohint_sizes.json')
     report_app.summary_page.dump_file(data, 'tests.json')
-    report_app.summary_page.dump_file([face.metadata_object for face in family_metadata.fonts], 'faces.json')
     report_app.summary_page.dump_file({'mean': ftables_data.mean,
                                        'grouped': ftables_data.grouped,
                                        'delta': ftables_data.delta},
