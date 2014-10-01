@@ -1,57 +1,61 @@
-//myApp.controller('testsController', function($scope, $http, $filter, testsApi, ngTableParams) {
-myApp.controller('testsController', function($scope, $http, testsApi) {
+myApp.controller('testsController', function($scope, $http, $filter, testsApi, ngTableParams) {
     $scope.charts = [];
     $scope.average_chart = null;
     $scope.dataLoaded = false;
 
-//    $scope.$watch('dataLoaded', function() {
-//        if ($scope.dataLoaded) {
-//            angular.element('.tablesorter').tablesorter();
-//        }
-//    });
-    testsApi.getFiles().then(function(responses) {
-        $scope.summary = responses[0].data;
-        $scope.tests = responses[1].data;
+    testsApi.getTests().then(function(response) {
+        $scope.tests = response.data;
         $scope.dataLoaded = true;
-//        $scope.items = [];
-//        angular.forEach($scope.tests, function(results, font) {
-//            angular.forEach($scope.resultMap, function(icon, testType) {
-//                angular.forEach($scope.tests[font][testType], function(item) {
-//                    var _item = {
-//                        category: item.tags.join(', '),
-//                        description: item.methodName,
-//                        file: font,
-//                        result: item.err_msg,
-//                        status: $scope.statusMap[testType]
-//                    };
-//                    $scope.items.push(_item);
-//                });
-//            });
-//        });
 
-//        $scope.tableParams = new ngTableParams({
-//                page: 1,
-//                count: $scope.items.length,
-//                sorting: {
-//                    status: 'asc'
-//                }
-//            },
-//            {
-//                total: $scope.items.length, // length of data
-//                getData: function($defer, params) {
-//                    // use build-in angular filter
-//                    var orderedData = params.sorting() ? $filter('orderBy')($scope.items, params.orderBy()) : $scope.items;
-//                    $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-//                }
-//            });
+        var data = [];
+        // reformat data for table
+        angular.forEach($scope.tests, function(test) {
+            angular.forEach($scope.resultMap, function(result_val, result_key) {
+                angular.forEach(test[result_key], function(test_obj) {
+                    var item = {
+                        font: test.name,
+                        _data: test_obj, // keep original data
+                        categories: test_obj.tags.join(', '),
+                        description: test_obj.methodDoc,
+                        result_msg: test_obj.err_msg,
+                        result_status: $scope.statusMap[result_key],
+                        result_class: result_val
+                    };
+                    data.push(item);
+                })
+            });
+        });
 
+        $scope.testsTableParams = new ngTableParams({
+            // show first page
+            page: 1,
+            // count per page
+            count: data.length,
+            // initial sorting
+            sorting: {
+                result_status: 'asc'
+            }
+        }, {
+            // hide page counts control
+            counts: [],
+            // length of data
+            total: data.length,
+            getData: function($defer, params) {
+                // use build-in angular filter
+                var orderedData = params.sorting() ?
+                    $filter('orderBy')(data, params.orderBy()) :
+                    data;
+                params.total(orderedData.length);
+                $defer.resolve(orderedData);
+            }
+        });
 
         var chartsum = {"success": 0, "failure": 0, "fixed": 0, "error": 0};
-        angular.forEach($scope.tests, function(results, test) {
-            var success_len = results['success'].length,
-                fixed_len = results['fixed'].length,
-                failure_len = results['failure'].length,
-                error_len = results['error'].length,
+        angular.forEach($scope.tests, function(test) {
+            var success_len = test['success'].length,
+                fixed_len = test['fixed'].length,
+                failure_len = test['failure'].length,
+                error_len = test['error'].length,
                 data = google.visualization.arrayToDataTable([
                     ['Tests', '#'],
                     ['Success '+success_len, success_len],
@@ -60,7 +64,7 @@ myApp.controller('testsController', function($scope, $http, testsApi) {
                     ['Error '+error_len, error_len]
                 ]),
                 options = {
-                    title: test,
+                    title: test.name,
                     is3D: true,
                     colors: ['#468847', '#3a87ad', '#b94a48', '#c09853']
                 };
@@ -73,7 +77,7 @@ myApp.controller('testsController', function($scope, $http, testsApi) {
             }
         });
         // build chart of average values if we have more than 1 font
-        if (Object.keys($scope.tests).length > 1) {
+        if ($scope.tests.length > 1) {
             var success_len = chartsum.success,
                 fixed_len = chartsum.fixed,
                 failure_len = chartsum.failure,

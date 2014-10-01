@@ -5,42 +5,15 @@
 <div ng-if="average_chart">
     <div google-chart chart="average_chart" style="{{cssStyle}}"></div>
 </div>
+
 <div class="flex-container">
-  <!--<p><strong>Sorting:</strong> {{tableParams.sorting()|json}}-->
-
-  <!--<table ng-table="tableParams" class="table table-striped table-hover table-bordered table-condensed tablesorter">-->
-    <!--<tr ng-repeat="item in items">-->
-      <!--<td data-title="'Category'" sortable="'category'">{{ item.category }}</td>-->
-      <!--<td data-title="'Description'" sortable="'description'">{{ item.description }}</td>-->
-      <!--<td data-title="'File'" sortable="'file'">{{ item.file }}</td>-->
-      <!--<td data-title="'Result'" sortable="'result'">{{ item.result }}</td>-->
-      <!--<td data-title="'Status'" sortable="'status'">{{ item.status }}</td>-->
-    <!--</tr>-->
-  <!--</table>-->
-
-  <table class="table table-striped table-hover table-bordered table-condensed tablesorter">
-    <!--<caption><h4>{{ font }}</h4></caption>-->
-    <thead>
-    <tr>
-      <th>Category</th>
-      <th>Description</th>
-      <th>File</th>
-      <th>Result</th>
-      <th>Status</th>
+  <table id="testsTable" ng-table="testsTableParams" show-filter="show_filter" class="table table-striped table-hover table-bordered table-condensed">
+    <tr ng-repeat="test in $data" class="{{ test.result_class }}">
+      <td data-title="'Category'" sortable="'categories'">{{ test.categories }}</td>
+      <td data-title="'Description'" filter="{ 'description': 'text' }" sortable="'description'"><span class="apopover" popover-title="{{ test._data.name|replace:'.':'/' }}.py" popover-placement="top" data-placement="top" popover="{{ test._data.methodName }}()">{{ test.description }}</span></td>
+      <td data-title="'File'" sortable="'font'">{{ test.font }}</td>
+      <td data-title="'Result'" sortable="'result_msg'" filter="{ 'result_msg': 'text' }">{{ test.result_msg }}</td>
+      <td data-title="'Status'" sortable="'result_status'">{{ test.result_status }}</td>
     </tr>
-    </thead>
-    <tr ng-repeat-start="(font, results) in tests"></tr>
-    <tr ng-repeat-start="(testType, icon) in resultMap"></tr>
-    <tr ng-repeat-start="item in tests[font][testType]" class="{{ icon }}">
-      <td>{{ item.tags.join(', ') }}</td>
-      <td><span class="apopover" popover-title="{{ item.name|replace:'.':'/' }}.py" popover-placement="top" data-placement="top" popover="{{ item.methodName }}()">{{ item.methodDoc }}</span></td>
-      <td>{{ font }}</td>
-      <td>{{ item.err_msg }}</td>
-      <td>{{ statusMap[testType] }}</td>
-    </tr>
-    <tr ng-repeat-end></tr>
-    <tr ng-repeat-end></tr>
-    <tr ng-repeat-end></tr>
   </table>
 </div>
-
