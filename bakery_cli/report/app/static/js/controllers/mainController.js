@@ -1,10 +1,10 @@
 angular.module('myApp').controller('mainController', function($scope, $http, appApi, alertsFactory, appConfig, Mixins) {
     $scope.mixins = Mixins;
     appApi.getAppInfo().then(function(dataResponse) {
-        $scope.version = dataResponse.data;
+        $scope.app_info = dataResponse.data;
     });
     appApi.getRepoInfo().then(function(dataResponse) {
-        $scope.repo = dataResponse.data;
+        $scope.repo_info = dataResponse.data;
     });
     appApi.getMetadata().then(function(dataResponse) {
         $scope.metadata = dataResponse.data;

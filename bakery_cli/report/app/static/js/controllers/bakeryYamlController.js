@@ -6,6 +6,6 @@ myApp.controller('bakeryYamlController', function($scope, $http, bakeryYamlApi, 
     $scope.aceLoaded = function(_editor) {
         EditorService.heightUpdateFunction(_editor, angular.element('#editor'), angular.element('#editor-section'));
     };
-    $scope.view_url = PathBuilder.buildPath($scope.repo.url, 'blob', 'master', bakery_yaml);
-    $scope.edit_url = PathBuilder.buildPath($scope.repo.url, 'edit', 'master', bakery_yaml);
+    $scope.view_url = PathBuilder.buildPath($scope.repo_info.url, 'blob', 'master', bakery_yaml);
+    $scope.edit_url = PathBuilder.buildPath($scope.repo_info.url, 'edit', 'master', bakery_yaml);
 });

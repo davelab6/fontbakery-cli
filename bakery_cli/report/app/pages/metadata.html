@@ -21,29 +21,6 @@
       <td data-title="'Status'" sortable="'status'">{{ test.status }}</td>
     </tr>
   </table>
-
-  <!--<table ng-repeat="(font, results) in tests" class="table table-striped table-hover table-bordered table-condensed tablesorter">-->
-    <!--<thead>-->
-    <!--<tr>-->
-      <!--<th>Category</th>-->
-      <!--<th>Description</th>-->
-      <!--<th>File</th>-->
-      <!--<th>Result</th>-->
-      <!--<th>Status</th>-->
-    <!--</tr>-->
-    <!--</thead>-->
-    <!--<tr ng-repeat-start="(testType, icon) in resultMap"></tr>-->
-    <!--<tr ng-repeat-start="item in tests[font][testType]" class="{{ icon }}">-->
-      <!--<td>{{ item.tags.join(', ') }}</td>-->
-      <!--<td><span class="apopover" popover-title="{{ item.name|replace:'.':'/' }}.py" popover-placement="top" data-placement="top" popover="{{ item.methodName }}()">{{ item.methodDoc }}</span></td>-->
-      <!--<td>{{ font }}</td>-->
-      <!--<td>{{ item.err_msg }}</td>-->
-      <!--<td>{{ statusMap[testType] }}</td>-->
-    <!--</tr>-->
-    <!--<tr ng-repeat-end></tr>-->
-    <!--<tr ng-repeat-end></tr>-->
-  <!--</table>-->
-
 </div>
 
 <h3 class="text-center">JSON Diff of the Two Files</h3>
@@ -54,7 +31,7 @@
   <div class="row">
     <div class="col-xs-offset-1 col-sm-offset-1 col-md-offset-1 col-lg-offset-1 col-xs-5 col-sm-5 col-md-5 col-lg-5">
       <h4>METADATA.json imported from upstream repo</h4>
-      <div id="editor" class="editor" ui-ace="{
+      <div id="editor1" class="editor" ui-ace="{
          mode: 'json',
          theme: 'solarized_light',
          UseSoftTabs: false,
@@ -70,7 +47,7 @@
     </div>
     <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
       <h4>METADATA.json.new generated from files</h4>
-      <div id="editor-new" class="editor" ui-ace="{
+      <div id="editor2" class="editor" ui-ace="{
          mode: 'json',
          theme: 'solarized_light',
          UseSoftTabs: false,

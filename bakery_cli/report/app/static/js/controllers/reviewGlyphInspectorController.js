@@ -322,7 +322,7 @@ myApp.controller('reviewGlyphInspectorController', function($scope) {
             parent.insertBefore(canvas, marker);
         }
     }
-
+    $scope.$on('$viewContentLoaded', function() {
     if ($scope.metadata.fonts.length > 0) {
         var fontFileName = '/static/css/fonts/'+$scope.metadata.fonts[0].filename;
 
@@ -341,4 +341,6 @@ myApp.controller('reviewGlyphInspectorController', function($scope) {
             onFontLoaded(font);
         });
     }
+    })
+
 });

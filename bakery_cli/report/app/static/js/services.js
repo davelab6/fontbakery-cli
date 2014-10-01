@@ -1,45 +1,50 @@
 // service to work with ACE editor
-angular.module('myApp').service('EditorService', function() {
-    this.heightUpdateFunction = function(editor, editor_div, editor_section) {
+angular.module('myApp').service('EditorService', function(alertsFactory) {
+    this.heightUpdateFunction = function(editor, editor_div) {
         var newHeight =
             editor.getSession().getScreenLength()
                 * editor.renderer.lineHeight
                 + editor.renderer.scrollBar.getWidth();
         editor_div.height(newHeight.toString() + "px");
-        editor_section.height(newHeight.toString() + "px");
         // This call is required for the editor to fix all
         // of its inner structure for adapting to a change in size
         editor.resize();
+        editor.renderer.updateFull()
     };
 
     this.doDiff = function(editor1, editor2, result_of_diff) {
         return function () {
-            var left = JSON.parse(editor1.getValue());
-            var right = JSON.parse(editor2.getValue());
+            try {
+                var left = JSON.parse(editor1.getValue());
+                var right = JSON.parse(editor2.getValue());
 
-            var instance = jsondiffpatch.create({
-                objectHash: function (obj) {
-                    return '';
+                var instance = jsondiffpatch.create({
+                    objectHash: function (obj) {
+                        return '';
+                    }
+                });
+
+                var delta = instance.diff(left, right);
+
+                var visualdiff = document.getElementById(result_of_diff);
+                if (visualdiff) {
+                    visualdiff.innerHTML = jsondiffpatch.formatters.html.format(delta, left);
+
+                    var scripts = visualdiff.querySelectorAll('script');
+                    for (var i = 0; i < scripts.length; i++) {
+                        var s = scripts[i];
+                        /* jshint evil: true */
+                        eval(s.innerHTML);
+                    }
                 }
-            });
+                angular.element(visualdiff).find('div').first().find('pre')
+                    .each(function (i) {
+                        angular.element(this).css("background-color", "transparent").css("border", "0");
+                    })
 
-            var delta = instance.diff(left, right);
-
-            var visualdiff = document.getElementById(result_of_diff);
-            if (visualdiff) {
-                visualdiff.innerHTML = jsondiffpatch.formatters.html.format(delta, left);
-
-                var scripts = visualdiff.querySelectorAll('script');
-                for (var i = 0; i < scripts.length; i++) {
-                    var s = scripts[i];
-                    /* jshint evil: true */
-                    eval(s.innerHTML);
-                }
+            } catch (e) {
+                alertsFactory.addAlert(e.name+": "+ e.message);
             }
-            angular.element(visualdiff).find('div').first().find('pre')
-                .each(function (i) {
-                    angular.element(this).css("background-color", "transparent").css("border", "0");
-                })
         };
     };
 });

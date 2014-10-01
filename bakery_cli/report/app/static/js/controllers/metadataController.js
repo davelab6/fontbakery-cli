@@ -5,17 +5,15 @@ angular.module('myApp').controller('metadataController', function($scope, $http,
     $scope.editor2 = null;
     $scope.show_filter = false;
 
-    $scope.view_url = PathBuilder.buildPath($scope.repo.url, 'blob', 'master', appConfig.metadata);
-    $scope.edit_url = PathBuilder.buildPath($scope.repo.url, 'edit', 'master', appConfig.metadata);
+    $scope.view_url = PathBuilder.buildPath($scope.repo_info.url, 'blob', 'master', appConfig.metadata);
+    $scope.edit_url = PathBuilder.buildPath($scope.repo_info.url, 'edit', 'master', appConfig.metadata);
 
     $scope.$watch('dataLoaded', function() {
         if ($scope.dataLoaded) {
-            angular.element('.tablesorter').tablesorter();
+
             if ($scope.editor1 && $scope.editor2) {
-                EditorService.heightUpdateFunction($scope.editor1, angular.element('#editor-new'), angular.element('#editor-new-section'));
-//                $scope.editor1.resize();
-//                $scope.editor1.renderer.updateFull();
-                EditorService.heightUpdateFunction($scope.editor2, angular.element('#editor-new'), angular.element('#editor-new-section'));
+                EditorService.heightUpdateFunction($scope.editor1, angular.element('#editor1'));
+                EditorService.heightUpdateFunction($scope.editor2, angular.element('#editor2'));
                 $scope.doDiff = EditorService.doDiff($scope.editor1.getSession(), $scope.editor2.getSession(), 'visualdiff');
 //                $scope.doDiff();
             }
@@ -100,28 +98,22 @@ angular.module('myApp').controller('metadataController', function($scope, $http,
         $scope.metadata1 = responses[0].data;
         $scope.metadata2 = responses[1].data;
         $scope.dataLoaded = true;
+//        $scope.doDiff();
     });
 
     $scope.aceLoaded1 = function(_editor) {
-        EditorService.heightUpdateFunction(_editor, angular.element('#editor'), angular.element('#editor-section'));
+        EditorService.heightUpdateFunction(_editor, angular.element('#editor1'));
         $scope.editor1 = _editor;
     };
 
     $scope.aceChanged1 = function(_editor) {
-//        $scope.editor1 = _editor;
     };
 
     $scope.aceLoaded2 = function(_editor) {
-        EditorService.heightUpdateFunction(_editor, angular.element('#editor-new'), angular.element('#editor-new-section'));
+        EditorService.heightUpdateFunction(_editor, angular.element('#editor2'));
         $scope.editor2 = _editor;
     };
 
     $scope.aceChanged2 = function(_editor) {
-//        $scope.editor2 = _editor;
     };
-
-    if ($scope.dataLoaded && $scope.editor1 && $scope.editor2) {
-        $scope.doDiff = EditorService.doDiff($scope.editor1.getSession(), $scope.editor2.getSession(), 'visualdiff');
-        $scope.doDiff();
-    }
 });
