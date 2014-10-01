@@ -29,18 +29,18 @@ myApp.controller('reviewWebFontsController', function($scope, $http, reviewApi) 
         } catch(e){}
     };
 
-    $scope.setClassOnParentDiv = function(val) {
+    $scope.updateParentStyle = function(val) {
         return val ? 'none' : 'block'
     };
 
-    reviewApi.getFontsOrthography().then(function(response) {
-        var fonts_orthography = response.data;
+    reviewApi.getOrthography().then(function(response) {
+        var orthography = response.data;
         $scope.glyphs = [];
-        angular.forEach(fonts_orthography.sorted_fonts, function(fonts) {
-            angular.forEach(fonts[1], function(glyph) {
+        angular.forEach(orthography, function(font) {
+            angular.forEach(font.glyphs, function(glyph) {
                 $scope.glyphs.push({
                     'glyph': glyph,
-                    'is_missing': fonts[4].indexOf(glyph) != -1
+                    'is_missing': font.missing_glyphs.indexOf(glyph) != -1
                 })
             });
         });

@@ -46,20 +46,14 @@ def get_orthography_old(fontaineFonts):
 
 def get_orthography(fontaineFonts):
     result = []
-    fonts_dict = defaultdict(list)
     library = Library(collections=['subsets'])
-    fonts_names = []
     for font, fontaine in fontaineFonts:
-        fonts_names.append(font)
-        for charmap, support, coverage, missing_chars in fontaine.get_orthographies(_library=library):
-            font_info = dict(name=font, support=support,
-                             coverage=coverage, missing_chars=missing_chars, glyphs=charmap.glyphs)
-            fonts_dict[charmap.common_name].append(font_info)
-            result.append([font, charmap.glyphs, support, coverage, missing_chars])
-    averages = {}
-    for subset, fonts in fonts_dict.items():
-        averages[subset] = sum([font['coverage'] for font in fonts]) / len(fonts)
-    return sorted(fonts_names), averages, OrderedDict(sorted(fonts_dict.items())), sorted(result, key=lambda x: x[3], reverse=True)
+        orthographies = fontaine.get_orthographies(_library=library)
+        for charmap, support, coverage, missing_chars in orthographies:
+            result.append(dict(name=font, support=support,
+                               coverage=coverage, missing_glyphs=missing_chars,
+                               glyphs=charmap.glyphs))
+    return sorted(result, key=lambda x: x['coverage'], reverse=True)
 
 
 def get_weight_name(value):
@@ -95,11 +89,8 @@ def generate(config, outfile='review.html'):
 
     report_app = report_utils.ReportApp(config)
     fonts_orthography = get_orthography(fonts)
-    report_app.review_page.dump_file({'fonts_list': fonts_orthography[0],
-                                       'coverage_averages': fonts_orthography[1],
-                                       'fonts_info': fonts_orthography[2],
-                                       'sorted_fonts': fonts_orthography[3]},
-                                      'fonts_orthography.json')
+
+    report_app.review_page.dump_file(fonts_orthography, 'orthography.json')
 
     print(report_utils.render_template(
         outfile, fonts=faces, markdown=markdown, current_page=outfile,

@@ -267,7 +267,7 @@ angular.module('myApp').service('descriptionApi', function($http, $q, PathBuilde
 
 angular.module('myApp').service('reviewApi', function($http, $q, PathBuilder) {
     var name = 'review';
-    this.getFontsOrthography = function() {
-        return $http.get(PathBuilder.buildPagesPath(name, 'fonts_orthography.json'));
+    this.getOrthography = function() {
+        return $http.get(PathBuilder.buildPagesPath(name, 'orthography.json'));
     };
 });
