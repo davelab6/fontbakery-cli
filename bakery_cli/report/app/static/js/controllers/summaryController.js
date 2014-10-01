@@ -1,11 +1,11 @@
-myApp.controller('summaryController', function($scope, $http, $filter, summaryApi, Mixins, ngTableParams) {
+myApp.controller('summaryController', function($scope, $rootScope, $http, $filter, summaryApi, Mixins, ngTableParams) {
     $scope.pie_charts = [];
     $scope.average_pie_chart = null;
     $scope.average_line_chart = null;
     $scope.deviation_line_chart = null;
     $scope.tests = null;
     $scope.metrics = null;
-    $scope.faces = null;
+    $scope.faces = {};
     $scope.table_sizes = null;
     $scope.autohint_sizes = null;
     $scope.fontaine_fonts = null;
@@ -17,13 +17,10 @@ myApp.controller('summaryController', function($scope, $http, $filter, summaryAp
         'fragmentary': 'warning',
         'unsupported': 'danger'
     };
-    summaryApi.getFontsMetadata().then(function(response) {
-        var faces = response.data;
-        $scope.faces = {};
-        angular.forEach([100, 200, 300, 400, 500, 600, 700, 800, 900], function(weight) {
-            $scope.faces[weight] = faces.filter(function(face) {
-                return face.weight == weight;
-            });
+
+    angular.forEach([100, 200, 300, 400, 500, 600, 700, 800, 900], function(weight) {
+        $scope.faces[weight] = $rootScope.metadata.fonts.filter(function(face) {
+            return face.weight == weight;
         });
     });
     summaryApi.getMetrics().then(function(response) {

@@ -29,14 +29,14 @@
       <ul nav-menu="active" class="nav navbar-nav navbar-right">
         <li><a href="{{repo_info.gh_pages}}" target="_blank"><i class="fa fa-github"></i> gh-pages</a></li>
         <li><a href="{{repo_info.url}}" target="_blank"><i class="fa fa-github-square"></i> Github Page</a></li>
-        <li ng-class="{'disabled': app_info.build_passed == false}"><a href="#/"><i class="fa fa-bar-chart"></i> Summary</a></li>
-        <li ng-class="{'disabled': app_info.build_passed == false}"><a href="#/review-web-fonts"><i class="fa fa-binoculars"></i> Review</a></li>
-        <li ng-class="{'disabled': app_info.build_passed == false}"><a href="#/checks"><i class="fa fa-briefcase"></i> Pre-Build Checks</a></li>
-        <li ng-class="{'disabled': app_info.build_passed == false}"><a href="#/tests"><i class="fa fa-bug"></i> Tests</a></li>
-        <li ng-class="{'disabled': app_info.build_passed == false}"><a href="#/build-log"><i class="fa fa-file-text-o"></i> Build Log</a></li>
-        <li ng-class="{'disabled': app_info.build_passed == false}"><a href="#/metadata"><i class="fa fa-info-circle"></i> METADATA.json</a></li>
-        <li ng-class="{'disabled': app_info.build_passed == false}"><a href="#/bakery-yaml"><i class="fa fa-file"></i> bakery.yaml</a></li>
-        <li ng-class="{'disabled': app_info.build_passed == false}"><a href="#/description"><i class="fa fa-pencil-square-o"></i> Description</a></li>
+        <li ng-class="{'disabled': !app_info.build_passed}"><a href="#/"><i class="fa fa-bar-chart"></i> Summary</a></li>
+        <li ng-class="{'disabled': !app_info.build_passed}"><a href="#/review-web-fonts"><i class="fa fa-binoculars"></i> Review</a></li>
+        <li ng-class="{'disabled': !app_info.build_passed}"><a href="#/checks"><i class="fa fa-briefcase"></i> Pre-Build Checks</a></li>
+        <li ng-class="{'disabled': !app_info.build_passed}"><a href="#/tests"><i class="fa fa-bug"></i> Tests</a></li>
+        <li ng-class="{'disabled': !app_info.build_passed}"><a href="#/build-log"><i class="fa fa-file-text-o"></i> Build Log</a></li>
+        <li ng-class="{'disabled': !app_info.build_passed}"><a href="#/metadata"><i class="fa fa-info-circle"></i> METADATA.json</a></li>
+        <li ng-class="{'disabled': !app_info.build_passed}"><a href="#/bakery-yaml"><i class="fa fa-file"></i> bakery.yaml</a></li>
+        <li ng-class="{'disabled': !app_info.build_passed}"><a href="#/description"><i class="fa fa-pencil-square-o"></i> Description</a></li>
       </ul>
     </div>
   </nav>
@@ -64,7 +64,7 @@
 <footer class="footer">
   <div class="container-fluid">
     <ul class="footer-links">
-      <li><a href='https://github.com/googlefonts/fontbakery-cli/edit/master/bakery_cli/report/templates/{{ current_page }}'>Edit this page's template</a></li>
+      <li><a href='https://github.com/googlefonts/fontbakery-cli/edit/master/bakery_cli/report/app/{{ current_template }}'>Edit this page's template</a></li>
       <li><a href='https://github.com/googlefonts/fontbakery-cli/'>Made with Font Bakery</a> (<a href='http://www.gnu.org/philosophy/free-sw.html'>libre software</a> available under the terms of the <a href='https://github.com/googlefonts/fontbakery-cli/blob/master/LICENSE.txt'>Apache 2.0 license</a>.)</li>
       <li>Please <a href='https://github.com/googlefonts/fontbakery-cli/issues/new'>report bugs</a>, suggest features, and contribute on <a href='https://github.com/googlefonts/fontbakery-cli/'>GitHub <i class='icon-github'></i></a></li>
       <li>{{ app_info.commit }}, {{ app_info.date }}</li>

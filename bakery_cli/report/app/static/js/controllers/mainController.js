@@ -1,4 +1,4 @@
-angular.module('myApp').controller('mainController', function($scope, $http, appApi, alertsFactory, appConfig, Mixins) {
+angular.module('myApp').controller('mainController', function($scope, $rootScope, $http, appApi, alertsFactory, appConfig, Mixins) {
     $scope.mixins = Mixins;
     appApi.getAppInfo().then(function(dataResponse) {
         $scope.app_info = dataResponse.data;
@@ -7,7 +7,8 @@ angular.module('myApp').controller('mainController', function($scope, $http, app
         $scope.repo_info = dataResponse.data;
     });
     appApi.getMetadata().then(function(dataResponse) {
-        $scope.metadata = dataResponse.data;
+//        $scope.metadata = dataResponse.data;
+        $rootScope.metadata = dataResponse.data;
     });
     // current controller is on top level, so all http
     // errors should come through it
