@@ -165,7 +165,7 @@ angular.module('myApp').service('metadataApi', function($http, $q, PathBuilder, 
         return deferred.promise;
     };
 
-    this.getTestsResults = function() {
+    this.getTests = function() {
         return $http.get(PathBuilder.buildPagesPath(name, 'tests.json'));
     };
 });
@@ -209,8 +209,8 @@ angular.module('myApp').service('summaryApi', function($http, $q, PathBuilder) {
 
 angular.module('myApp').service('checksApi', function($http, $q, PathBuilder) {
     var name = 'checks';
-    this.getDataFile = function() {
-        return $http.get(PathBuilder.buildPagesPath(name, 'data.json'));
+    this.getTests = function() {
+        return $http.get(PathBuilder.buildPagesPath(name, 'tests.json'));
     };
 
     this.getUpstreamYamlFile = function() {

@@ -10,7 +10,7 @@
   <table id="testsTable" ng-table="testsTableParams" show-filter="show_filter" class="table table-striped table-hover table-bordered table-condensed">
     <tr ng-repeat="test in $data" class="{{ test.result_class }}">
       <td data-title="'Category'" sortable="'categories'">{{ test.categories }}</td>
-      <td data-title="'Description'" filter="{ 'description': 'text' }" sortable="'description'"><span class="apopover" popover-title="{{ test._data.name|replace:'.':'/' }}.py" popover-placement="top" data-placement="top" popover="{{ test._data.methodName }}()">{{ test.description }}</span></td>
+      <td data-title="'Description'" filter="{ 'description': 'text' }" sortable="'description'"><span popover-title="{{ test.orig_data.name|replace:'.':'/' }}.py" popover-placement="top" data-placement="top" popover="{{ test.orig_data.methodName }}()">{{ test.description }}</span></td>
       <td data-title="'File'" sortable="'font'">{{ test.font }}</td>
       <td data-title="'Result'" sortable="'result_msg'" filter="{ 'result_msg': 'text' }">{{ test.result_msg }}</td>
       <td data-title="'Status'" sortable="'result_status'">{{ test.result_status }}</td>

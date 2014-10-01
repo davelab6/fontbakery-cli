@@ -54,9 +54,14 @@ def generate(config, outfile='checks.html'):
     upstream = yaml.load(open(upstreamdatafile))
     app_version = report_utils.git_info(config)
 
+    new_data = []
+    for k in upstream:
+        d = {'name': k}
+        d.update(upstream[k])
+        new_data.append(d)
     report_app = report_utils.ReportApp(config)
     report_app.checks_page.copy_file(upstreamdatafile)
-    report_app.checks_page.dump_file(upstream, 'data.json')
+    report_app.checks_page.dump_file(new_data, 'tests.json')
 
     print(report_utils.render_template(outfile,
         sort=sort, tests=upstream, current_page=outfile, app_version=app_version,

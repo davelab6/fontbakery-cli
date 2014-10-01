@@ -20,40 +20,35 @@ angular.module('myApp').controller('metadataController', function($scope, $http,
         }
     });
 
-    metadataApi.getTestsResults().then(function(response) {
+    metadataApi.getTests().then(function(response) {
         $scope.tests = response.data;
         var data = [];
         // reformat data for table
-        angular.forEach($scope.tests, function(results, font) {
-            angular.forEach(results, function(values, name) {
-                angular.forEach(values, function(item) {
-                    var _item = {
-                        item: item, // keep original item inside newly created
-                        category: item.tags.join(', '),
-                        description: item.methodDoc,
-                        result_msg: item.err_msg,
-                        status: $scope.statusMap[name],
-                        result_class: $scope.resultMap[name],
-                        result: name,
-                        font: font
+        angular.forEach($scope.tests, function(test) {
+            angular.forEach($scope.resultMap, function(result_val, result_key) {
+                angular.forEach(test[result_key], function(test_obj) {
+                    var item = {
+                        font: test.name,
+                        orig_data: test_obj, // keep original data
+                        categories: test_obj.tags.join(', '),
+                        description: test_obj.methodDoc,
+                        result_msg: test_obj.err_msg,
+                        result_status: $scope.statusMap[result_key],
+                        result_class: result_val
                     };
-                    data.push(_item);
+                    data.push(item);
                 })
             });
         });
-        $scope.tableParams = new ngTableParams({
+
+        $scope.testsTableParams = new ngTableParams({
             // show first page
             page: 1,
             // count per page
             count: data.length,
             // initial sorting
             sorting: {
-                status: 'asc'
-            },
-            // initial filter
-            filter: {
-                description: '',
-                result: ''
+                result_status: 'asc'
             }
         }, {
             // hide page counts control
@@ -62,22 +57,19 @@ angular.module('myApp').controller('metadataController', function($scope, $http,
             total: data.length,
             getData: function($defer, params) {
                 // use build-in angular filter
-                var filteredData = params.sorting() ?
+                var orderedData = params.sorting() ?
                     $filter('orderBy')(data, params.orderBy()) :
                     data;
-                var orderedData = params.filter() ?
-                   $filter('filter')(filteredData, params.filter()) :
-                   data;
                 params.total(orderedData.length);
                 $defer.resolve(orderedData);
             }
         });
 
-        angular.forEach($scope.tests, function(results, test) {
-            var success_len = results['success'].length;
-            var fixed_len = results['fixed'].length;
-            var failure_len = results['failure'].length;
-            var error_len = results['error'].length;
+        angular.forEach($scope.tests, function(test) {
+            var success_len = test['success'].length;
+            var fixed_len = test['fixed'].length;
+            var failure_len = test['failure'].length;
+            var error_len = test['error'].length;
             var data = google.visualization.arrayToDataTable([
                 ['Tests', '#'],
                 ['Success '+success_len, success_len],
@@ -86,7 +78,7 @@ angular.module('myApp').controller('metadataController', function($scope, $http,
                 ['Error '+error_len, error_len]
             ]);
             var options = {
-                title: test,
+                title: test.name,
                 is3D: true,
                 colors: ['#468847', '#3a87ad', '#b94a48', '#c09853']
             };

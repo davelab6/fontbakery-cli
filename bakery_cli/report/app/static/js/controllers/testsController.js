@@ -14,7 +14,7 @@ myApp.controller('testsController', function($scope, $http, $filter, testsApi, n
                 angular.forEach(test[result_key], function(test_obj) {
                     var item = {
                         font: test.name,
-                        _data: test_obj, // keep original data
+                        orig_data: test_obj, // keep original data
                         categories: test_obj.tags.join(', '),
                         description: test_obj.methodDoc,
                         result_msg: test_obj.err_msg,
@@ -56,7 +56,7 @@ myApp.controller('testsController', function($scope, $http, $filter, testsApi, n
                 fixed_len = test['fixed'].length,
                 failure_len = test['failure'].length,
                 error_len = test['error'].length,
-                data = google.visualization.arrayToDataTable([
+                gdata = google.visualization.arrayToDataTable([
                     ['Tests', '#'],
                     ['Success '+success_len, success_len],
                     ['Fixed '+fixed_len, fixed_len],
@@ -68,7 +68,7 @@ myApp.controller('testsController', function($scope, $http, $filter, testsApi, n
                     is3D: true,
                     colors: ['#468847', '#3a87ad', '#b94a48', '#c09853']
                 };
-            $scope.charts.push({data: data, options: options, type: "PieChart", displayed: true});
+            $scope.charts.push({data: gdata, options: options, type: "PieChart", displayed: true});
             chartsum = {
                 "success": chartsum.success + success_len,
                 "error": error_len,
@@ -82,7 +82,7 @@ myApp.controller('testsController', function($scope, $http, $filter, testsApi, n
                 fixed_len = chartsum.fixed,
                 failure_len = chartsum.failure,
                 error_len = chartsum.error,
-                data = google.visualization.arrayToDataTable([
+                gdata = google.visualization.arrayToDataTable([
                     ['Tests', '#'],
                     ['Success '+success_len, success_len],
                     ['Fixed '+fixed_len, fixed_len],
@@ -94,7 +94,7 @@ myApp.controller('testsController', function($scope, $http, $filter, testsApi, n
                     is3D: true,
                     colors: ['#468847', '#3a87ad', '#b94a48', '#c09853']
                 };
-            $scope.average_chart = {data: data, options: options, type: "PieChart", displayed: true};
+            $scope.average_chart = {data: gdata, options: options, type: "PieChart", displayed: true};
         }
     });
 });
