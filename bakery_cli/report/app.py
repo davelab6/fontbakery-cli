@@ -14,28 +14,8 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
-from __future__ import print_function
-import os.path as op
-from markdown import markdown
-
 from bakery_cli.report import utils as report_utils
 
-TAB = 'BuildLog'
 
-
-def generate(config, outfile='buildlog.html'):
-
-    destfile = open(op.join(config['path'], outfile), 'w')
-
-    try:
-        log = open(op.join(config['path'], 'buildlog.txt')).read()
-    except IOError as exc:
-        print(exc)
-        return
-    app_version = report_utils.git_info(config)
-
-    report_app = report_utils.ReportApp(config)
-    report_app.build_page.copy_file(op.join(config['path'], 'buildlog.txt'))
-    print(report_utils.render_template(
-        outfile, log=log, app_version=app_version, current_page=outfile,
-        build_repo_url=report_utils.build_repo_url, markdown=markdown), file=destfile)
+def generate(config):
+    report_utils.ReportApp(config)

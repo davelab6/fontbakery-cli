@@ -22,7 +22,7 @@ import shutil
 import os
 
 from bakery_cli.report import (tests, index, buildlog, checks, metadata,
-                               bakery, description, review)
+                               bakery, description, review, app)
 
 
 if __name__ == '__main__':
@@ -39,6 +39,7 @@ if __name__ == '__main__':
 
     if int(os.environ.get('TRAVIS_TEST_RESULT', 0)) == 0:
         conf = {'path': args.path}
+        app.generate(conf)
         tests.generate(conf)
         index.generate(conf)
         metadata.generate(conf)
@@ -70,5 +71,6 @@ if __name__ == '__main__':
 
     else:
         conf = {'path': args.path, 'failed': True}
-        index.generate(conf)
+        app.generate(conf)
+        # index.generate(conf)
 

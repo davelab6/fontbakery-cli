@@ -5,3 +5,9 @@
 /build
 /dist
 *.egg
+bower_components/
+bakery_cli/report/app/data/*
+!bakery_cli/report/app/data/placeholder
+bakery_cli/report/app/static/css/fonts/*
+!bakery_cli/report/app/static/css/fonts/placeholder
+bakery_cli/report/app/static/css/faces.css

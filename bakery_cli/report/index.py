@@ -196,6 +196,21 @@ def average_table_size(tdict):
     return sum(tdict.values()) / len(tdict)
 
 
+def _obj_to_dict(instance, exclude_attrs=()):
+    # Very simplified, but enough for reports
+    return {
+        k: getattr(instance, k) for k in dir(instance) \
+        if not any([k.startswith('__'), str(k) in exclude_attrs])
+    }
+
+
+def font_factory_instance_to_dict(instance):
+    return _obj_to_dict(instance, exclude_attrs=(
+        'get_othography_info', 'get_orthographies', 'orthographies',
+        'refresh_sfnt_properties', '_fontFace',
+    ))
+
+
 def generate(config, outfile='index.html'):
     if config.get('failed'):
         destfile = open(op.join(config['path'], outfile), 'w')
@@ -238,7 +253,38 @@ def generate(config, outfile='index.html'):
 
     fonts = [(path, FontFactory.openfont(op.join(config['path'], path)))
              for path in directory.BIN]
+
     app_version = report_utils.git_info(config)
+
+    new_data = []
+    for k in data:
+        d = {'name': k}
+        d.update(data[k])
+        new_data.append(d)
+
+    report_app = report_utils.ReportApp(config)
+    metrics = {'data': vmet._its_metrics, 'headings': vmet._its_metrics_header}
+    table_sizes = {'tables': ttftablesizes[0], 'sizes': ttftablesizes[1:]}
+    report_app.summary_page.dump_file(metrics, 'metrics.json')
+    report_app.summary_page.dump_file(table_sizes, 'table_sizes.json')
+    report_app.summary_page.dump_file(autohint_sizes, 'autohint_sizes.json')
+    report_app.summary_page.dump_file(new_data, 'tests.json')
+    report_app.summary_page.dump_file({'mean': ftables_data.mean,
+                                       'grouped': ftables_data.grouped,
+                                       'delta': ftables_data.delta},
+                                      'fonts_tables_grouped.json')
+    for face in family_metadata.fonts:
+        face_template = "@font-face {{ font-family: {}; src: url(fonts/{});}}\n".format(face.metadata_object['postScriptName'], face.metadata_object['filename'])
+        report_app.write_file(face_template, op.join(report_app.css_dir, 'faces.css'), mode='a')
+
+    fonts_serialized = dict([(str(path), font_factory_instance_to_dict(fontaine)) for path, fontaine in fonts])
+    report_app.summary_page.dump_file(fonts_serialized, 'fontaine_fonts.json')
+    fonts_orthography = get_orthography(fonts)
+    report_app.summary_page.dump_file({'fonts_list': fonts_orthography[0],
+                                       'coverage_averages': fonts_orthography[1],
+                                       'fonts_info': fonts_orthography[2]},
+                                      'fonts_orthography.json')
+
     print(report_utils.render_template(outfile, current_page=outfile,
                                        fonts=faces, tests=data,
                                        basenames=basenames,

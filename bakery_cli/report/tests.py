@@ -64,14 +64,25 @@ def generate(config, outfile='tests.html'):
     if not data:
         return
 
+    new_data = []
+    for k in data:
+        d = {'name': k}
+        d.update(data[k])
+        new_data.append(d)
+
     tests_summary = {}
     tests_summary_filepath = op.join(config['path'], 'tests.json')
     if op.exists(tests_summary_filepath):
         tests_summary = json.load(open(tests_summary_filepath))
     tests_summary.update(tests)
+
     json.dump(tests_summary, open(tests_summary_filepath, 'w'))
     destfile = open(op.join(config['path'], outfile), 'w')
     app_version = report_utils.git_info(config)
+
+    report_app = report_utils.ReportApp(config)
+    report_app.tests_page.dump_file(new_data, 'tests.json')
+
     print(report_utils.render_template(outfile,
         tests=data, sort=sort, current_page=outfile, app_version=app_version,
         build_repo_url=report_utils.build_repo_url), file=destfile)

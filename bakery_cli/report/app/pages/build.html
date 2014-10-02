@@ -1,0 +1,8 @@
+<p class="text-center" ng-hide="dataLoaded">
+  <i class="fa fa-spinner fa-spin fa-5x"></i>
+</p>
+<div ng-show="dataLoaded">
+  <pre btf-markdown="data"></pre>
+</div>
+<!--it could be done using 'include', but better to keep it in controller-->
+<!--<pre btf-markdown ng-include="'data/buildlog.txt'"></pre>-->

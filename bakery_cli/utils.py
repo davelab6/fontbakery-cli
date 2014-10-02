@@ -108,7 +108,9 @@ class UpstreamDirectory(object):
 
     def walk(self):
         l = len(self.upstream_path)
-        for root, dirs, files in os.walk(self.upstream_path):
+        exclude = ['app', ]
+        for root, dirs, files in os.walk(self.upstream_path, topdown=True):
+            dirs[:] = [d for d in dirs if d not in exclude]
             for f in files:
                 fullpath = op.join(root, f)
 

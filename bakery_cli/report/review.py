@@ -16,6 +16,7 @@
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
 from __future__ import print_function
 
+from collections import defaultdict, OrderedDict
 import os.path as op
 from markdown import markdown
 
@@ -34,13 +35,25 @@ TEMPLATE_DIR = op.join(op.dirname(__file__), 'templates')
 t = lambda templatefile: op.join(TEMPLATE_DIR, templatefile)
 
 
-def get_orthography(fontaineFonts):
+def get_orthography_old(fontaineFonts):
     library = Library(collections=['subsets'])
     result = []
     for font, fontaine in fontaineFonts:
         for f1, f2, f3, f4 in fontaine.get_orthographies(_library=library):
             result.append([font, f1, f2, f3, f4])
     return sorted(result, key=lambda x: x[3], reverse=True)
+
+
+def get_orthography(fontaineFonts):
+    result = []
+    library = Library(collections=['subsets'])
+    for font, fontaine in fontaineFonts:
+        orthographies = fontaine.get_orthographies(_library=library)
+        for charmap, support, coverage, missing_chars in orthographies:
+            result.append(dict(name=font, support=support,
+                               coverage=coverage, missing_glyphs=missing_chars,
+                               glyphs=charmap.glyphs))
+    return sorted(result, key=lambda x: x['coverage'], reverse=True)
 
 
 def get_weight_name(value):
@@ -73,8 +86,14 @@ def generate(config, outfile='review.html'):
 
     destfile = open(op.join(config['path'], 'review.html'), 'w')
     app_version = report_utils.git_info(config)
+
+    report_app = report_utils.ReportApp(config)
+    fonts_orthography = get_orthography(fonts)
+
+    report_app.review_page.dump_file(fonts_orthography, 'orthography.json')
+
     print(report_utils.render_template(
         outfile, fonts=faces, markdown=markdown, current_page=outfile,
         get_weight_name=get_weight_name,
         build_repo_url=report_utils.build_repo_url, app_version=app_version,
-        get_orthography=get_orthography, fontaineFonts=fonts), file=destfile)
+        get_orthography=get_orthography_old, fontaineFonts=fonts), file=destfile)
