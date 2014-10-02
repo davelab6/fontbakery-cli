@@ -1,20 +1,55 @@
-angular.module('myApp').controller('metadataController', function($scope, $http, $q, $filter, metadataApi, EditorService, PathBuilder, appConfig, ngTableParams) {
+angular.module('myApp').controller('metadataController', function($scope, $http, $q, $filter, metadataApi, PathBuilder, appConfig, ngTableParams) {
     $scope.charts = [];
     $scope.dataLoaded = false;
     $scope.editor1 = null;
     $scope.editor2 = null;
-    $scope.show_filter = false;
 
     $scope.view_url = PathBuilder.buildPath($scope.repo_info.url, 'blob', 'master', appConfig.metadata);
     $scope.edit_url = PathBuilder.buildPath($scope.repo_info.url, 'edit', 'master', appConfig.metadata);
 
+    var doDiff = function(editor1, editor2, result_of_diff) {
+        return function () {
+            try {
+                var left = JSON.parse(editor1.getValue());
+                var right = JSON.parse(editor2.getValue());
+
+                var instance = jsondiffpatch.create({
+                    objectHash: function (obj) {
+                        return '';
+                    }
+                });
+
+                var delta = instance.diff(left, right);
+
+                var visualdiff = document.getElementById(result_of_diff);
+                if (visualdiff) {
+                    visualdiff.innerHTML = jsondiffpatch.formatters.html.format(delta, left);
+
+                    var scripts = visualdiff.querySelectorAll('script');
+                    for (var i = 0; i < scripts.length; i++) {
+                        var s = scripts[i];
+                        /* jshint evil: true */
+                        eval(s.innerHTML);
+                    }
+                }
+                if (!delta) {
+                    $scope.alerts.addAlert('Two files are equal.', 'info');
+                }
+                angular.element(visualdiff).find('div').first().find('pre')
+                    .each(function (i) {
+                        angular.element(this).css("background-color", "transparent").css("border", "0");
+                    })
+
+            } catch (e) {
+                $scope.alerts.addAlert(e.name+": "+ e.message);
+            }
+        };
+    };
+
     $scope.$watch('dataLoaded', function() {
         if ($scope.dataLoaded) {
-
             if ($scope.editor1 && $scope.editor2) {
-                EditorService.heightUpdateFunction($scope.editor1, angular.element('#editor1'));
-                EditorService.heightUpdateFunction($scope.editor2, angular.element('#editor2'));
-                $scope.doDiff = EditorService.doDiff($scope.editor1.getSession(), $scope.editor2.getSession(), 'visualdiff');
+                $scope.doDiff = doDiff($scope.editor1.getSession(), $scope.editor2.getSession(), 'visualdiff');
 //                $scope.doDiff();
             }
         }
@@ -94,7 +129,6 @@ angular.module('myApp').controller('metadataController', function($scope, $http,
     });
 
     $scope.aceLoaded1 = function(_editor) {
-        EditorService.heightUpdateFunction(_editor, angular.element('#editor1'));
         $scope.editor1 = _editor;
     };
 
@@ -102,7 +136,6 @@ angular.module('myApp').controller('metadataController', function($scope, $http,
     };
 
     $scope.aceLoaded2 = function(_editor) {
-        EditorService.heightUpdateFunction(_editor, angular.element('#editor2'));
         $scope.editor2 = _editor;
     };
 

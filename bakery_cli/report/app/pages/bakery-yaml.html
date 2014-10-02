@@ -1,17 +1,20 @@
-<div class="row">
-  <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
-    <div id="editor" class="editor" ui-ace="{
-         mode: 'html',
+<div ng-show="dataLoaded">
+  <div class="row">
+    <div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+      <div id="editor" class="editor" ui-ace="{
+         mode: 'text',
          theme: 'solarized_light',
          UseSoftTabs: false,
          useWrapMode: true,
          HighlightActiveLine: false,
          onLoad: aceLoaded,
-         onChange: aceChanged
+         onChange: aceChanged,
+         autoHeight: true
          }" ng-model="data"></div>
-  <p class="navbar-text navbar-left">
-    <span><a ng-href="{{ view_url }}" target="_blank" class="navbar-link">View</a></span>
-    <span><a ng-href="{{ edit_url }}" target="_blank" class="navbar-link">Edit</a></span>
-  </p>
+      <p class="navbar-text navbar-left">
+        <span><a ng-href="{{ view_url }}" target="_blank" class="navbar-link">View</a></span>
+        <span><a ng-href="{{ edit_url }}" target="_blank" class="navbar-link">Edit</a></span>
+      </p>
+    </div>
   </div>
 </div>

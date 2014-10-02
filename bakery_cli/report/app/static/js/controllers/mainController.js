@@ -1,5 +1,4 @@
 angular.module('myApp').controller('mainController', function($scope, $rootScope, $http, appApi, alertsFactory, appConfig, Mixins) {
-    $scope.mixins = Mixins;
     appApi.getAppInfo().then(function(dataResponse) {
         $scope.app_info = dataResponse.data;
     });
@@ -13,6 +12,8 @@ angular.module('myApp').controller('mainController', function($scope, $rootScope
     // current controller is on top level, so all http
     // errors should come through it
     $scope.alerts = alertsFactory;
+
+    $scope.mixins = Mixins;
     $scope.statusMap = appConfig.statusMap;
     $scope.resultMap = appConfig.resultMap;
     $scope.pangram = appConfig.pangram;

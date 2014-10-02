@@ -185,7 +185,7 @@ myApp.factory('alertsFactory', function () {
     }
 });
 
-/* Load this now, becuse app uses *google.*!!! */
+/* Load this now */
 google.load('visualization', '1', { packages: ['corechart'] });
 
 // OR ?

@@ -63,3 +63,6 @@ td.clickable {
     max-width: 1980px;
     font-family: Courier,serif;
 }
+
+/*just to have editor visible when it gets rendered*/
+.ace_editor { height: 100px; }

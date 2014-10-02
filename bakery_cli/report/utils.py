@@ -174,7 +174,8 @@ class ReportApp(six.with_metaclass(Singleton, object)):
 
         self.bower_components = kwargs.get('bower_components', ['angular-markdown-directive',
                                                                 'angular-bootstrap',
-                                                                'angular-ui-ace\#bower',
+                                                                #'angular-ui-ace\#bower',
+                                                                'https://github.com/andriyko/ui-ace.git#bower',
                                                                 'angular-route-styles',
                                                                 'ng-table'])
         self.init()
