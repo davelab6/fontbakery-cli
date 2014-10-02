@@ -40,36 +40,27 @@ myApp.controller('summaryController', function($scope, $rootScope, $http, $filte
     });
     summaryApi.getTests().then(function(response) {
         $scope.tests = response.data;
-//        $scope.blockers = {};
         var watch_list = ['error', 'failure', 'fixed'];
         var watch_tag = 'required';
         var data = [];
-        angular.forEach($scope.tests, function(results, font) {
-//            $scope.blockers[font] = {};
-            angular.forEach(results, function(values, name) {
-                if (watch_list.indexOf(name) != -1) {
-                    angular.forEach(values, function(item) {
-                        if (item.tags.indexOf(watch_tag) != -1) {
-                            var _item = {
-                                item: item, // keep original item inside newly created
-                                category: item.tags.join(', '),
-                                description: item.methodDoc,
-                                result_msg: item.err_msg,
-                                status: $scope.statusMap[name],
-                                result_class: $scope.resultMap[name],
-                                result: name,
-                                font: font
+        // reformat data for table
+        angular.forEach($scope.tests, function(test) {
+            angular.forEach($scope.resultMap, function(result_val, result_key) {
+                if (watch_list.indexOf(result_key) != -1) {
+                    angular.forEach(test[result_key], function(test_obj) {
+                        if (test_obj.tags.indexOf(watch_tag) != -1) {
+                            var item = {
+                                font: test.name,
+                                orig_data: test_obj, // keep original data
+                                categories: test_obj.tags.join(', '),
+                                description: test_obj.methodDoc,
+                                result_msg: test_obj.err_msg,
+                                result_status: $scope.statusMap[result_key],
+                                result_class: result_val
                             };
-                            data.push(_item);
+                            data.push(item);
                         }
-                    });
-//                    var items = [];
-//                    angular.forEach(values, function(item) {
-//                        if (item.tags.indexOf(watch_tag) != -1) {
-//                            items.push(item)
-//                        }
-//                        $scope.blockers[font][name] = items;
-//                    })
+                    })
                 }
             });
         });
@@ -81,12 +72,7 @@ myApp.controller('summaryController', function($scope, $rootScope, $http, $filte
             count: data.length,
             // initial sorting
             sorting: {
-                status: 'asc'
-            },
-            // initial filter
-            filter: {
-                description: '',
-                result: ''
+                result_status: 'asc'
             }
         }, {
             // hide page counts control
@@ -95,11 +81,8 @@ myApp.controller('summaryController', function($scope, $rootScope, $http, $filte
             total: data.length,
             getData: function($defer, params) {
                 // use build-in angular filter
-                var filteredData = params.sorting() ?
+                var orderedData = params.sorting() ?
                     $filter('orderBy')(data, params.orderBy()) :
-                    data;
-                var orderedData = params.filter() ?
-                    $filter('filter')(filteredData, params.filter()) :
                     data;
                 params.total(orderedData.length);
                 $defer.resolve(orderedData);
@@ -107,12 +90,12 @@ myApp.controller('summaryController', function($scope, $rootScope, $http, $filte
         });
 
         var chartsum = {"success": 0, "failure": 0, "fixed": 0, "error": 0};
-        angular.forEach($scope.tests, function(results, test) {
-            var success_len = results['success'].length,
-                fixed_len = results['fixed'].length,
-                failure_len = results['failure'].length,
-                error_len = results['error'].length,
-                data = google.visualization.arrayToDataTable([
+        angular.forEach($scope.tests, function(test) {
+            var success_len = test['success'].length,
+                fixed_len = test['fixed'].length,
+                failure_len = test['failure'].length,
+                error_len = test['error'].length,
+                gdata = google.visualization.arrayToDataTable([
                     ['Tests', '#'],
                     ['Success '+success_len, success_len],
                     ['Fixed '+fixed_len, fixed_len],
@@ -120,11 +103,11 @@ myApp.controller('summaryController', function($scope, $rootScope, $http, $filte
                     ['Error '+error_len, error_len]
                 ]),
                 options = {
-                    title: test,
+                    title: test.name,
                     is3D: true,
                     colors: ['#468847', '#3a87ad', '#b94a48', '#c09853']
                 };
-            $scope.pie_charts.push({data: data, options: options, type: "PieChart", displayed: true});
+            $scope.pie_charts.push({data: gdata, options: options, type: "PieChart", displayed: true});
             chartsum = {
                 "success": chartsum.success + success_len,
                 "error": error_len,
@@ -132,12 +115,12 @@ myApp.controller('summaryController', function($scope, $rootScope, $http, $filte
                 "fixed": chartsum.fixed + fixed_len
             }
         });
-        if (Object.keys($scope.tests).length > 1) {
+        if ($scope.tests.length > 1) {
             var success_len = chartsum.success,
                 fixed_len = chartsum.fixed,
                 failure_len = chartsum.failure,
                 error_len = chartsum.error,
-                data = google.visualization.arrayToDataTable([
+                gdata = google.visualization.arrayToDataTable([
                     ['Tests', '#'],
                     ['Success '+success_len, success_len],
                     ['Fixed '+fixed_len, fixed_len],
@@ -149,7 +132,7 @@ myApp.controller('summaryController', function($scope, $rootScope, $http, $filte
                     is3D: true,
                     colors: ['#468847', '#3a87ad', '#b94a48', '#c09853']
                 };
-            $scope.average_pie_chart = {data: data, options: options, type: "PieChart", displayed: true};
+            $scope.average_pie_chart = {data: gdata, options: options, type: "PieChart", displayed: true};
         }
     });
     summaryApi.getFontsTableGrouped().then(function(response) {

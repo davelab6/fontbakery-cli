@@ -256,13 +256,19 @@ def generate(config, outfile='index.html'):
 
     app_version = report_utils.git_info(config)
 
+    new_data = []
+    for k in data:
+        d = {'name': k}
+        d.update(data[k])
+        new_data.append(d)
+
     report_app = report_utils.ReportApp(config)
     metrics = {'data': vmet._its_metrics, 'headings': vmet._its_metrics_header}
     table_sizes = {'tables': ttftablesizes[0], 'sizes': ttftablesizes[1:]}
     report_app.summary_page.dump_file(metrics, 'metrics.json')
     report_app.summary_page.dump_file(table_sizes, 'table_sizes.json')
     report_app.summary_page.dump_file(autohint_sizes, 'autohint_sizes.json')
-    report_app.summary_page.dump_file(data, 'tests.json')
+    report_app.summary_page.dump_file(new_data, 'tests.json')
     report_app.summary_page.dump_file({'mean': ftables_data.mean,
                                        'grouped': ftables_data.grouped,
                                        'delta': ftables_data.delta},
