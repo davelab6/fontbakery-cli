@@ -7,7 +7,6 @@ myApp.controller('checksController', function($scope, $http, $filter, checksApi,
         $scope.tests = response.data;
         $scope.dataLoaded = true;
 
-
         var data = [];
         // reformat data for table
         angular.forEach($scope.tests, function(test) {
@@ -50,11 +49,6 @@ myApp.controller('checksController', function($scope, $http, $filter, checksApi,
                 $defer.resolve(orderedData);
             }
         });
-
-
-
-
-
 
         var chartsum = {"success": 0, "failure": 0, "fixed": 0, "error": 0};
         angular.forEach($scope.tests, function(test) {
