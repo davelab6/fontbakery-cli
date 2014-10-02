@@ -1,18 +1,14 @@
 <!-- index.html -->
-<!--<!DOCTYPE html>-->
 <html ng-app="myApp">
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title ng-bind="'Google Fonts &mdash; ' + title"></title>
 
+  <link data-require="ng-table@*" data-semver="0.3.1" rel="stylesheet" href="//bazalt-cms.com/assets/ng-table/0.3.1/ng-table.css" />
   <!-- load bootstrap and fontawesome via CDN -->
-  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" />
 
-  <!--<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.css" />-->
-  <!--<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css" />-->
-
-  <link data-require="ng-table@*" data-semver="0.3.1" rel="stylesheet" href="http://bazalt-cms.com/assets/ng-table/0.3.1/ng-table.css" />
   <!--load local static file-->
   <link rel="stylesheet" href="static/css/app.css" />
 </head>
@@ -72,32 +68,26 @@
   </div>
 </footer>
 
+<!-- load scripts from Google -->
+<script src="//nodebox.github.io/opentype.js/opentype.min.js" type="text/javascript" ></script>
+<script src="//fonts.googleapis.com/measure" type="text/javascript"></script>
+<script src="//www.google.com/jsapi" type="text/javascript"></script>
+
+<!-- load jQuery and Bootstrap scripts via CDN -->
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.7/js/jquery.tablesorter.min.js" type="text/javascript" charset="utf-8"></script>
 
 <!-- load angular and angular-route via CDN -->
-<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular-route.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular-route.js"></script>
 
 <!--load third-party scripts-->
-<!--#TODO make it on demand - per-page-->
-<script type="text/javascript" src="static/bower_components/ace-builds/src-min-noconflict/ace.js"></script>
-<script type="text/javascript" src="static/bower_components/angular-ui-ace/ui-ace.js"></script>
-<script type="text/javascript" src="http://www.google.com/jsapi"></script>
-<script src="http://nodebox.github.io/opentype.js/opentype.min.js" type="text/javascript" ></script>
-<script src="//fonts.googleapis.com/measure" type="text/javascript"></script>
-
-
-<!--<script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>-->
-<!--http://benjamine.github.io/jsondiffpatch/ has been refactored, so we do not rely on code from GH anymore-->
-<!--<script type="text/javascript" src="http://benjamine.github.io/jsondiffpatch/build/bundle-full.min.js"></script>-->
-<!--<script type="text/javascript" src="http://benjamine.github.io/jsondiffpatch/build/formatters.min.js"></script>-->
-
-<script type="text/javascript" src="static/js/libs/jsondiffpatch/bundle.full.min.js"></script>
-<script type="text/javascript" src="static/js/libs/jsondiffpatch/formatters.min.js"></script>
+<script src="static/js/libs/jsondiffpatch/bundle.full.min.js" type="text/javascript"></script>
+<script src="static/js/libs/jsondiffpatch/formatters.min.js" type="text/javascript"></script>
 
 <!--load third-party angular scripts-->
+<script src="static/bower_components/ace-builds/src-min-noconflict/ace.js" type="text/javascript"></script>
+<script src="static/bower_components/angular-ui-ace/ui-ace.js" type="text/javascript"></script>
 <script src="static/bower_components/angular-route-styles/route-styles.js"></script>
 <script src="static/bower_components/angular-sanitize/angular-sanitize.js"></script>
 <script src="static/bower_components/showdown/src/showdown.js"></script>
