@@ -1,4 +1,4 @@
-myApp.controller('checksController', function($scope, $http, $filter, checksApi, ngTableParams) {
+myApp.controller('checksController', ['$scope', '$http', '$filter', 'checksApi', 'ngTableParams', function($scope, $http, $filter, checksApi, ngTableParams) {
     $scope.charts = [];
     $scope.average_chart = null;
     $scope.dataLoaded = false;
@@ -97,5 +97,5 @@ myApp.controller('checksController', function($scope, $http, $filter, checksApi,
             $scope.average_chart = {data: gdata, options: options, type: "PieChart", displayed: true};
         }
     });
-});
+}]);
 

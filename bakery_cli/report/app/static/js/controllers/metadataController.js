@@ -1,4 +1,4 @@
-angular.module('myApp').controller('metadataController', function($scope, $http, $q, $filter, metadataApi, PathBuilder, appConfig, ngTableParams) {
+angular.module('myApp').controller('metadataController', ['$scope', '$http', '$q', '$filter', 'metadataApi', 'PathBuilder', 'appConfig', 'ngTableParams', function($scope, $http, $q, $filter, metadataApi, PathBuilder, appConfig, ngTableParams) {
     $scope.charts = [];
     $scope.dataLoaded = false;
     $scope.editor1 = null;
@@ -141,4 +141,4 @@ angular.module('myApp').controller('metadataController', function($scope, $http,
 
     $scope.aceChanged2 = function(_editor) {
     };
-});
+}]);

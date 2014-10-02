@@ -2,12 +2,11 @@
 
 // create module and include dependencies
 var myApp = angular.module(
-//    'myApp', ['ngRoute', 'btford.markdown', 'ui.bootstrap', 'ui.ace', 'googlechart']
     'myApp', ['ngRoute', 'btford.markdown', 'ui.bootstrap', 'ui.ace', 'googlechart', 'ngTable', 'routeStyles']
 );
 
 // interceptor of http calls
-myApp.factory('httpInterceptor', function($q, $location, alertsFactory) {
+myApp.factory('httpInterceptor', ['$q', '$location', 'alertsFactory', function($q, $location, alertsFactory) {
     var _config = {};
     return {
         // optional method
@@ -36,10 +35,10 @@ myApp.factory('httpInterceptor', function($q, $location, alertsFactory) {
             return $q.reject(rejection);
         }
     };
-});
+}]);
 
 // configure our app
-myApp.config(function($routeProvider, $httpProvider) {
+myApp.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) {
     // configure routes
     $routeProvider
         // route for the summary page
@@ -131,7 +130,7 @@ myApp.config(function($routeProvider, $httpProvider) {
     $httpProvider.defaults.cache = true;
     // intercept http calls
     $httpProvider.interceptors.push('httpInterceptor');
-});
+}]);
 
 // change <title> of the pages at runtime
 myApp.run(['$location', '$rootScope', function($location, $rootScope) {
@@ -170,7 +169,7 @@ myApp.constant("appConfig", {
 });
 
 
-myApp.factory('alertsFactory', function () {
+myApp.factory('alertsFactory', [function () {
     var alerts = [];
     return {
         getAlerts: function () {
@@ -183,7 +182,7 @@ myApp.factory('alertsFactory', function () {
             alerts.splice(index, 1);
         }
     }
-});
+}]);
 
 /* Load this now */
 google.load('visualization', '1', { packages: ['corechart'] });

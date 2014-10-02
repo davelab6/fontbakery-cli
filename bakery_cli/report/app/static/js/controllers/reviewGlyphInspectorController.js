@@ -1,4 +1,4 @@
-myApp.controller('reviewGlyphInspectorController', function($scope) {
+myApp.controller('reviewGlyphInspectorController', ['$scope', function($scope) {
     // Glyph inspector tab
     var cellCount = 100,
         cellWidth = 44,
@@ -343,4 +343,4 @@ myApp.controller('reviewGlyphInspectorController', function($scope) {
     }
     })
 
-});
+}]);

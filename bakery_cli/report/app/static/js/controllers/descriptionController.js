@@ -1,4 +1,4 @@
-angular.module('myApp').controller('descriptionController', function($scope, descriptionApi) {
+angular.module('myApp').controller('descriptionController', ['$scope', 'descriptionApi', function($scope, descriptionApi) {
     $scope.dataLoaded = false;
 
     descriptionApi.getDescriptionFile().then(function(response) {
@@ -14,4 +14,4 @@ angular.module('myApp').controller('descriptionController', function($scope, des
     $scope.aceChanged = function(_editor) {
         $scope.data = $scope.editor.getSession().getValue();
     };
-});
+}]);

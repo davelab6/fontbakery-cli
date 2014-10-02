@@ -1,4 +1,4 @@
-angular.module('myApp').service('Mixins', function() {
+angular.module('myApp').service('Mixins', [function() {
     this.checkAll = function() {
         var compare_to = arguments[0];
         function boolFilter(element, index, array) {
@@ -28,10 +28,10 @@ angular.module('myApp').service('Mixins', function() {
         }
         return buf.join('');
     };
-});
+}]);
 
 // helper service to build paths
-angular.module('myApp').service('PathBuilder', function(appConfig) {
+angular.module('myApp').service('PathBuilder', ['appConfig', function(appConfig) {
     //#TODO should be some built-in solution
     this.buildPath = function() {
         var args = [];
@@ -54,10 +54,10 @@ angular.module('myApp').service('PathBuilder', function(appConfig) {
         });
         return args.join('/');
     };
-});
+}]);
 
 //API services
-angular.module('myApp').service('appApi', function($http, $q, PathBuilder, appConfig) {
+angular.module('myApp').service('appApi', ['$http', '$q', 'PathBuilder', 'appConfig', function($http, $q, PathBuilder, appConfig) {
     this.getAppInfo = function() {
         return $http.get(PathBuilder.buildDataPath(appConfig.app));
     };
@@ -69,9 +69,9 @@ angular.module('myApp').service('appApi', function($http, $q, PathBuilder, appCo
     this.getMetadata = function() {
         return $http.get(PathBuilder.buildDataPath(appConfig.metadata));
     };
-});
+}]);
 
-angular.module('myApp').service('metadataApi', function($http, $q, PathBuilder, appConfig) {
+angular.module('myApp').service('metadataApi', ['$http', '$q', 'PathBuilder', 'appConfig', function($http, $q, PathBuilder, appConfig) {
     var name = 'metadata',
         metadata_new = 'METADATA.json.new';
 
@@ -117,18 +117,18 @@ angular.module('myApp').service('metadataApi', function($http, $q, PathBuilder, 
     this.getTests = function() {
         return $http.get(PathBuilder.buildPagesPath(name, 'tests.json'));
     };
-});
+}]);
 
-angular.module('myApp').service('testsApi', function($http, $q, PathBuilder, appConfig) {
+angular.module('myApp').service('testsApi', ['$http', '$q', 'PathBuilder', function($http, $q, PathBuilder) {
     var name = 'tests';
 
     this.getTests = function() {
         return $http.get(PathBuilder.buildPagesPath(name, 'tests.json'));
     };
 
-});
+}]);
 
-angular.module('myApp').service('summaryApi', function($http, $q, PathBuilder) {
+angular.module('myApp').service('summaryApi', ['$http', '$q', 'PathBuilder', function($http, $q, PathBuilder) {
     var name = 'summary';
     this.getMetrics = function() {
         return $http.get(PathBuilder.buildPagesPath(name, 'metrics.json'));
@@ -151,12 +151,9 @@ angular.module('myApp').service('summaryApi', function($http, $q, PathBuilder) {
     this.getFontsTableGrouped = function() {
         return $http.get(PathBuilder.buildPagesPath(name, 'fonts_tables_grouped.json'));
     };
-//    this.getFontsMetadata = function() {
-//        return $http.get(PathBuilder.buildPagesPath(name, 'faces.json'));
-//    };
-});
+}]);
 
-angular.module('myApp').service('checksApi', function($http, $q, PathBuilder) {
+angular.module('myApp').service('checksApi', ['$http', '$q', 'PathBuilder', function($http, $q, PathBuilder) {
     var name = 'checks';
     this.getTests = function() {
         return $http.get(PathBuilder.buildPagesPath(name, 'tests.json'));
@@ -165,32 +162,32 @@ angular.module('myApp').service('checksApi', function($http, $q, PathBuilder) {
     this.getUpstreamYamlFile = function() {
         return $http.get(PathBuilder.buildPagesPath(name, 'upstream.yaml'));
     };
-});
+}]);
 
-angular.module('myApp').service('buildApi', function($http, $q, PathBuilder) {
+angular.module('myApp').service('buildApi', ['$http', '$q', 'PathBuilder', function($http, $q, PathBuilder) {
     var name = 'build';
     this.getBuildLog = function() {
         return $http.get(PathBuilder.buildPagesPath(name, 'buildlog.txt'));
     };
-});
+}]);
 
-angular.module('myApp').service('bakeryYamlApi', function($http, $q, PathBuilder) {
+angular.module('myApp').service('bakeryYamlApi', ['$http', '$q', 'PathBuilder', function($http, $q, PathBuilder) {
     var name = 'bakery-yaml';
     this.getYamlFile = function() {
         return $http.get(PathBuilder.buildPagesPath(name, 'bakery.yaml'));
     };
-});
+}]);
 
-angular.module('myApp').service('descriptionApi', function($http, $q, PathBuilder) {
+angular.module('myApp').service('descriptionApi', ['$http', '$q', 'PathBuilder', function($http, $q, PathBuilder) {
     var name = 'description';
     this.getDescriptionFile = function() {
         return $http.get(PathBuilder.buildPagesPath(name, 'DESCRIPTION.en_us.html'), {transformResponse: []});
     };
-});
+}]);
 
-angular.module('myApp').service('reviewApi', function($http, $q, PathBuilder) {
+angular.module('myApp').service('reviewApi', ['$http', '$q', 'PathBuilder', function($http, $q, PathBuilder) {
     var name = 'review';
     this.getOrthography = function() {
         return $http.get(PathBuilder.buildPagesPath(name, 'orthography.json'));
     };
-});
+}]);

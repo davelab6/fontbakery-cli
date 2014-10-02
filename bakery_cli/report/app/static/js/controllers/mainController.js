@@ -1,4 +1,4 @@
-angular.module('myApp').controller('mainController', function($scope, $rootScope, $http, appApi, alertsFactory, appConfig, Mixins) {
+angular.module('myApp').controller('mainController', ['$scope', '$rootScope', '$http', 'appApi', 'alertsFactory', 'appConfig', 'Mixins', function($scope, $rootScope, $http, appApi, alertsFactory, appConfig, Mixins) {
     appApi.getAppInfo().then(function(dataResponse) {
         $scope.app_info = dataResponse.data;
     });
@@ -17,4 +17,4 @@ angular.module('myApp').controller('mainController', function($scope, $rootScope
     $scope.statusMap = appConfig.statusMap;
     $scope.resultMap = appConfig.resultMap;
     $scope.pangram = appConfig.pangram;
-});
+}]);

@@ -1,6 +1,6 @@
 // directive to handle class attr of navigation menu items (eg, set/rm "active")
 // #TODO make navigation menu as a separate component
-angular.module('myApp').directive('navMenu', function($location) {
+angular.module('myApp').directive('navMenu', ['$location', function($location) {
     function activeLink(scope, element, attrs) {
         var links = element.find('a'),
             activeClass = attrs.navMenu || 'active',
@@ -39,9 +39,9 @@ angular.module('myApp').directive('navMenu', function($location) {
     return {
         link: activeLink
     }
-});
+}]);
 
-angular.module('myApp').directive('insertGlyph', function($compile) {
+angular.module('myApp').directive('insertGlyph', ['$compile', function($compile) {
     var getTemplate = function(is_missing) {
         return is_missing ? '<div style="display: none;"><span class="defaultCharacter">{{ glyph_decoded }}</span><span class="missing-glyph">X</span></div>' : '<div><span class="defaultCharacter">{{ glyph_decoded }}</span><span>{{ glyph_decoded }}</span></div>';
     };
@@ -52,4 +52,4 @@ angular.module('myApp').directive('insertGlyph', function($compile) {
             element.replaceWith(el);
         }
     };
-});
+}]);

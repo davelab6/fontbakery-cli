@@ -1,4 +1,4 @@
-myApp.controller('summaryController', function($scope, $rootScope, $http, $filter, summaryApi, Mixins, ngTableParams) {
+myApp.controller('summaryController', ['$scope', '$rootScope', '$http', '$filter', 'summaryApi', 'Mixins', 'ngTableParams', function($scope, $rootScope, $http, $filter, summaryApi, Mixins, ngTableParams) {
     $scope.pie_charts = [];
     $scope.average_pie_chart = null;
     $scope.average_line_chart = null;
@@ -195,4 +195,4 @@ myApp.controller('summaryController', function($scope, $rootScope, $http, $filte
     $scope.$on('$viewContentLoaded', function() {
 //    console.log("$viewContentLoaded");
     });
-});
+}]);

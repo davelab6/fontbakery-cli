@@ -1,4 +1,4 @@
-myApp.controller('bakeryYamlController', function($scope, $http, bakeryYamlApi, PathBuilder) {
+myApp.controller('bakeryYamlController', ['$scope', '$http', 'bakeryYamlApi', 'PathBuilder', function($scope, $http, bakeryYamlApi, PathBuilder) {
     $scope.dataLoaded = false;
 
     bakeryYamlApi.getYamlFile().then(function(response) {
@@ -14,4 +14,4 @@ myApp.controller('bakeryYamlController', function($scope, $http, bakeryYamlApi, 
 
     $scope.view_url = PathBuilder.buildPath($scope.repo_info.url, 'blob', 'master', 'bakery.yaml');
     $scope.edit_url = PathBuilder.buildPath($scope.repo_info.url, 'edit', 'master', 'bakery.yaml');
-});
+}]);

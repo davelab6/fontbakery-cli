@@ -1,4 +1,4 @@
-myApp.controller('reviewWebFontsController', function($scope, $http, reviewApi) {
+myApp.controller('reviewWebFontsController', ['$scope', '$http', 'reviewApi', function($scope, $http, reviewApi) {
     $scope.missing_chars_hidden = false;
     $scope.toggleMissingGlyphs = function() {
         try {
@@ -45,4 +45,4 @@ myApp.controller('reviewWebFontsController', function($scope, $http, reviewApi) 
             });
         });
     });
-});
+}]);
