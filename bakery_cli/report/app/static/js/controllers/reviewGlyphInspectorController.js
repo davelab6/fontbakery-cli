@@ -1,4 +1,5 @@
-myApp.controller('reviewGlyphInspectorController', ['$scope', function($scope) {
+myApp.controller('reviewGlyphInspectorController', ['$scope', '$rootScope', '$window', function($scope, $rootScope, $window) {
+    $scope.dataLoaded = false;
     // Glyph inspector tab
     var cellCount = 100,
         cellWidth = 44,
@@ -40,10 +41,10 @@ myApp.controller('reviewGlyphInspectorController', ['$scope', function($scope) {
             container.innerHTML = '';
             return;
         }
-        var glyph = font.glyphs[glyphIndex],
+        var glyph = $window.font.glyphs[glyphIndex],
             html = '<dl><dt>index</dt><dd>'+glyph.index+'</dd>';
-        if (font.glyphIndexToName) {
-            html += '<dt>name</dt><dd>'+font.glyphIndexToName(glyph.index)+'</dd>';
+        if ($window.font.glyphIndexToName) {
+            html += '<dt>name</dt><dd>'+$window.font.glyphIndexToName(glyph.index)+'</dd>';
         }
         if (glyph.xMin !== 0 || glyph.xMax !== 0 || glyph.yMin !== 0 || glyph.yMax !== 0) {
             html += '<dt>xMin</dt><dd>'+glyph.xMin+'</dd>' +
@@ -148,7 +149,7 @@ myApp.controller('reviewGlyphInspectorController', ['$scope', function($scope) {
             ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         if(glyphIndex < 0) return;
-        var glyph = font.glyphs[glyphIndex],
+        var glyph = $window.font.glyphs[glyphIndex],
             glyphWidth = glyph.advanceWidth * glyphScale,
             xmin = (canvas.width - glyphWidth)/2,
             xmax = (canvas.width + glyphWidth)/2,
@@ -177,12 +178,12 @@ myApp.controller('reviewGlyphInspectorController', ['$scope', function($scope) {
         var cellMarkSize = 4;
         var ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, cellWidth, cellHeight);
-        if (glyphIndex >= font.numGlyphs) return;
+        if (glyphIndex >= $window.font.numGlyphs) return;
 
         ctx.fillStyle = '#606060';
         ctx.font = '9px sans-serif';
         ctx.fillText(glyphIndex, 1, cellHeight-1);
-        var glyph = font.glyphs[glyphIndex],
+        var glyph = $window.font.glyphs[glyphIndex],
             glyphWidth = glyph.advanceWidth * fontScale,
             xmin = (cellWidth - glyphWidth)/2,
             xmax = (cellWidth + glyphWidth)/2,
@@ -218,12 +219,12 @@ myApp.controller('reviewGlyphInspectorController', ['$scope', function($scope) {
             h = glyphBgCanvas.height,
             glyphW = w - glyphMargin*2,
             glyphH = h - glyphMargin*2,
-            head = font.tables.head,
+            head = $window.font.tables.head,
             maxHeight = head.yMax - head.yMin,
             ctx = glyphBgCanvas.getContext('2d');
 
         glyphScale = Math.min(glyphW/(head.xMax - head.xMin), glyphH/maxHeight);
-        glyphSize = glyphScale * font.unitsPerEm;
+        glyphSize = glyphScale * $window.font.unitsPerEm;
         glyphBaseline = glyphMargin + glyphH * head.yMax / maxHeight;
 
         function hline(text, yunits) {
@@ -235,32 +236,33 @@ myApp.controller('reviewGlyphInspectorController', ['$scope', function($scope) {
         ctx.clearRect(0, 0, w, h);
         ctx.fillStyle = '#a0a0a0'
         hline('Baseline', 0);
-        hline('yMax', font.tables.head.yMax);
-        hline('yMin', font.tables.head.yMin);
-        hline('Ascender', font.tables.hhea.ascender);
-        hline('Descender', font.tables.hhea.descender);
-        hline('Typo Ascender', font.tables.os2.sTypoAscender);
-        hline('Typo Descender', font.tables.os2.sTypoDescender);
+        hline('yMax', $window.font.tables.head.yMax);
+        hline('yMin', $window.font.tables.head.yMin);
+        hline('Ascender', $window.font.tables.hhea.ascender);
+        hline('Descender', $window.font.tables.hhea.descender);
+        hline('Typo Ascender', $window.font.tables.os2.sTypoAscender);
+        hline('Typo Descender', $window.font.tables.os2.sTypoDescender);
     }
 
     function onFontLoaded(font) {
         window.font = font;
+        $window.font = font;
 
         var w = cellWidth - cellMarginLeftRight * 2,
             h = cellHeight - cellMarginTop - cellMarginBottom,
-            head = font.tables.head,
+            head = $window.font.tables.head,
             maxHeight = head.yMax - head.yMin;
         fontScale = Math.min(w/(head.xMax - head.xMin), h/maxHeight);
-        fontSize = fontScale * font.unitsPerEm;
+        fontSize = fontScale * $window.font.unitsPerEm;
         fontBaseline = cellMarginTop + h * head.yMax / maxHeight;
 
         var pagination = document.getElementById("pagination");
         pagination.innerHTML = '';
         var fragment = document.createDocumentFragment();
-        var numPages = Math.ceil(font.numGlyphs / cellCount);
+        var numPages = Math.ceil($window.font.numGlyphs / cellCount);
         for(var i = 0; i < numPages; i++) {
             var link = document.createElement('span');
-            var lastIndex = Math.min(font.numGlyphs-1, (i+1)*cellCount-1);
+            var lastIndex = Math.min($window.font.numGlyphs-1, (i+1)*cellCount-1);
             link.textContent = i*cellCount + '-' + lastIndex;
             link.id = 'p' + i;
             link.addEventListener('click', pageSelect, false);
@@ -283,9 +285,9 @@ myApp.controller('reviewGlyphInspectorController', ['$scope', function($scope) {
         var reader = new FileReader();
         reader.onload = function (e) {
             try {
-                font = opentype.parse(e.target.result);
+                $window.font = opentype.parse(e.target.result);
                 showErrorMessage('');
-                onFontLoaded(font);
+                onFontLoaded($window.font);
             } catch (err) {
                 showErrorMessage(err.toString());
                 throw(err);
@@ -299,11 +301,11 @@ myApp.controller('reviewGlyphInspectorController', ['$scope', function($scope) {
     }
 
     function cellSelect(event) {
-        if (!font) return;
+        if (!$window.font) return;
         var firstGlyphIndex = pageSelected*cellCount,
             cellIndex = +event.target.id.substr(1),
             glyphIndex = firstGlyphIndex + cellIndex;
-        if (glyphIndex < font.numGlyphs) {
+        if (glyphIndex < $window.font.numGlyphs) {
             displayGlyph(glyphIndex);
             displayGlyphData(glyphIndex);
         }
@@ -322,25 +324,27 @@ myApp.controller('reviewGlyphInspectorController', ['$scope', function($scope) {
             parent.insertBefore(canvas, marker);
         }
     }
-    $scope.$on('$viewContentLoaded', function() {
-    if ($scope.metadata.fonts.length > 0) {
-        var fontFileName = '/static/css/fonts/'+$scope.metadata.fonts[0].filename;
 
-        document.getElementById('font-name').innerHTML = fontFileName;
+    angular.element(document).ready(function() {
+        $scope.dataLoaded = true;
+        if ($rootScope.metadata.fonts.length > 0) {
+            var fontFileName = '/static/css/fonts/'+$rootScope.metadata.fonts[0].filename;
 
-        var fileButton = document.getElementById('file');
-        fileButton.addEventListener('change', onReadFile, false);
+            document.getElementById('font-name').innerHTML = fontFileName;
 
-        prepareGlyphList();
-        opentype.load(fontFileName, function (err, font) {
-            var amount, glyph, ctx, x, y, fontSize;
-            if (err) {
-                showErrorMessage(err.toString());
-                return;
-            }
-            onFontLoaded(font);
-        });
-    }
-    })
+            var fileButton = document.getElementById('file');
+            fileButton.addEventListener('change', onReadFile, false);
+
+            prepareGlyphList();
+            opentype.load(fontFileName, function (err, font) {
+                var amount, glyph, ctx, x, y, fontSize;
+                if (err) {
+                    showErrorMessage(err.toString());
+                    return;
+                }
+                onFontLoaded(font);
+            });
+        }
+    });
 
 }]);

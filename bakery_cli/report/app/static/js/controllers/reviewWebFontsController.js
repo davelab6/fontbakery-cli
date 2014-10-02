@@ -1,5 +1,6 @@
 myApp.controller('reviewWebFontsController', ['$scope', '$http', 'reviewApi', function($scope, $http, reviewApi) {
     $scope.missing_chars_hidden = false;
+    $scope.dataLoaded = false;
     $scope.toggleMissingGlyphs = function() {
         try {
             var glyphSpans = document.getElementById("glyphContainer").getElementsByTagName("span");
@@ -35,6 +36,7 @@ myApp.controller('reviewWebFontsController', ['$scope', '$http', 'reviewApi', fu
 
     reviewApi.getOrthography().then(function(response) {
         var orthography = response.data;
+        $scope.dataLoaded = true;
         $scope.glyphs = [];
         angular.forEach(orthography, function(font) {
             angular.forEach(font.glyphs, function(glyph) {
