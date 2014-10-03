@@ -27,5 +27,8 @@ from bakery_cli.scripts import font2ttf
 
 
 if __name__ == '__main__':
-    print("Input: %s, Output: %s %s" % (sys.argv[1], sys.argv[2], sys.argv[3]))
+    if len(sys.argv) < 3:
+        print "Usage: %s <source font> <ttf> [<otf>]" % sys.argv[0]
+        sys.exit(0)
+    print("Input: %s, Output: %s" % (sys.argv[1], ', '.join(sys.argv[1:])))
     font2ttf.convert(*sys.argv[1:])
