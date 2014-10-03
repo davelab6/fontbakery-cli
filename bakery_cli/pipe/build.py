@@ -69,7 +69,7 @@ class Build(object):
 
     def print_vertical_metrics(self, binfiles):
         from bakery_cli.scripts import vmet
-        SCRIPTPATH = 'bakery-vmet-fix.py'
+        SCRIPTPATH = 'fontbakery-fix-vertical-metrics.py'
         fonts = [op.join(self.builddir, x) for x in binfiles]
         command = ' '.join(fonts)
         self.bakery.logging_raw(vmet.metricview(fonts))

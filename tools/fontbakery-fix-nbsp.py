@@ -25,7 +25,7 @@ from bakery_cli.scripts import nbsp
 
 
 def usage():
-    print >> sys.stderr, "bakery-nbsp-fix.py font.ttf"
+    print >> sys.stderr, "fontbakery-fix-nbsp.py font.ttf"
 
 
 def main(argv=None):

@@ -47,7 +47,7 @@ def dsig_signature(testcase):
     """ Create "DSIG" table with default signaturerecord """
     targetpath = testcase.operator.path
 
-    SCRIPTPATH = 'bakery-dsig.py'
+    SCRIPTPATH = 'fontbakery-fix-dsig.py'
 
     command = "$ {0} {1}".format(SCRIPTPATH, targetpath)
     if hasattr(testcase, 'operator'):
@@ -62,7 +62,7 @@ def gaspfix(testcase):
     """ Set in "gasp" table value of key "65535" to "15" """
     targetpath = testcase.operator.path
 
-    SCRIPTPATH = 'bakery-gasp.py'
+    SCRIPTPATH = 'fontbakery-fix-gasp.py'
 
     command = "$ {0} --set={1} {2}".format(SCRIPTPATH, 15, targetpath)
     if hasattr(testcase, 'operator'):
@@ -76,7 +76,7 @@ def gaspfix(testcase):
 def fix_opentype_specific_fields(testcase):
     """ Fix Opentype-specific fields in "name" table """
     targetpath = testcase.operator.path
-    SCRIPTPATH = 'bakery-opentype-fix.py'
+    SCRIPTPATH = 'fontbakery-fix-opentype-names.py'
 
     command = "$ {0} {1}".format(SCRIPTPATH, targetpath)
     if hasattr(testcase, 'operator'):
@@ -91,7 +91,7 @@ def fix_nbsp(testcase):
     """ Fix width for space and nbsp """
     targetpath = testcase.operator.path
 
-    SCRIPTPATH = 'bakery-nbsp-fix.py'
+    SCRIPTPATH = 'fontbakery-fix-nbsp.py'
 
     command = "$ {0} {1}".format(SCRIPTPATH, targetpath)
     if hasattr(testcase, 'operator'):
@@ -104,7 +104,7 @@ def fix_nbsp(testcase):
 def fix_metrics(testcase):
     """ Fix vmet table with actual min and max values """
     targetpath = os.path.dirname(testcase.operator.path)
-    SCRIPTPATH = 'bakery-vmet-fix.py'
+    SCRIPTPATH = 'fontbakery-fix-vertical-metrics.py'
 
     directory = UpstreamDirectory(targetpath)
 
@@ -136,7 +136,7 @@ def fix_name_ascii(testcase):
     """ Replacing non ascii names in copyright """
     targetpath = testcase.operator.path
 
-    SCRIPTPATH = 'bakery-ascii-fix.py'
+    SCRIPTPATH = 'fontbakery-fix-ascii-fontmetadata.py'
     command = "$ {0} {1}".format(SCRIPTPATH, targetpath)
     if hasattr(testcase, 'operator'):
         testcase.operator.debug(command)
@@ -150,7 +150,7 @@ def fix_fstype_to_zero(testcase):
     """ Fix fsType to zero """
     targetpath = testcase.operator.path
 
-    SCRIPTPATH = 'bakery-fstype-fix.py'
+    SCRIPTPATH = 'fontbakery-fix-fstype.py'
     command = "$ {0} --autofix {1}".format(SCRIPTPATH, targetpath)
     if hasattr(testcase, 'operator'):
         testcase.operator.debug(command)
@@ -162,7 +162,7 @@ def fix_fstype_to_zero(testcase):
 
 def fix_encode_glyphs(testcase):
     targetpath = testcase.operator.path
-    SCRIPTPATH = 'bakery-encode-glyphs-fix.py'
+    SCRIPTPATH = 'fontbakery-fix-glyph-private-encoding.py'
     command = "$ {0} --autofix {1}".format(SCRIPTPATH, targetpath)
     if hasattr(testcase, 'operator'):
         testcase.operator.debug(command)
