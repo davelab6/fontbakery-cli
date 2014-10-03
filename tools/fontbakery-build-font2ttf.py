@@ -18,10 +18,10 @@
 #
 # Convert a source font into OpenType-TTF and optionally also OpenType-CFF
 #
-# $ font2ttf.py font.sfd font.ttf font.otf
-# $ font2ttf.py font.sfdir font.ttf font.otf
-# $ font2ttf.py font.ufo font.ttf font.otf
-# $ font2ttf.py font.otf font.ttf
+# $ fontbakery-build-font2ttf.py font.sfd font.ttf font.otf
+# $ fontbakery-build-font2ttf.py font.sfdir font.ttf font.otf
+# $ fontbakery-build-font2ttf.py font.ufo font.ttf font.otf
+# $ fontbakery-build-font2ttf.py font.otf font.ttf
 import sys
 from bakery_cli.scripts import font2ttf
 

@@ -2,7 +2,7 @@
 # Script is used to add or overwrite "secure" section in travis.yaml of your
 # project. When using script you must be inside of project directory.
 #
-# Usage: travis-secure.sh -u githubusername -e your@email
+# Usage: fontbakery-travis-secure.sh -u githubusername -e your@email
 #
 while test $# -gt 0; do
     case $1 in

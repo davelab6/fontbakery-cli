@@ -25,11 +25,11 @@ class Metadata(object):
         self.bakery = bakery
 
     def execute(self, pipedata, prefix=""):
-        task = self.bakery.logging_task('Generate METADATA.json (genmetadata.py)')
+        task = self.bakery.logging_task('Generate METADATA.json (fontbakery-build-metadata.py)')
         if self.bakery.forcerun:
             return
 
-        self.bakery.logging_cmd('genmetadata.py %s' % self.builddir)
+        self.bakery.logging_cmd('fontbakery-build-metadata.py %s' % self.builddir)
         try:
             # reassign ansiprint to our own method
             genmetadata.ansiprint = self.ansiprint

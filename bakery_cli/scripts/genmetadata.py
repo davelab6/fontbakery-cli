@@ -151,7 +151,7 @@ SUPPORTED_SUBSETS = frozenset([
 
 
 def usage():
-    print("genmetadata.py family_directory", file=sys.stderr)
+    print("fontbakery-build-metadata.py family_directory", file=sys.stderr)
 
 # DC This should check the NAME table for correct values of the license
 # and licenseurl keys
