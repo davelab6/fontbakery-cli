@@ -34,14 +34,14 @@ class CheckGlyphExistence(TestCase):
 
     @tags('required')
     def test_nbsp(self):
-        """ Check if 'NO-BREAK SPACE' exists in font glyphs """
+        """ Check if 'NO-BREAK SPACE' exists"""
         self.assertExists('NO-BREAK SPACE')
 
     @tags('required',)
     def test_space(self):
-        """ Check if 'SPACE' exists in font glyphs """
+        """ Check if 'SPACE' exists """
         self.assertExists('SPACE')
 
     def test_euro(self):
-        """ Check if 'EURO SIGN' exists in font glyphs """
+        """ Check if 'EURO SIGN' exists """
         self.assertExists('EURO SIGN')

@@ -27,16 +27,16 @@ class CheckNbspWidthMatchesSpWidth(TestCase):
     @tags('required')
     @autofix('bakery_cli.pipe.autofix.fix_nbsp')
     def test_check_nbsp_width_matches_sp_width(self):
-        """ Check NO-BREAK SPACE advanceWidth is the same as SPACE """
+        """ Check non-breaking space's advancewidth is the same as space """
         tf = Font.get_ttfont(self.operator.path)
         space_advance_width = tf.advance_width('space')
         nbsp_advance_width = tf.advance_width('uni00A0')
 
-        _ = "Font does not contain a sp glyph"
+        _ = "Font does not contain a space glyph"
         self.assertTrue(space_advance_width, _)
         _ = "Font does not contain a nbsp glyph"
         self.assertTrue(nbsp_advance_width, _)
 
         _ = ("The nbsp advance width does not match "
-             "the sp advance width")
+             "the space advance width")
         self.assertEqual(space_advance_width, nbsp_advance_width, _)

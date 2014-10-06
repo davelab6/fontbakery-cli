@@ -46,8 +46,14 @@ class CheckFontAgreements(TestCase):
 
     @tags('note')
     def test_em_is_1000(self):
-        """ Ideally the font em size should be 1000 """
+        """ Font em size should be 1000, but doesn't have to be """
         self.assertEqual(self.font.get_upm_height(), 1000)
+
+    @tags('required')
+    def test_font_is_font(self):
+        """ File provided as parameter is TTF font file """
+        self.assertTrue(magic.from_file(self.operator.path, mime=True),
+                        'application/x-font-ttf')
 
     @tags('required')
     def test_latin_file_exists(self):
@@ -57,11 +63,19 @@ class CheckFontAgreements(TestCase):
         self.assertTrue(os.path.exists(path))
 
     @tags('required')
-    def test_file_is_font(self):
-        """ Menu file have family-style.menu format """
-        self.assertTrue(magic.from_file(self.operator.path), 'TrueType font data')
+    def test_menu_file_exists(self):
+        """ GF requires a menu subset, so we check that font file exists """
+        path = os.path.dirname(self.operator.path)
+        path = os.path.join(path, self.operator.path[:-3] + "menu")
+        self.assertTrue(os.path.exists(path))
 
     @tags('required')
+    def test_menu_file_exists(self):
+        """ GF requires a menu subset, so we check that font file exists """
+        path = os.path.dirname(self.operator.path)
+        path = os.path.join(path, self.operator.path[:-3] + "menu")
+        self.assertTrue(os.path.exists(path))
+
     def test_font_is_font(self):
         """ File provided as parameter is TTF font file """
         self.assertTrue(magic.from_file(self.operator.path, mime=True),
