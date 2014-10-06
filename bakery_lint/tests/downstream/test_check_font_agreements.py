@@ -44,21 +44,21 @@ class CheckFontAgreements(TestCase):
     def setUp(self):
         self.font = Font.get_ttfont(self.operator.path)
 
-    @tags('required')
+    @tags('note')
     def test_em_is_1000(self):
-        """ Font em should be equal 1000 """
+        """ Ideally the font em size should be 1000 """
         self.assertEqual(self.font.get_upm_height(), 1000)
 
     @tags('required')
     def test_latin_file_exists(self):
-        """ Check latin subset font file exists """
+        """ GF requires a latin subset, so we check that font file exists """
         path = os.path.dirname(self.operator.path)
         path = os.path.join(path, self.operator.path[:-3] + "latin")
         self.assertTrue(os.path.exists(path))
 
     @tags('required')
     def test_file_is_font(self):
-        """ Menu file have font-name-style.menu format """
+        """ Menu file have family-style.menu format """
         self.assertTrue(magic.from_file(self.operator.path), 'TrueType font data')
 
     @tags('required')
