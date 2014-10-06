@@ -60,9 +60,13 @@ class FontLint(object):
         data = run_set(op.join(self.builddir, ttf_path), 'result',
                        log=self.bakery.logger)
 
-        l = open(os.path.join(self.builddir, '{}.yaml'.format(ttf_path[:-4])), 'w')
-        l.write(yaml.safe_dump(data))
-        l.close()
+        try:
+            l = open(os.path.join(self.builddir, '{}.yaml'.format(ttf_path[:-4])), 'w')
+            l.write(yaml.safe_dump(data))
+            l.close()
+        except Exception as ex:
+            self.bakery.logging_raw('Could not store tests result: {}'.format(ex))
+            raise
 
     def execute(self, pipedata, prefix=""):
         _out_yaml = op.join(self.builddir, OUT_YAML)
