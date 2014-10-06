@@ -17,6 +17,7 @@
 import os
 import os.path as op
 import yaml
+import json
 
 from bakery_lint import run_set
 from bakery_lint.base import BakeryTestCase
@@ -56,11 +57,11 @@ class FontLint(object):
         self.bakery.logging_raw('### Test %s\n' % ttf_path)
 
         self.bakery.logging_cmd('fontbakery-check.py result {}'.format(ttf_path))
-        result = run_set(op.join(self.builddir, ttf_path), 'result',
-                         log=self.bakery.logger)
+        data = run_set(op.join(self.builddir, ttf_path), 'result',
+                       log=self.bakery.logger)
 
         l = open(os.path.join(self.builddir, '{}.yaml'.format(ttf_path[:-4])), 'w')
-        l.write(yaml.safe_dump(result))
+        l.write(yaml.safe_dump(data))
         l.close()
 
     def execute(self, pipedata, prefix=""):

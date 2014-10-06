@@ -69,6 +69,13 @@ if __name__ == '__main__':
         with open(os.path.join(conf['path'], 'README.md'), 'w') as l:
             l.write(contents)
 
+        contents = ''
+        with open(os.path.join(conf['path'], 'summary.tests.json')) as l:
+            contents = l.read()
+
+        with open(os.path.join(conf['path'], 'summary.tests.json'), 'w') as l:
+            l.write('jsonCallback({});'.format(contents))
+
     else:
         conf = {'path': args.path, 'failed': True}
         app.generate(conf)

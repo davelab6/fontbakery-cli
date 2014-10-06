@@ -71,7 +71,7 @@ def generate(config, outfile='tests.html'):
         new_data.append(d)
 
     tests_summary = {}
-    tests_summary_filepath = op.join(config['path'], 'tests.json')
+    tests_summary_filepath = op.join(config['path'], 'summary.tests.json')
     if op.exists(tests_summary_filepath):
         tests_summary = json.load(open(tests_summary_filepath))
     tests_summary.update(tests)
