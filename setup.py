@@ -17,6 +17,14 @@
 
 from setuptools import setup
 
+
+import os
+
+
+extra_package_data = []
+for dirpath, dirnames, filenames in os.walk(os.path.join(os.path.dirname(__file__), 'bakery_cli/report/app')):
+    extra_package_data += [os.path.join(dirpath, name).replace('bakery_cli/', '') for name in filenames]
+
 setup(
     name="FontBakery-cli",
     version='0.0.2',
@@ -68,8 +76,8 @@ setup(
             'tests/*.txt',
             'tests/*.mkd',
             'report/templates/*.html',
-            'report/templates/css/*.*',
-        ]
+            'report/templates/css/*.*'
+        ] + extra_package_data
     },
     install_requires=[
         'lxml',
