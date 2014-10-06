@@ -30,23 +30,23 @@ class FontForgeValidateStateTest(TestCase):
         self.validation_state = font.validate()
 
     def test_validation_open_contours(self):
-        """ Glyphs do not have opened contours """
+        """ Contours are closed """
         self.assertFalse(bool(self.validation_state & 0x2))
 
     def test_validation_glyph_intersect(self):
-        """ Glyphs do not intersect somewhere """
+        """ Contours do not intersect """
         self.assertFalse(bool(self.validation_state & 0x4))
 
     def test_wrong_direction_in_glyphs(self):
-        """ Contours do not have wrong direction """
+        """ Contours have correct directions """
         self.assertFalse(bool(self.validation_state & 0x8))
 
     def test_flipped_reference_in_glyphs(self):
-        """ Reference in the glyph haven't been flipped """
+        """ References in the glyph haven't been flipped """
         self.assertFalse(bool(self.validation_state & 0x10))
 
     def test_missing_extrema_in_glyphs(self):
-        """ Glyphs do not have missing extrema """
+        """ Glyphs have points at extremas """
         self.assertFalse(bool(self.validation_state & 0x20))
 
     def test_referenced_glyphs_are_present(self):
@@ -58,7 +58,7 @@ class FontForgeValidateStateTest(TestCase):
         self.assertFalse(bool(self.validation_state & 0x40000))
 
     def test_postscript_hasnt_limit_points_in_glyphs(self):
-        """ PostScript has not a limit of 1500 points in glyphs """
+        """ Not more than 1,500 points in any glyph (a PostScript limit) """
         self.assertFalse(bool(self.validation_state & 0x80))
 
     def test_postscript_hasnt_limit_hints_in_glyphs(self):
@@ -94,26 +94,21 @@ class FontForgeValidateStateTest(TestCase):
         self.assertFalse(bool(self.validation_state & 0x80000))
 
     def test_missing_anchors(self):
-        """ Glyphs have not missing anchor.
-
-            According to the opentype spec, if a glyph contains an anchor point
+        """ Glyphs have all required anchors.
+            (According to the opentype spec, if a glyph contains an anchor point
             for one anchor class in a subtable, it must contain anchor points
             for all anchor classes in the subtable. Even it, logically,
-            they do not apply and are unnecessary. """
+            they do not apply and are unnecessary.) """
         self.assertFalse(bool(self.validation_state & 0x100000))
 
     def test_duplicate_glyphs(self):
-        """ Font does not have duplicated glyphs.
-
-            Two (or more) glyphs in this font have the same name. """
+        """ Glyph names are unique. """
         self.assertFalse(bool(self.validation_state & 0x200000))
 
     def test_duplicate_unicode_codepoints(self):
-        """ Glyphs do not have duplicate unicode code points.
-
-            Two (or more) glyphs in this font have the code point. """
+        """ Unicode code points are unique. """
         self.assertFalse(bool(self.validation_state & 0x400000))
 
     def test_overlapped_hints(self):
-        """ Glyphs do not have overlapped hints """
+        """ Hints do not overlap """
         self.assertFalse(bool(self.validation_state & 0x800000))
