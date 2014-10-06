@@ -17,7 +17,7 @@
 <div class="container-fluid">
   {% from "macros.html" import report_navigation with context %}
   {{ report_navigation(activeitem='buildlog') }}
-  <pre>{{ markdown(log) }}</pre>
+  <pre>{{ markdown(log.decode('utf8', 'ignore')) }}</pre>
 </div>
 <!-- Footer -->
 {% from "macros.html" import report_footer with context %}
