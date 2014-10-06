@@ -74,7 +74,7 @@ if __name__ == '__main__':
             contents = l.read()
 
         with open(os.path.join(conf['path'], 'summary.tests.json'), 'w') as l:
-            l.write('jsonCallback({})'.format(contents))
+            l.write('jsonCallback({});'.format(contents))
 
     else:
         conf = {'path': args.path, 'failed': True}
