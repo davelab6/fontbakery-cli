@@ -15,6 +15,7 @@
       <tr ng-repeat="test in $data" class="{{ test.result_class }}">
         <td data-title="'Category'" sortable="'categories'">{{ test.categories }}</td>
         <td data-title="'Description'" sortable="'description'"><span popover-title="{{ test.orig_data.name|replace:'.':'/' }}.py" popover-placement="top" data-placement="top" popover="{{ test.orig_data.methodName }}()">{{ test.description }}</span></td>
+        <td data-title="'Code'" sortable="'gh_link'"><a href="{{ test.gh_link }}">{{ test.orig_data.methodName }}</a></td>
         <td data-title="'File'" sortable="'font'">{{ test.font }}</td>
         <td data-title="'Result'" sortable="'result_msg'">{{ test.result_msg }}</td>
         <td data-title="'Status'" sortable="'result_status'">{{ test.result_status }}</td>

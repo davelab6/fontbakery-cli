@@ -1,4 +1,4 @@
-myApp.controller('testsController', ['$scope', '$http', '$filter', 'testsApi', 'ngTableParams', function($scope, $http, $filter, testsApi, ngTableParams) {
+myApp.controller('testsController', ['$scope', '$http', '$filter', 'PathBuilder', 'testsApi', 'ngTableParams', function($scope, $http, $filter, PathBuilder, testsApi, ngTableParams) {
     $scope.charts = [];
     $scope.average_chart = null;
     $scope.dataLoaded = false;
@@ -19,7 +19,8 @@ myApp.controller('testsController', ['$scope', '$http', '$filter', 'testsApi', '
                         description: test_obj.methodDoc,
                         result_msg: test_obj.err_msg,
                         result_status: $scope.statusMap[result_key],
-                        result_class: result_val
+                        result_class: result_val,
+                        gh_link: PathBuilder.buildPath($scope.repo_info.fontbakery.master_url, $filter('replace')(test_obj.name, '.', '/')+".py")
                     };
                     data.push(item);
                 })

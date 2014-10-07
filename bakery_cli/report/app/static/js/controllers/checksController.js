@@ -1,4 +1,4 @@
-myApp.controller('checksController', ['$scope', '$http', '$filter', 'checksApi', 'ngTableParams', function($scope, $http, $filter, checksApi, ngTableParams) {
+myApp.controller('checksController', ['$scope', '$http', '$filter', 'PathBuilder', 'checksApi', 'ngTableParams', function($scope, $http, $filter, PathBuilder, checksApi, ngTableParams) {
     $scope.charts = [];
     $scope.average_chart = null;
     $scope.dataLoaded = false;
@@ -19,7 +19,8 @@ myApp.controller('checksController', ['$scope', '$http', '$filter', 'checksApi',
                         description: test_obj.methodDoc,
                         result_msg: test_obj.err_msg,
                         result_status: $scope.statusMap[result_key],
-                        result_class: result_val
+                        result_class: result_val,
+                        gh_link: PathBuilder.buildPath($scope.repo_info.fontbakery.master_url, $filter('replace')(test_obj.name, '.', '/')+".py")
                     };
                     data.push(item);
                 })

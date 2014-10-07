@@ -35,6 +35,10 @@ def _build_repo_url(base_url, *chunks, **kwargs):
     return op.join(base_url, repo_slug, *chunks)
 
 
+def _build_fontbakery_url(*chunks):
+    return op.join(GH, 'googlefonts', 'fontbakery-cli', *chunks)
+
+
 def build_repo_url(*chunks, **kwargs):
     return _build_repo_url(GH, *chunks, **kwargs)
 
@@ -277,6 +281,18 @@ class ReportApp(six.with_metaclass(Singleton, object)):
 
     @lazy_property
     def repo(self):
+        fontbakery_url = _build_fontbakery_url()
+        fontbakery_master = _build_fontbakery_url('blob', 'master')
+        fontbakery_edit_master = _build_fontbakery_url('edit', 'master')
+        fontbakery_tests_url = _build_fontbakery_url('blob', 'master',
+                                                     'bakery_lint', 'tests')
+        fontbakery_tests_edit_url = _build_fontbakery_url('edit', 'master',
+                                                          'bakery_lint', 'tests')
+        fontbakery = dict(repo_url=fontbakery_url,
+                          master_url=fontbakery_master,
+                          master_edit_url=fontbakery_edit_master,
+                          tests_url=fontbakery_tests_url,
+                          tests_edit_url=fontbakery_tests_edit_url)
         repo_url = build_repo_url()
         repo_gh_pages = build_repo_url('tree', 'gh-pages')
-        return dict(url=repo_url, gh_pages=repo_gh_pages)
+        return dict(url=repo_url, gh_pages=repo_gh_pages, fontbakery=fontbakery)

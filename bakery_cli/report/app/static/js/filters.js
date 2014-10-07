@@ -1,6 +1,6 @@
 angular.module('myApp').filter('replace', [function () {
     return function (target, arg1, arg2) {
-        return target.replace(arg1, arg2);
+        return target.split(arg1).join(arg2);
     };
 }]);
 
