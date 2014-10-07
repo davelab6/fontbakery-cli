@@ -6,4 +6,5 @@ recursive-include bakery_cli/report/app/static/css/pages *
 recursive-include bakery_cli/report/app/static/js/controllers *
 recursive-include bakery_cli/report/app/static/js/libs/gchart *
 recursive-include bakery_cli/report/app/static/js/libs/jsondiffpatch *
-recursive-include bakery_cli/report/templates *.html
+recursive-include bakery_cli/report/templates *
+recursive-include bakery_cli/report/templates/css *
