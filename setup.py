@@ -18,13 +18,6 @@
 from setuptools import setup
 
 
-import os
-
-
-extra_package_data = []
-for dirpath, dirnames, filenames in os.walk(os.path.join(os.path.dirname(__file__), 'bakery_cli/report/app')):
-    extra_package_data += [os.path.join(dirpath, name).replace('bakery_cli/', '') for name in filenames]
-
 setup(
     name="fontbakerycli",
     version='0.0.3',
@@ -68,17 +61,7 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
     ],
-    package_data={
-        '': [
-            'defaults.yaml',
-            'scrapes/familynames/scrapy.cfg',
-            'tests/upstream/diacritics.txt',
-            'tests/*.txt',
-            'tests/*.mkd',
-            'report/templates/*.html',
-            'report/templates/css/*.*'
-        ] + extra_package_data
-    },
+    include_package_data=True,
     install_requires=[
         'lxml',
         'requests',
