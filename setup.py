@@ -26,8 +26,8 @@ for dirpath, dirnames, filenames in os.walk(os.path.join(os.path.dirname(__file_
     extra_package_data += [os.path.join(dirpath, name).replace('bakery_cli/', '') for name in filenames]
 
 setup(
-    name="FontBakery-cli",
-    version='0.0.2',
+    name="fontbakerycli",
+    version='0.0.3',
     url='https://github.com/googlefonts/fontbakery-cli/',
     description='fontbakery-cli',
     author='Vitaliy Volkov',
