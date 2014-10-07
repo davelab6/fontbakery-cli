@@ -1,2 +1,9 @@
-recursive-include bakery_cli/report/app *
+recursive-include bakery_cli/report/app/data *
+recursive-include bakery_cli/report/app/pages *
+recursive-include bakery_cli/report/app/static/css/fonts *
+recursive-include bakery_cli/report/app/static/css/libs/jsondiffpatch *
+recursive-include bakery_cli/report/app/static/css/pages *
+recursive-include bakery_cli/report/app/static/js/controllers *
+recursive-include bakery_cli/report/app/static/js/libs/gchart *
+recursive-include bakery_cli/report/app/static/js/libs/jsondiffpatch *
 recursive-include bakery_cli/report/templates *.html
