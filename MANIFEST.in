@@ -1,0 +1,2 @@
+recursive-include bakery_cli/report/app *
+recursive-include bakery_cli/report/templates *.html
