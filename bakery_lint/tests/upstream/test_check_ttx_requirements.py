@@ -32,13 +32,9 @@ class SourceTTXTest(TestCase):
         font.importXML(self.operator.path, quiet=True)
         self.font = font
 
-    def test_ttx_doesnt_contain_duplicate_glyphs(self):
-        """ Font doesnt contain duplicated glyphs.
-
-            When fontbakery has resulted files with GlyphID <glyphname>#<int>
-            generated, It can't be installed on some Mac OS X.
-
-            For details see https://github.com/girish-dalvi/Ek-Mukta/issues/1
+    def test_ttx_duplicate_glyphs(self):
+        """ Font contains unique glyph names?
+            (Duplicate glyph names prevent font installation on Mac OS X.)
         """
         glyphs = []
         for _, g in enumerate(self.font.getGlyphOrder()):
@@ -51,10 +47,6 @@ class SourceTTXTest(TestCase):
                              msg="GlyphID %s occurs twice in TTX" % g)
             glyphs.append(glyphs)
 
-    def test_os2_in_keys(self):
-        """ This very important test checking if OS/2 is in keys method """
-        self.assertIn('OS/2', self.font.keys())
-
     def test_epar_in_keys(self):
-        """ Check If font has EPAR table """
+        """ EPAR table present in font? """
         self.assertIn('EPAR', self.font.keys())
