@@ -14,15 +14,18 @@
 # limitations under the License.
 #
 # See AUTHORS.txt for the list of Authors and LICENSE.txt for the License.
+"""
+Load test methods from each file in the same directory as this file, 
+that start with 'test_', and have 'Test' in their class name
+"""
 import os
 import importlib
 import inspect
 
-
 for testfile in os.listdir(os.path.dirname(__file__)):
     if testfile.startswith('test_'):
         try:
-            module_name, _ = os.path.splitext(testfile)
+            module_name, extension = os.path.splitext(testfile)
             module = 'bakery_lint.tests.upstream.%s' % module_name
             module = importlib.import_module(module)
 
