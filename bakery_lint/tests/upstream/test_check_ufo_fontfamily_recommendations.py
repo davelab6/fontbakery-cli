@@ -39,6 +39,7 @@ class TestUFOFontFamilyNamingTest(TestCase):
     See: http://forum.fontlab.com/index.php?topic=313.0 """
 
     targets = ['upstream']
+    # TODO use robofab to test this in UFOs
     tool = 'FontForge'
     name = __name__
 
